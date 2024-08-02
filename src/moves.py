@@ -629,7 +629,16 @@ move_names = [
     "test_bond",
     "aid_ally",
     "write_epilogue",
+    "enter_fray",
+    "strike",
+    "clash",
+    "turn_tide",
+    "end_fight",
+    "battle",
+    "other_battle_moves",
+    "back_to_main",
 ]
+
 
 for move in move_names:
     # pylint: disable=exec-used
@@ -705,7 +714,19 @@ async def combat_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="Combat moves will be implemented here.")
+
+    keyboard = [
+        [InlineKeyboardButton("Enter the Fray", callback_data="enter_fray")],
+        [InlineKeyboardButton("Strike", callback_data="strike")],
+        [InlineKeyboardButton("Clash", callback_data="clash")],
+        [InlineKeyboardButton("Turn the Tide", callback_data="turn_tide")],
+        [InlineKeyboardButton("End the Fight", callback_data="end_fight")],
+        [InlineKeyboardButton("Battle", callback_data="battle")],
+        [InlineKeyboardButton("Other moves", callback_data="other_battle_moves")],
+        [InlineKeyboardButton("Back", callback_data="back_to_main")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="Combat moves:", reply_markup=reply_markup)
 
 
 async def suffer_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -758,6 +779,26 @@ async def back_to_relationship_callback(
 ):
     await relationship_callback(update, context)
 
+async def back_to_combat_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    await combat_callback(update, context)
+
+async def back_to_suffer_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    await suffer_callback(update, context)
+
+async def back_to_quest_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    await quest_callback(update, context)
+
+async def back_to_fate_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    await fate_callback(update, context)
+
 
 # This dictionary maps callback data to their respective functions
 callback_functions = {
@@ -771,6 +812,10 @@ callback_functions = {
     "back_to_main": back_to_main_callback,
     "back_to_adventure": back_to_adventure_callback,
     "back_to_relationship": back_to_relationship_callback,
+    "back_to_combat": back_to_combat_callback,
+    "back_to_suffer": back_to_suffer_callback,
+    "back_to_quest": back_to_quest_callback,
+    "back_to_fate": back_to_fate_callback,
 }
 
 # Add move-specific callbacks to the dictionary
