@@ -1,13 +1,13 @@
-from telegram.ext import Application, CommandHandler, ContextTypes
+import logging
+
 from telegram import BotCommand, Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
-import logging
-import datetime
 
 TOKEN = None
-with open("./data/token.txt") as f:
+with open("./data/token.txt", encoding="utf-8") as f:
     TOKEN = f.read().strip()
 
 # Dictionary to store message pairs (command_id, response_id)

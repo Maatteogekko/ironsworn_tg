@@ -1,9 +1,9 @@
-from telegram import BotCommand, Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes, ConversationHandler
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ContextTypes, ConversationHandler
 
 
 def split_text(text, max_length=4096):
-    # Split the text by lines.
+    """Split the text by lines."""
 
     lines = text.split("\n\n")
     parts = []
@@ -38,7 +38,7 @@ def split_text(text, max_length=4096):
 async def flip_page(
     update: Update, context: ContextTypes.DEFAULT_TYPE, page: int, back="back"
 ):
-    # Provide UI to navigate multiple pages.
+    """Provide UI to navigate multiple pages."""
 
     query = update.callback_query
     await query.answer()

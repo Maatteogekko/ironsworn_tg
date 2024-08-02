@@ -7,7 +7,8 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-from src.utils import *
+
+from src.utils import cancel, end_conversation, flip_page, split_text
 
 # Define states
 SHOWING_MOVES = 0
@@ -25,7 +26,7 @@ async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if update.message == None:
+    if update.message is None:
         # Non so esattamente come fixarlo meglio; Quando premi indietro su adventure_callback o gli altri, dovresti tornare qui. Ma non c'è un messaggio, ergo l'if.
         query = update.callback_query
         await query.answer()
@@ -531,7 +532,6 @@ callback_functions = {
 
 # Add move-specific callbacks to the dictionary
 for move in move_names:
-    formatted_move = move.replace("_", " ").title()
     callback_functions[move] = eval(f"{move}_callback")
     callback_functions[f"manual_{move}"] = eval(f"manual_{move}_callback")
     callback_functions[f"back_to_{move}"] = eval(f"back_to_{move}_callback")
@@ -552,8 +552,8 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
             f'back_to_{move_name.lower().replace(" ", "_")}',
         )
     elif callback_data.startswith("manual_"):
-        move = callback_data[7:]  # Remove 'manual_' prefix
-        await manual_callback(update, context, move.replace("_", " ").title())
+        move_name = callback_data[7:]  # Remove 'manual_' prefix
+        await manual_callback(update, context, move_name.replace("_", " ").title())
     else:
         await callback_functions.get(callback_data, lambda u, c: None)(update, context)
     return SHOWING_MOVES
@@ -561,7 +561,9 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
 
 moves_handler = ConversationHandler(
     entry_points=[CommandHandler("moves", moves)],
-    states={SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]},
+    states={
+        SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)],
+    },
     fallbacks=[
         CommandHandler("cancel", cancel),
         MessageHandler(filters.COMMAND, end_conversation),
