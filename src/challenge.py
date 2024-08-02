@@ -37,7 +37,7 @@ async def challenge(
     keyboard = [
         [
             InlineKeyboardButton(
-                "Lancia l'action dice", callback_data="action_dice_callback"
+                "Roll the action dice", callback_data="action_dice_callback"
             )
         ]
     ]
@@ -45,7 +45,7 @@ async def challenge(
 
     # Send the message with the inline button
     await update.message.reply_text(
-        f"I due challenge dice sono {num1} e {num2}", reply_markup=reply_markup
+        f"Your challenge dice are {num1} & {num2}", reply_markup=reply_markup
     )
     return ACTION_DICE_STATE
 
@@ -58,7 +58,7 @@ async def action_dice_callback(
 
     query = update.callback_query
     await query.answer()
-    await query.message.edit_text("Action dice lanciato!")
+    await query.message.edit_text("Rolling action dice!")
     # Generate a random number between 1 and 6
     action_number = random.randint(1, 6)
 
@@ -68,7 +68,7 @@ async def action_dice_callback(
     await query.message.reply_sticker(d6_sticker_id[str(action_number)])
 
     # Send the message with the action number
-    await query.message.reply_text(f"È uscito {action_number}")
+    await query.message.reply_text(f"It came out {action_number}")
 
     return ConversationHandler.END
 

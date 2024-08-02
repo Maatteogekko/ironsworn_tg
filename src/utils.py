@@ -53,8 +53,8 @@ async def flip_page(
     if context.user_data["page"] <= 0:
         context.user_data["page"] = 0
         keyboard = [
-            [InlineKeyboardButton("Pagina +", callback_data="page+")],
-            [InlineKeyboardButton("Indietro", callback_data=back)],
+            [InlineKeyboardButton("Page +", callback_data="page+")],
+            [InlineKeyboardButton("Back", callback_data=back)],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
@@ -65,8 +65,8 @@ async def flip_page(
     elif context.user_data["page"] >= len(parts) - 1:
         context.user_data["page"] = len(parts) - 1
         keyboard = [
-            [InlineKeyboardButton("Pagina -", callback_data="page-")],
-            [InlineKeyboardButton("Indietro", callback_data=back)],
+            [InlineKeyboardButton("Page -", callback_data="page-")],
+            [InlineKeyboardButton("Back", callback_data=back)],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
@@ -77,10 +77,10 @@ async def flip_page(
     else:
         keyboard = [
             [
-                InlineKeyboardButton("Pagina -", callback_data="page-"),
-                InlineKeyboardButton("Pagina +", callback_data="page+"),
+                InlineKeyboardButton("Page -", callback_data="page-"),
+                InlineKeyboardButton("Page +", callback_data="page+"),
             ],
-            [InlineKeyboardButton("Indietro", callback_data=back)],
+            [InlineKeyboardButton("Back", callback_data=back)],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(

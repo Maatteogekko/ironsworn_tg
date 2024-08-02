@@ -20,12 +20,12 @@ logging.basicConfig(
 
 async def set_bot_commands(app: Application) -> None:
     commands = [
-        BotCommand("challenge", "Passa all'azione!"),
-        BotCommand("moves", "Lista e spiegazione delle mosse"),
-        BotCommand("assets", "Lista e spiegazione degli asset"),
-        BotCommand("truths", "Spiegazione dell'ambientazione"),
-        BotCommand("bonds", "Da fare"),
-        BotCommand("oracle", "Chiedi all'oracolo"),
+        BotCommand("challenge", "Take action!"),
+        BotCommand("moves", "List and explanation of moves"),
+        BotCommand("assets", "List and explanation of assets"),
+        BotCommand("truths", "Explanation of the setting"),
+        BotCommand("bonds", "To do"),
+        BotCommand("oracle", "Ask the oracle"),
     ]
     await app.bot.set_my_commands(commands)
 
@@ -33,7 +33,7 @@ async def set_bot_commands(app: Application) -> None:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     del context
 
-    await update.message.reply_text("IronswornCompanion_bot lanciato.")
+    await update.message.reply_text("Welcome to the Ironlands!")
 
 
 if __name__ == "__main__":
