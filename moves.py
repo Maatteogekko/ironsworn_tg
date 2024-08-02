@@ -1,38 +1,53 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import (
+    CommandHandler,
+    CallbackQueryHandler,
+    ConversationHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
+)
 from utils import *
 
 # Define states
 SHOWING_MOVES = 0
 
+
 async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Adventure", callback_data='adventure')],
-        [InlineKeyboardButton("Relationship", callback_data='relationship')],
-        [InlineKeyboardButton("Combat", callback_data='combat')],
-        [InlineKeyboardButton("Suffer", callback_data='suffer')],
-        [InlineKeyboardButton("Quest", callback_data='quest')],
-        [InlineKeyboardButton("Fate", callback_data='fate')],
-        [InlineKeyboardButton("Indietro", callback_data='back_to_zero')]
+        [InlineKeyboardButton("Adventure", callback_data="adventure")],
+        [InlineKeyboardButton("Relationship", callback_data="relationship")],
+        [InlineKeyboardButton("Combat", callback_data="combat")],
+        [InlineKeyboardButton("Suffer", callback_data="suffer")],
+        [InlineKeyboardButton("Quest", callback_data="quest")],
+        [InlineKeyboardButton("Fate", callback_data="fate")],
+        [InlineKeyboardButton("Indietro", callback_data="back_to_zero")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if update.message==None:
+    if update.message == None:
         # Non so esattamente come fixarlo meglio; Quando premi indietro su adventure_callback o gli altri, dovresti tornare qui. Ma non c'è un messaggio, ergo l'if.
         query = update.callback_query
         await query.answer()
-        await query.edit_message_text("Scegli il tipo di mossa", reply_markup=reply_markup)
+        await query.edit_message_text(
+            "Scegli il tipo di mossa", reply_markup=reply_markup
+        )
     else:
-        await update.message.reply_text("Scegli il tipo di mossa", reply_markup=reply_markup)
+        await update.message.reply_text(
+            "Scegli il tipo di mossa", reply_markup=reply_markup
+        )
 
     return SHOWING_MOVES
 
-async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, move_name: str):
+
+async def generic_move_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, move_name: str
+):
     query = update.callback_query
     await query.answer()
 
     text = f"{move_name} - Placeholder text"
-    back_type = 'back_to_adventure' #default
+    back_type = "back_to_adventure"  # default
     match move_name:
         case "Face Danger":
             text = (
@@ -51,7 +66,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "• You sacrifice resources: Suffer -1 supply.\n\n"
                 "On a *miss*, you fail, or your progress is undermined by a dramatic and costly turn of events. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Secure Advantage":
             text = (
@@ -68,7 +83,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, your advantage is short-lived. Take +1 momentum.\n\n"
                 "On a *miss*, you fail or your assumptions betray you. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Gather Information":
             text = (
@@ -78,7 +93,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, the information complicates your quest or introduces a new danger. Envision what you discover (_Ask the Oracle_ if unsure), and take +1 momentum.\n\n"
                 "On a *miss*, your investigation unearths a dire threat or reveals an unwelcome truth that undermines your quest. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Heal":
             text = (
@@ -88,7 +103,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, as above, but you must suffer -1 supply or -1 momentum (your choice).\n\n"
                 "On a *miss*, your aid is ineffective. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Resupply":
             text = (
@@ -98,7 +113,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, take up to +2 supply, but suffer -1 momentum for each.\n\n"
                 "On a *miss*, you find nothing helpful. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Make Camp":
             text = (
@@ -113,7 +128,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "• Prepare: When you break camp, add +1 if you _Undertake a Journey_.\n\n"
                 "On a *miss*, you take no comfort. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Undertake Journey":
             text = (
@@ -131,7 +146,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, you reach a waypoint and mark progress, but suffer -1 supply.\n\n"
                 "On a *miss*, you are waylaid by a perilous event. _Pay the Price_."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Reach Destination":
             text = (
@@ -144,7 +159,7 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, you arrive but face an unforeseen hazard or complication. Envision what you find (_Ask the Oracle_ if unsure).\n\n"
                 "On a *miss*, you have gone hopelessly astray, your objective is lost to you, or you were misled about your destination. If your journey continues, clear all but one filled progress, and raise the journey's rank by one (if not already epic)."
             )
-            back_type = 'back_to_adventure'
+            back_type = "back_to_adventure"
 
         case "Compel":
             text = (
@@ -157,9 +172,9 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *weak hit*, as above, but they ask something of you in return. Envision what they want (_Ask the Oracle_ if unsure).\n\n"
                 "On a *miss*, they refuse or make a demand which costs you greatly. _Pay the Price_."
             )
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
 
-        case 'Sojourn':
+        case "Sojourn":
             text = (
                 "*SOJOURN*\n\n"
                 "When you spend time in a community seeking assistance, roll +heart. If you share a bond, add +1.\n\n"
@@ -179,9 +194,9 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "• Take a quest: Envision what this community needs, or what trouble it is facing (_Ask the Oracle_ if unsure). If you choose to help, Swear an Iron Vow and add +1.\n\n"
                 "On a *miss*, you find no help here. Pay the Price."
             )
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
 
-        case 'Draw Circle':
+        case "Draw Circle":
             text = (
                 "*DRAW THE CIRCLE*\n\n"
                 "When *you challenge someone to a formal duel, or accept a challenge*, roll +heart. If you share a bond with this community, add +1.\n\n"
@@ -195,21 +210,31 @@ async def generic_move_callback(update: Update, context: ContextTypes.DEFAULT_TY
                 "On a *miss*, you begin the duel at a disadvantage. Your foe has initiative. Pay the Price.\n\n"
                 "Then, make moves to resolve the fight. If you are the victor, you may make a lawful demand, and your opponent must comply or forfeit their honor and standing. If you refuse the challenge, surrender, or are defeated, they make a demand of you."
             )
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
 
     keyboard = [
-            [InlineKeyboardButton("Manual", callback_data=f'manual_{move_name}')],
-            [InlineKeyboardButton("Indietro", callback_data=back_type)]
+        [InlineKeyboardButton("Manual", callback_data=f"manual_{move_name}")],
+        [InlineKeyboardButton("Indietro", callback_data=back_type)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text(text, parse_mode='Markdown', reply_markup=reply_markup)
+    await query.edit_message_text(
+        text, parse_mode="Markdown", reply_markup=reply_markup
+    )
 
-async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, move_name: str):
+
+async def manual_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, move_name: str
+):
     query = update.callback_query
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("Indietro", callback_data=f'back_to_{move_name.lower().replace(" ", "_")}')]
+        [
+            InlineKeyboardButton(
+                "Indietro",
+                callback_data=f'back_to_{move_name.lower().replace(" ", "_")}',
+            )
+        ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     text = f"{move_name} Manual - Placeholder text"
@@ -221,7 +246,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "A weak hit means you overcome the obstacle or avoid the threat, but not without cost. Choose an option and envision what happens next. You don’t have complete control. Consider how the situation might escalate, perhaps forcing you to react with another move.\n\n"
                 "A miss means you are thwarted in your action, fail to oppose the threat, or make some progress but at great cost. You must _Pay the Price_."
             )
-            
+
         case "Secure Advantage":
             text = (
                 "The structure of _Secure an Advantage_ is similar to _Face Danger_. You envision your action and roll + your most relevant stat. This move, however, is proactive rather than reactive. You’re evaluating the situation or strengthening your position.\n\n"
@@ -239,7 +264,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "With a weak hit, you’ve learned something that makes your quest more complicated or dangerous. You know more about the situation, but it’s unwelcome news. To move forward, you need to overcome new obstacles and see where the clues lead.\n\n"
                 "On a miss, some event or person acts against you, a dangerous new threat is revealed, or you learn of something which contradicts previous information or severely complicates your quest."
             )
-            
+
         case "Heal":
             text = (
                 "When you tend to physical damage or sickness—for yourself, an ally, or an NPC—make this move. Healing might be represented by staunching bleeding, binding wounds, applying salves, or using herbs to brew a tonic. In the Ironlands, healing is not overtly magical, but some folk know how to treat even the most dire of injuries and illnesses.\n\n"
@@ -247,14 +272,14 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "A miss can mean you’ve caused harm rather than helping, or some perilous event interrupts your care.\n\n"
                 "NPCs who are not companions do not have a health track. When you attempt to _Heal_ them, make this move and apply the result through the fiction. They will improve, or not, as appropriate to the move’s outcome."
             )
-            
+
         case "Resupply":
             text = (
                 "When you’re in the field and need to bolster your supply track, make this move. Fictionally, this represents hunting and gathering. You might also search an area where supplies might be found, such as an abandoned camp or field of battle.\n\n"
                 "If you’re adventuring with allies, you share the same supply value. When one of you makes this move, each of you adjust your supply track.\n\n"
                 "If you have the unprepared condition marked, you can’t _Resupply_. Instead, you need to find help in a community when you _Sojourn_."
             )
-            
+
         case "Make Camp":
             text = (
                 "Making camp can be a purely narrative activity and can be abstracted or roleplayed as you like. However, if you need to recover from the struggle of your adventures while traveling through the wilds, make this move.\n\n"
@@ -263,7 +288,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "If you are traveling with allies, only one of you makes this roll for the group. Each of you may then choose your own benefits on a strong or weak hit.\n\n"
                 "On a miss, you gain no benefits of your downtime. Perhaps you suffered troubling dreams (_Endure Stress_). Poor weather may have left you weary and cold (_Endure Harm_). Or, you were attacked. If in doubt, roll on the _Pay the Price_ table or _Ask the Oracle_ for inspiration. Depending on what you envision, you can play to see what happens, or jump to the next day as you continue on your journey the worse for wear."
             )
-            
+
         case "Undertake Journey":
             text = (
                 "This is Ironsworn's travel move. When you set off or push on toward a destination, make this move.\n\n"
@@ -292,7 +317,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "You do not mark progress on a miss. Instead, you encounter a new danger. You might face hazards through the weather, the terrain, encounters with creatures or people, attacks from your enemies, strange discoveries, or supernatural events. Decide what happens based on your current circumstances and surroundings, roll on the _Pay the Price_ table, or _Ask the Oracle_ for inspiration. Depending on your desired narrative pace, you can then play out the event to see what happens, or summarize and apply the consequences immediately.\n\n"
                 "For example, you roll a miss and decide you encounter a broad, wild river which must be crossed to continue on your journey. If you want to focus on how you deal with the situation, play to see what happens by making moves. You might _Secure an Advantage_ by exploring upriver for a ford and then _Face Danger_ to cross. Or, if want to quickly push the story forward, you could fast-forward to a perilous outcome such as losing some provisions during the crossing (suffer -supply). Mix things up, especially on long journeys."
             )
-            
+
         case "Reach Destination":
             text = (
                 "When you have made progress on your journey progress track and are ready to complete your expedition, make this move. Since this is a progress move, you tally the number of filled boxes on your progress track. This is your progress score. Only add fully filled boxes (those with four ticks). Then, roll your challenge dice, compare to your progress score, and resolve a strong hit, weak hit, or miss as normal. You may not burn momentum on this roll, and you are not affected by negative momentum.\n\n"
@@ -301,7 +326,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "On a miss, something has gone horribly wrong. You realize you are off-course, you had bad information about your destination, or you face a turn of events undermining your purpose here. Depending on the circumstances, this might mean your journey ends in failure, or that you must push on while clearing all but one of your filled progress and raising the journey’s rank.\n\n"
                 "If you are traveling with allies, one of you makes this move. Each of you benefit (or suffer) from the narrative outcome of the roll. Only the character making the move gets the mechanical benefit of a strong hit."
             )
-            
+
         case "Compel":
             text = (
                 "When you act to persuade someone to do as you ask, or give you something, make this move. It might be through bargaining, or intimidation, charm, diplomacy, or trickery. Use the appropriate stat based on your approach, and roll to see what happens.\n\n"
@@ -313,7 +338,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "_Compel_ may also be used to bring combat to a non-violent conclusion. Your approach dictates the stat you use—typically +iron when you threaten with further violence, +heart when you attempt to surrender or reason with them, and +shadow when you use trickery. Your foe must have a reason to be open to your approach. If unsure, _Ask the Oracle_. To learn more, see page 88."
             )
 
-        case 'Sojourn':
+        case "Sojourn":
             text = (
                 "Communities stand as an oasis within the perilous wilds of the Ironlands. They are a source of protection, trade, and fellowship. However, there are no grand cities like those that stood in the Old World. Life here is too harsh. Resources too few.\n\n"
                 "When you rest, replenish, and share fellowship within a community, make this move. Depending on your level of success, you can choose one or more debilities to clear or tracks to increase. If you share a bond with this community and score a hit, you may select one more.\n\n"
@@ -326,7 +351,7 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "On a miss, something goes wrong. You are not welcomed. The citizens are hostile to you. Your dark mood alienates you. A perilous event threatens you all. Envision what happens based on your current circumstances, or _Ask the Oracle_."
             )
 
-        case 'Draw Circle':
+        case "Draw Circle":
             text = (
                 "Ritualized duels are a common way of dealing with disputes among Ironlanders. When you challenge someone or accept a challenge, you each trace one-half of the outline of a circle into the ground with the point of an iron blade. Then, you face each other in the center of the circle and fight.\n\n"
                 "You setup your foe’s progress track per the _Enter the Fray_ move, but use this move instead of _Enter the Fray_ to begin the fight. You have initiative at the start of combat unless you score a miss or choose the option to grant first strike.\n\n"
@@ -334,41 +359,52 @@ async def manual_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, mo
                 "Duels may also be to the death. If one of the combatants declares their intent to fight to the death, the other must agree or forfeit."
             )
 
-    if len(text)<4096:
-        await query.edit_message_text(text=text, parse_mode='Markdown', reply_markup=reply_markup)
+    if len(text) < 4096:
+        await query.edit_message_text(
+            text=text, parse_mode="Markdown", reply_markup=reply_markup
+        )
     else:
-        context.user_data['page'] = 0
-        context.user_data['move'] = move_name
+        context.user_data["page"] = 0
+        context.user_data["move"] = move_name
         parts = split_text(text)
-        context.user_data['parts'] = parts
+        context.user_data["parts"] = parts
         keyboard = [
-            [InlineKeyboardButton("Pagina +", callback_data='page+')],
-            [InlineKeyboardButton("Indietro", callback_data=f'back_to_{move_name.lower().replace(" ", "_")}')]
+            [InlineKeyboardButton("Pagina +", callback_data="page+")],
+            [
+                InlineKeyboardButton(
+                    "Indietro",
+                    callback_data=f'back_to_{move_name.lower().replace(" ", "_")}',
+                )
+            ],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text=parts[0], parse_mode='Markdown', reply_markup=reply_markup)
+        await query.edit_message_text(
+            text=parts[0], parse_mode="Markdown", reply_markup=reply_markup
+        )
+
 
 # Generate callback functions for each Adventure move
 move_names = [
-    'face_danger',
-    'secure_advantage',
-    'gather_information',
-    'heal',
-    'resupply',
-    'make_camp',
-    'undertake_journey',
-    'reach_destination',
-    'compel',
-    'sojourn',
-    'draw_circle',
-    'forge_bond',
-    'test_bond',
-    'aid_ally',
-    'write_epilogue',
+    "face_danger",
+    "secure_advantage",
+    "gather_information",
+    "heal",
+    "resupply",
+    "make_camp",
+    "undertake_journey",
+    "reach_destination",
+    "compel",
+    "sojourn",
+    "draw_circle",
+    "forge_bond",
+    "test_bond",
+    "aid_ally",
+    "write_epilogue",
 ]
 
 for move in move_names:
-    exec(f"""
+    exec(
+        f"""
 async def {move}_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await generic_move_callback(update, context, '{move.replace("_", " ").title()}')
 
@@ -377,125 +413,158 @@ async def manual_{move}_callback(update: Update, context: ContextTypes.DEFAULT_T
 
 async def back_to_{move}_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await {move}_callback(update, context)
-""")
+"""
+    )
+
 
 async def adventure_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("Face Danger", callback_data='face_danger')],
-        [InlineKeyboardButton("Secure an Advantage", callback_data='secure_advantage')],
-        [InlineKeyboardButton("Gather Information", callback_data='gather_information')],
-        [InlineKeyboardButton("Heal", callback_data='heal')],
-        [InlineKeyboardButton("Resupply", callback_data='resupply')],
-        [InlineKeyboardButton("Make Camp", callback_data='make_camp')],
-        [InlineKeyboardButton("Undertake a Journey", callback_data='undertake_journey')],
-        [InlineKeyboardButton("Reach Your Destination", callback_data='reach_destination')],
-        [InlineKeyboardButton("Indietro", callback_data='back_to_main')]
+        [InlineKeyboardButton("Face Danger", callback_data="face_danger")],
+        [InlineKeyboardButton("Secure an Advantage", callback_data="secure_advantage")],
+        [
+            InlineKeyboardButton(
+                "Gather Information", callback_data="gather_information"
+            )
+        ],
+        [InlineKeyboardButton("Heal", callback_data="heal")],
+        [InlineKeyboardButton("Resupply", callback_data="resupply")],
+        [InlineKeyboardButton("Make Camp", callback_data="make_camp")],
+        [
+            InlineKeyboardButton(
+                "Undertake a Journey", callback_data="undertake_journey"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "Reach Your Destination", callback_data="reach_destination"
+            )
+        ],
+        [InlineKeyboardButton("Indietro", callback_data="back_to_main")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text="Adventure moves:", reply_markup=reply_markup)
+
 
 async def relationship_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("Compel", callback_data='compel')],
-        [InlineKeyboardButton("Sojourn", callback_data='sojourn')],
-        [InlineKeyboardButton("Draw the Circle", callback_data='draw_circle')],
-        [InlineKeyboardButton("Forge a Bond", callback_data='forge_bond')],
-        [InlineKeyboardButton("Test your Bond", callback_data='test_bond')],
-        [InlineKeyboardButton("Aid your Ally", callback_data='aid_ally')],
-        [InlineKeyboardButton("Write your Epilogue", callback_data='write_epilogue')],
-        [InlineKeyboardButton("Indietro", callback_data='back_to_main')]
+        [InlineKeyboardButton("Compel", callback_data="compel")],
+        [InlineKeyboardButton("Sojourn", callback_data="sojourn")],
+        [InlineKeyboardButton("Draw the Circle", callback_data="draw_circle")],
+        [InlineKeyboardButton("Forge a Bond", callback_data="forge_bond")],
+        [InlineKeyboardButton("Test your Bond", callback_data="test_bond")],
+        [InlineKeyboardButton("Aid your Ally", callback_data="aid_ally")],
+        [InlineKeyboardButton("Write your Epilogue", callback_data="write_epilogue")],
+        [InlineKeyboardButton("Indietro", callback_data="back_to_main")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text="Relationship moves:", reply_markup=reply_markup)
+
 
 async def combat_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Combat moves will be implemented here.")
 
+
 async def suffer_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Suffer moves will be implemented here.")
+
 
 async def quest_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Quest moves will be implemented here.")
 
+
 async def fate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Fate moves will be implemented here.")
 
+
 async def back_to_zero_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print('closing_all')
+    print("closing_all")
     query = update.callback_query
     await query.answer()
     await query.edit_message_text("Conversation closed.")
+
 
 async def back_to_main_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     await moves(update, context)
 
-async def back_to_adventure_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def back_to_adventure_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
     await adventure_callback(update, context)
 
-async def back_to_relationship_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def back_to_relationship_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
     await relationship_callback(update, context)
+
 
 # This dictionary maps callback data to their respective functions
 callback_functions = {
-    'adventure': adventure_callback,
-    'relationship': relationship_callback,
-    'combat': combat_callback,
-    'suffer': suffer_callback,
-    'quest': quest_callback,
-    'fate': fate_callback,
-    'back_to_zero': back_to_zero_callback,
-    'back_to_main': back_to_main_callback,
-    'back_to_adventure': back_to_adventure_callback,
-    'back_to_relationship': back_to_relationship_callback,
+    "adventure": adventure_callback,
+    "relationship": relationship_callback,
+    "combat": combat_callback,
+    "suffer": suffer_callback,
+    "quest": quest_callback,
+    "fate": fate_callback,
+    "back_to_zero": back_to_zero_callback,
+    "back_to_main": back_to_main_callback,
+    "back_to_adventure": back_to_adventure_callback,
+    "back_to_relationship": back_to_relationship_callback,
 }
 
 # Add move-specific callbacks to the dictionary
 for move in move_names:
-    formatted_move = move.replace('_', ' ').title()
+    formatted_move = move.replace("_", " ").title()
     callback_functions[move] = eval(f"{move}_callback")
-    callback_functions[f'manual_{move}'] = eval(f"manual_{move}_callback")
-    callback_functions[f'back_to_{move}'] = eval(f"back_to_{move}_callback")
+    callback_functions[f"manual_{move}"] = eval(f"manual_{move}_callback")
+    callback_functions[f"back_to_{move}"] = eval(f"back_to_{move}_callback")
+
 
 async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
     callback_data = query.data
-    
-    if callback_data.startswith('page'):
-        move_name = context.user_data['move']
-        await flip_page(update, context, callback_data, f'back_to_{move_name.lower().replace(" ", "_")}')
-    elif callback_data.startswith('manual_'):
+
+    if callback_data.startswith("page"):
+        move_name = context.user_data["move"]
+        await flip_page(
+            update,
+            context,
+            callback_data,
+            f'back_to_{move_name.lower().replace(" ", "_")}',
+        )
+    elif callback_data.startswith("manual_"):
         move = callback_data[7:]  # Remove 'manual_' prefix
-        await manual_callback(update, context, move.replace('_', ' ').title())
+        await manual_callback(update, context, move.replace("_", " ").title())
     else:
         await callback_functions.get(callback_data, lambda u, c: None)(update, context)
     return SHOWING_MOVES
 
+
 moves_handler = ConversationHandler(
-    entry_points=[CommandHandler('moves', moves)],
-    states={
-        SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]
-    },
+    entry_points=[CommandHandler("moves", moves)],
+    states={SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]},
     fallbacks=[
         CommandHandler("cancel", cancel),
         MessageHandler(filters.COMMAND, end_conversation),
     ],
-    allow_reentry = True
+    allow_reentry=True,
 )

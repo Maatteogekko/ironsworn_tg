@@ -1,10 +1,11 @@
 from telegram import BotCommand, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, ConversationHandler
 
+
 def split_text(text, max_length=4096):
     # Split the text by lines.
-    
-    lines = text.split('\n\n')
+
+    lines = text.split("\n\n")
     parts = []
     current_part = ""
 
@@ -15,17 +16,17 @@ def split_text(text, max_length=4096):
             while len(line) > max_length:
                 parts.append(line[:max_length])
                 line = line[max_length:]
-            current_part += line + '\n\n'
+            current_part += line + "\n\n"
         else:
             # Check if adding this line will exceed the max_length
             if len(current_part) + len(line) + 1 > max_length:
                 # If it exceeds, add the current part to the parts list
                 parts.append(current_part.strip())
                 # Start a new part with the current line
-                current_part = line + '\n\n'
+                current_part = line + "\n\n"
             else:
                 # Otherwise, add the line to the current part
-                current_part += line + '\n\n'
+                current_part += line + "\n\n"
 
     # Add the last part to the parts list
     if current_part:
@@ -33,46 +34,66 @@ def split_text(text, max_length=4096):
 
     return parts
 
-async def flip_page(update: Update, context: ContextTypes.DEFAULT_TYPE, page: int, back = 'back'):
+
+async def flip_page(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, page: int, back="back"
+):
     # Provide UI to navigate multiple pages.
-    
+
     query = update.callback_query
     await query.answer()
-    
-    parts = context.user_data['parts']
-    
-    if query.data == 'page+':
-        context.user_data['page'] +=1
+
+    parts = context.user_data["parts"]
+
+    if query.data == "page+":
+        context.user_data["page"] += 1
     else:
-        context.user_data['page'] -=1
-        
-    if context.user_data['page'] <= 0:
-        context.user_data['page'] = 0
+        context.user_data["page"] -= 1
+
+    if context.user_data["page"] <= 0:
+        context.user_data["page"] = 0
         keyboard = [
-            [InlineKeyboardButton("Pagina +", callback_data='page+')],
-            [InlineKeyboardButton("Indietro", callback_data=back)]
-         ]
+            [InlineKeyboardButton("Pagina +", callback_data="page+")],
+            [InlineKeyboardButton("Indietro", callback_data=back)],
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text=parts[context.user_data['page']], parse_mode='Markdown', reply_markup=reply_markup)
-    elif context.user_data['page']>=len(parts)-1:
-        context.user_data['page'] = len(parts)-1
+        await query.edit_message_text(
+            text=parts[context.user_data["page"]],
+            parse_mode="Markdown",
+            reply_markup=reply_markup,
+        )
+    elif context.user_data["page"] >= len(parts) - 1:
+        context.user_data["page"] = len(parts) - 1
         keyboard = [
-            [InlineKeyboardButton("Pagina -", callback_data='page-')],
-            [InlineKeyboardButton("Indietro", callback_data=back)]
-         ]
+            [InlineKeyboardButton("Pagina -", callback_data="page-")],
+            [InlineKeyboardButton("Indietro", callback_data=back)],
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text=parts[context.user_data['page']], parse_mode='Markdown', reply_markup=reply_markup)
+        await query.edit_message_text(
+            text=parts[context.user_data["page"]],
+            parse_mode="Markdown",
+            reply_markup=reply_markup,
+        )
     else:
         keyboard = [
-            [InlineKeyboardButton("Pagina -", callback_data='page-'),InlineKeyboardButton("Pagina +", callback_data='page+')],
-            [InlineKeyboardButton("Indietro", callback_data=back)]
-         ]
+            [
+                InlineKeyboardButton("Pagina -", callback_data="page-"),
+                InlineKeyboardButton("Pagina +", callback_data="page+"),
+            ],
+            [InlineKeyboardButton("Indietro", callback_data=back)],
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text=parts[context.user_data['page']], parse_mode='Markdown', reply_markup=reply_markup)
-        
+        await query.edit_message_text(
+            text=parts[context.user_data["page"]],
+            parse_mode="Markdown",
+            reply_markup=reply_markup,
+        )
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
     return ConversationHandler.END
+
 
 async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return ConversationHandler.END
