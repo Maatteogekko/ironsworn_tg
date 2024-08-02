@@ -91,9 +91,13 @@ async def flip_page(
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del update
+
     context.user_data.clear()
     return ConversationHandler.END
 
 
 async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del update, context
+
     return ConversationHandler.END

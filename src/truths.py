@@ -17,6 +17,8 @@ SHOWING_TRUTHS = 0
 
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del context
+
     keyboard = [
         [
             InlineKeyboardButton("The Old World", callback_data="old_world"),
