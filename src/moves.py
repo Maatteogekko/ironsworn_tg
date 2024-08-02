@@ -7,13 +7,16 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-from src.utils import *
+
+from src.utils import cancel, end_conversation, flip_page, split_text
 
 # Define states
 SHOWING_MOVES = 0
 
 
 async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     keyboard = [
         [InlineKeyboardButton("Adventure", callback_data="adventure")],
         [InlineKeyboardButton("Relationship", callback_data="relationship")],
@@ -25,7 +28,7 @@ async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if update.message == None:
+    if update.message is None:
         # Non so esattamente come fixarlo meglio; Quando premi indietro su adventure_callback o gli altri, dovresti tornare qui. Ma non c'è un messaggio, ergo l'if.
         query = update.callback_query
         await query.answer()
@@ -43,6 +46,8 @@ async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def generic_move_callback(
     update: Update, context: ContextTypes.DEFAULT_TYPE, move_name: str
 ):
+    del context
+
     query = update.callback_query
     await query.answer()
 
@@ -403,6 +408,7 @@ move_names = [
 ]
 
 for move in move_names:
+    # pylint: disable=exec-used
     exec(
         f"""
 async def {move}_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -418,6 +424,8 @@ async def back_to_{move}_callback(update: Update, context: ContextTypes.DEFAULT_
 
 
 async def adventure_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
 
@@ -449,6 +457,8 @@ async def adventure_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 async def relationship_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
 
@@ -467,30 +477,40 @@ async def relationship_callback(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 async def combat_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Combat moves will be implemented here.")
 
 
 async def suffer_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Suffer moves will be implemented here.")
 
 
 async def quest_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Quest moves will be implemented here.")
 
 
 async def fate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="Fate moves will be implemented here.")
 
 
 async def back_to_zero_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    del context
+
     print("closing_all")
     query = update.callback_query
     await query.answer()
@@ -531,7 +551,7 @@ callback_functions = {
 
 # Add move-specific callbacks to the dictionary
 for move in move_names:
-    formatted_move = move.replace("_", " ").title()
+    # pylint: disable=eval-used
     callback_functions[move] = eval(f"{move}_callback")
     callback_functions[f"manual_{move}"] = eval(f"manual_{move}_callback")
     callback_functions[f"back_to_{move}"] = eval(f"back_to_{move}_callback")
@@ -552,8 +572,8 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
             f'back_to_{move_name.lower().replace(" ", "_")}',
         )
     elif callback_data.startswith("manual_"):
-        move = callback_data[7:]  # Remove 'manual_' prefix
-        await manual_callback(update, context, move.replace("_", " ").title())
+        move_name = callback_data[7:]  # Remove 'manual_' prefix
+        await manual_callback(update, context, move_name.replace("_", " ").title())
     else:
         await callback_functions.get(callback_data, lambda u, c: None)(update, context)
     return SHOWING_MOVES
@@ -561,7 +581,9 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
 
 moves_handler = ConversationHandler(
     entry_points=[CommandHandler("moves", moves)],
-    states={SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]},
+    states={
+        SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)],
+    },
     fallbacks=[
         CommandHandler("cancel", cancel),
         MessageHandler(filters.COMMAND, end_conversation),

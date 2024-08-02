@@ -1,20 +1,24 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+import os
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
-    CommandHandler,
     CallbackQueryHandler,
-    ConversationHandler,
+    CommandHandler,
     ContextTypes,
+    ConversationHandler,
     MessageHandler,
     filters,
 )
-from src.utils import *
-import os
+
+from src.utils import cancel, end_conversation, flip_page, split_text
 
 # Define states
 SHOWING_TRUTHS = 0
 
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del context
+
     keyboard = [
         [
             InlineKeyboardButton("The Old World", callback_data="old_world"),
@@ -43,7 +47,7 @@ async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if update.message == None:
+    if update.message is None:
         # Non so esattamente come fixarlo meglio; Quando premi indietro su callback o gli altri, dovresti tornare qui. Ma non c'è un messaggio, ergo l'if.
         query = update.callback_query
         await query.answer()
@@ -89,7 +93,7 @@ async def truths_button_callback(
     elif query.data == "back_to_map":
         return await truths_button_callback(update, context)
 
-    # PARTE NON DI MAPPA: ------------------------------------------------------------------------------------------------------------------
+    # PARTE NON DI MAPPA: --------------------------------------------------------------------------
 
     if query.data in (
         "old_world",
@@ -217,7 +221,7 @@ async def truths_button_callback(
                 text=parts[0], parse_mode="Markdown", reply_markup=reply_markup
             )
 
-    # PARTE DI MAPPA: ----------------------------------------------------------------------------------------------------------------------
+    # PARTE DI MAPPA: ------------------------------------------------------------------------------
     elif query.data == "map_1":
         text = (
             "BARRIER ISLANDS\n\n"
@@ -284,7 +288,9 @@ async def truths_button_callback(
 
 truths_handler = ConversationHandler(
     entry_points=[CommandHandler("truths", truths)],
-    states={SHOWING_TRUTHS: [CallbackQueryHandler(truths_button_callback)]},
+    states={
+        SHOWING_TRUTHS: [CallbackQueryHandler(truths_button_callback)],
+    },
     fallbacks=[
         CommandHandler("cancel", cancel),
         MessageHandler(filters.COMMAND, end_conversation),

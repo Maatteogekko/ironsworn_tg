@@ -1,13 +1,13 @@
-from telegram.ext import Application, CommandHandler, ContextTypes
+import logging
+
 from telegram import BotCommand, Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
-import logging
-import datetime
 
 TOKEN = None
-with open("./data/token.txt") as f:
+with open("./data/token.txt", encoding="utf-8") as f:
     TOKEN = f.read().strip()
 
 # Dictionary to store message pairs (command_id, response_id)
@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 
 
-async def set_bot_commands(application: Application) -> None:
+async def set_bot_commands(app: Application) -> None:
     commands = [
         BotCommand("challenge", "Passa all'azione!"),
         BotCommand("moves", "Lista e spiegazione delle mosse"),
@@ -27,10 +27,12 @@ async def set_bot_commands(application: Application) -> None:
         BotCommand("bonds", "Da fare"),
         BotCommand("oracle", "Chiedi all'oracolo"),
     ]
-    await application.bot.set_my_commands(commands)
+    await app.bot.set_my_commands(commands)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    del context
+
     await update.message.reply_text("IronswornCompanion_bot lanciato.")
 
 
