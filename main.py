@@ -1,10 +1,10 @@
 from telegram.ext import Application, CommandHandler, ContextTypes
 from telegram import BotCommand, Update
-import logging
-import datetime
 from moves  import moves_handler
 from truths import truths_handler
 from challenge import challenge_handler
+import logging
+import datetime
 
 # Set your bot token here
 TOKEN = "7260536676:AAEepM55V7Ud1PD2LF89MYQ5xGHjNtJZYZI"

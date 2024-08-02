@@ -1,22 +1,10 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler, ContextTypes, MessageHandler, filters
+from utils import *
 import os
-import utils
 
 # Define states
 SHOWING_TRUTHS = 0
-
-truths_handler = ConversationHandler(
-    entry_points=[CommandHandler('truths', truths)],
-    states={
-        SHOWING_TRUTHS: [CallbackQueryHandler(truths_button_callback)]
-    },
-    fallbacks=[
-        CommandHandler("cancel", cancel),
-        MessageHandler(filters.COMMAND, end_conversation),
-    ],
-    allow_reentry = True
-)
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     keyboard = [
@@ -200,3 +188,15 @@ async def truths_button_callback(update: Update, context: ContextTypes.DEFAULT_T
         await query.edit_message_text(text=f"Information for map section {query.data[-1]}", reply_markup=reply_markup)
 
     return SHOWING_TRUTHS
+
+truths_handler = ConversationHandler(
+    entry_points=[CommandHandler('truths', truths)],
+    states={
+        SHOWING_TRUTHS: [CallbackQueryHandler(truths_button_callback)]
+    },
+    fallbacks=[
+        CommandHandler("cancel", cancel),
+        MessageHandler(filters.COMMAND, end_conversation),
+    ],
+    allow_reentry = True
+)

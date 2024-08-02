@@ -1,21 +1,9 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler, ContextTypes, MessageHandler, filters
-import utils
+from utils import *
 
 # Define states
 SHOWING_MOVES = 0
-
-moves_handler = ConversationHandler(
-    entry_points=[CommandHandler('moves', moves)],
-    states={
-        SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]
-    },
-    fallbacks=[
-        CommandHandler("cancel", cancel),
-        MessageHandler(filters.COMMAND, end_conversation),
-    ],
-    allow_reentry = True
-)
 
 async def moves(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
@@ -498,3 +486,15 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
     else:
         await callback_functions.get(callback_data, lambda u, c: None)(update, context)
     return SHOWING_MOVES
+
+moves_handler = ConversationHandler(
+    entry_points=[CommandHandler('moves', moves)],
+    states={
+        SHOWING_MOVES: [CallbackQueryHandler(moves_button_callback)]
+    },
+    fallbacks=[
+        CommandHandler("cancel", cancel),
+        MessageHandler(filters.COMMAND, end_conversation),
+    ],
+    allow_reentry = True
+)
