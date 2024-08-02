@@ -1,3 +1,6 @@
+from telegram import BotCommand, Update
+from telegram.ext import Application, CommandHandler, ContextTypes
+
 def split_text(text, max_length=4096):
     # Split the text by lines.
     
