@@ -499,6 +499,16 @@ When you _Forge a Bond_ and score a strong hit, mark a tick on your bond progres
 On a weak hit, they ask more of you. It might be a task, an item, a concession, or even a vow. Envision what they need, or _Ask the Oracle_. If you do it, or _Swear an Iron Vow_, you can mark the bond.
 
 On a miss, they have refused you. Why? The answer should introduce new complications or dangers.
+
+*BONDS AND THE FICTION*\n
+In the fiction of your world, bonds can be ceremonial. If your bond is with a person, perhaps you trade gifts. When you form a bond with a community, they may honor you in their own way. Envision what these ceremonies look like to add color and texture to the setting.
+
+Also, respect the narrative weight of a bond. Don’t declare a bond with everyone in sight to add more ticks to your bond progress track. Your bonds represent true, deep connections.
+
+*BONDS AND ALLIES*\n
+If you and your allies act together to _Forge a Bond_ with an NPC or community, only one of you makes the move. Others can _Aid Your Ally_ to provide support. If you are successful, each of you may mark a tick on your bond progress track. Only the character making the move takes the mechanical benefits of a strong hit (+1 spirit or +2 momentum).
+
+Bonds can also be made between allies. One of you makes the move, and both of you may mark the bond on a hit. If you score a weak hit, your ally may decide what they ask of you. On a miss, something still stands between you. What is it? What must you do to form a deeper connection?
 """
 
     if len(text) < 4096:
