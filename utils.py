@@ -1,4 +1,4 @@
-from telegram import BotCommand, Update
+from telegram import BotCommand, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 def split_text(text, max_length=4096):
