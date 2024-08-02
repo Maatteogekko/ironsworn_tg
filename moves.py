@@ -477,8 +477,9 @@ async def moves_button_callback(update: Update, context: ContextTypes.DEFAULT_TY
     await query.answer()
 
     callback_data = query.data
-    move_name = context.user_data['move']
+    
     if callback_data.startswith('page'):
+        move_name = context.user_data['move']
         await flip_page(update, context, callback_data, f'back_to_{move_name.lower().replace(" ", "_")}')
     elif callback_data.startswith('manual_'):
         move = callback_data[7:]  # Remove 'manual_' prefix
