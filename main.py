@@ -11,7 +11,7 @@ with open("token.txt") as f:
     TOKEN = f.read().strip()
 
 # Dictionary to store message pairs (command_id, response_id)
-# message_pairs = {} #
+# message_pairs = {} ##
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
