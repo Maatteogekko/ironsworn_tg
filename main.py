@@ -1,9 +1,10 @@
-import logging
 from telegram.ext import Application, CommandHandler, ContextTypes
 from telegram import BotCommand, Update
-from moves  import get_moves_handler
-from truths import get_truths_handler
+import logging
 import datetime
+from moves  import moves_handler
+from truths import truths_handler
+from challenge import challenge_handler
 
 # Set your bot token here
 TOKEN = "7260536676:AAEepM55V7Ud1PD2LF89MYQ5xGHjNtJZYZI"
@@ -18,6 +19,7 @@ logging.basicConfig(
 
 async def set_bot_commands(application: Application) -> None:
     commands = [
+        BotCommand("challenge", "Passa all'azione!"),
         BotCommand("moves", "Lista e spiegazione delle mosse"),
         BotCommand("assets", "Lista e spiegazione degli asset"),
         BotCommand("truths", "Spiegazione dell'ambientazione"),
@@ -33,7 +35,12 @@ if __name__ == '__main__':
     application = Application.builder().token(TOKEN).post_init(set_bot_commands).build()
 
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(get_moves_handler(), group = 2)
-    application.add_handler(get_truths_handler(), group = 2)
+    application.add_handler(moves_handler, group = 1)
+    application.add_handler(truths_handler, group = 2)
+    application.add_handler(challenge_handler, group = 3)
 
+    # Add command handlers
+    #application.add_handler(CommandHandler("moves", moves),group = 1)
+    #application.add_handler(CallbackQueryHandler(moves_button_callback),group = 1)
+    
     application.run_polling(allowed_updates=Update.ALL_TYPES)
