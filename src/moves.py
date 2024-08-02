@@ -216,6 +216,18 @@ async def generic_move_callback(
                 "Then, make moves to resolve the fight. If you are the victor, you may make a lawful demand, and your opponent must comply or forfeit their honor and standing. If you refuse the challenge, surrender, or are defeated, they make a demand of you."
             )
             back_type = "back_to_relationship"
+        
+        case "Forge Bond":
+            text = (
+                "*FORGE A BOND*\n\n"
+                "When you spend significant time with a person or community, stand together to face hardships, or make sacrifices for their cause, you can attempt to create a bond. When you do, roll +heart. If you make this move after you successfully _Fulfill Your Vow_ to their benefit, you may reroll any dice.\n\n"
+                "On a *strong hit*, make note of the bond, mark a tick on your bond progress track, and choose one.\n"
+                "• Take +1 spirit.\n"
+                "• Take +2 momentum.\n\n"
+                "On a *weak hit*, they ask something more of you first. Envision what it is (_Ask the Oracle_ if unsure), do it (or _Swear an Iron Vow_), and mark the bond. If you decline or fail, _Pay the Price_.\n\n"
+                "On a *miss*, you are refused. _Pay the Price_."
+            )
+            back_type = "back_to_relationship"
 
     keyboard = [
         [InlineKeyboardButton("Manual", callback_data=f"manual_{move_name}")],
@@ -362,6 +374,15 @@ async def manual_callback(
                 "You setup your foe’s progress track per the _Enter the Fray_ move, but use this move instead of _Enter the Fray_ to begin the fight. You have initiative at the start of combat unless you score a miss or choose the option to grant first strike.\n\n"
                 "Duels are usually stopped when one of the duelists surrenders or is clearly defeated. The victor may then make a demand which the loser must abide by. Not complying with this demand means ostracism and shame. If you lose a duel, envision what your opponent demands of you. If you’re unsure, _Ask the Oracle_. Then, do it or face the narrative cost of your dishonor.\n\n"
                 "Duels may also be to the death. If one of the combatants declares their intent to fight to the death, the other must agree or forfeit."
+            )
+        
+        case "Forge Bond":
+            text = (
+                "Bonds connect you to the people of the Ironlands. They provide a story benefit by enriching your interactions and creating connections with a recurring cast of characters and familiar places. They also provide mechanical benefits by giving you adds when you make moves such as _Sojourn_ or _Compel_. And, perhaps most importantly, your bonds help determine your ultimate fate when you retire from adventuring and _Write Your Epilogue_.\n\n"
+                "Bonds can be created through narrative circumstances or through sworn vows. If you’ve established a strong relationship with a person or community, you may _Forge a Bond_ to give it significance. If you make this move after you successfully _Fulfill Your Vow_ in service to them, you have proven yourself worthy and may reroll any dice.\n\n"
+                "When you _Forge a Bond_ and score a strong hit, mark a tick on your bond progress track (page 36) and make note of your bond.\n\n"
+                "On a weak hit, they ask more of you. It might be a task, an item, a concession, or even a vow. Envision what they need, or _Ask the Oracle_. If you do it, or _Swear an Iron Vow_, you can mark the bond.\n\n"
+                "On a miss, they have refused you. Why? The answer should introduce new complications or dangers."
             )
 
     if len(text) < 4096:
