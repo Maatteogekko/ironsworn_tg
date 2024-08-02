@@ -10,7 +10,7 @@ from challenge import challenge_handler
 TOKEN = "7260536676:AAEepM55V7Ud1PD2LF89MYQ5xGHjNtJZYZI"
 
 # Dictionary to store message pairs (command_id, response_id)
-message_pairs = {}
+# message_pairs = {}
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
