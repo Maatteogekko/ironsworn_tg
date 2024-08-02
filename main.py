@@ -6,8 +6,9 @@ from challenge import challenge_handler
 import logging
 import datetime
 
-# Set your bot token here
-TOKEN = "7260536676:AAEepM55V7Ud1PD2LF89MYQ5xGHjNtJZYZI"
+TOKEN = None
+with open("token.txt") as f:
+    TOKEN = f.read().strip()
 
 # Dictionary to store message pairs (command_id, response_id)
 # message_pairs = {} #
