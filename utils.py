@@ -1,5 +1,5 @@
 from telegram import BotCommand, Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, ConversationHandler
 
 def split_text(text, max_length=4096):
     # Split the text by lines.

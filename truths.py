@@ -163,6 +163,11 @@ async def truths_button_callback(update: Update, context: ContextTypes.DEFAULT_T
         await query.edit_message_text(text=text, reply_markup=reply_markup)
 
     if query.data == 'map':
+
+        # Send the map image from local storage
+        with open(os.path.join('./Map.png'), 'rb') as photo:
+            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+
         map_keyboard = [
             [InlineKeyboardButton("1", callback_data='map_1'),
              InlineKeyboardButton("2", callback_data='map_2'),
@@ -178,9 +183,7 @@ async def truths_button_callback(update: Update, context: ContextTypes.DEFAULT_T
         reply_markup = InlineKeyboardMarkup(map_keyboard)
         await query.edit_message_text(text="Here's the map:", reply_markup=reply_markup)
 
-        # Send the map image from local storage
-        with open(os.path.join('./Map.png'), 'rb') as photo:
-            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+
 
     elif query.data.startswith('map_'):
         back_button = [[InlineKeyboardButton("Indietro", callback_data='back_to_map')]]
