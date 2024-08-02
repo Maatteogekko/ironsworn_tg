@@ -288,8 +288,8 @@ On a *miss*, you are refused. _Pay the Price_.
             text = """
 *TEST YOUR BOND*
 
-When your bond is tested through conflict, betrayal, or 
-circumstance, roll +heart.
+When *your bond is tested through conflict, betrayal, or 
+circumstance*, roll +heart.
 
 On a *strong hit*, this test has strengthened your bond. Choose one.
 • Take +1 spirit.
@@ -309,7 +309,22 @@ clear the bond and _Pay the Price_.
             text = """
 *AID YOUR ALLY*
 
-When you _Secure an Advantage_ in direct support of an ally, and score a hit, they (instead of you) can take the benefits of the move. If you are in combat and score a strong hit, you and your ally have initiative.
+When *you _Secure an Advantage_ in direct support of an ally*, and score a hit, they (instead of you) can take the benefits of the move. If you are in combat and score a strong hit, you and your ally have initiative.
+            """
+            back_type = 'back_to_relationship'
+        case "Write Epilogue":
+            text = """
+*WRITE YOUR EPILOGUE*
+
+*Progress Move*
+
+When you *retire from your life as Ironsworn*, envision two things: What you hope for, and what you fear. Then, roll the challenge dice and compare to your bonds. Momentum is ignored on this roll.
+
+On a *strong hit*, things come to pass as you hoped.
+
+On a *weak hit*, your life takes an unexpected turn, but not necessarily for the worse. You find yourself spending your days with someone or in a place you did not foresee. Envision it (_Ask the Oracle_ if unsure).
+
+On a miss, your fears are realized.
             """
             back_type = 'back_to_relationship'
 
@@ -563,6 +578,14 @@ On a miss, one or both of you should _Pay the Price_ as appropriate to the circu
 If multiple characters make this move to contribute to an ally action, all _Secure an Advantage_ bonuses will stack. As long as someone scores a strong hit, the target character can take or retain initiative.
 
 Don’t ping pong this move back and forth between two characters in an attempt to build momentum. Envision what you are doing to _Aid Your Ally_, make the _Secure an Advantage_ move, resolve it, and hand the reins over to your ally as they leverage the advantage. Keep it moving. Make things happen.
+"""
+        case "Write Epilogue":
+            text ="""
+You make this move only once—when all your vows are fulfilled or forsaken and you choose to end your character’s adventuring life. For better or worse, the bonds you’ve made will echo through your days. How have you left your mark? Where are you welcomed and where are you shunned? What remains of you when your quests are at an end? 
+
+This is a progress move. Tally the number of filled boxes on your bonds progress track as your progress score. Only add fully filled boxes (those with four ticks). Then, roll your challenge dice, compare to your progress score, and resolve a strong hit, weak hit, or miss as normal. You may not burn momentum on this roll, and you are not affected by negative momentum.
+
+Based on the result of this move, envision how you spend the remainder of your days.
 """
 
     if len(text) < 4096:
