@@ -7,7 +7,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-from utils import *
+from src.utils import *
 
 # Define states
 SHOWING_MOVES = 0

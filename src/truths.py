@@ -7,7 +7,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-from utils import *
+from src.utils import *
 import os
 
 # Define states
@@ -247,7 +247,7 @@ async def truths_button_callback(
     if query.data == "map":
 
         # Send the map image from local storage
-        with open(os.path.join("./Map.png"), "rb") as photo:
+        with open(os.path.join("./data/Map.png"), "rb") as photo:
             await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
 
         map_keyboard = [

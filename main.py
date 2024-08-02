@@ -1,13 +1,13 @@
 from telegram.ext import Application, CommandHandler, ContextTypes
 from telegram import BotCommand, Update
-from moves import moves_handler
-from truths import truths_handler
-from challenge import challenge_handler
+from src.moves import moves_handler
+from src.truths import truths_handler
+from src.challenge import challenge_handler
 import logging
 import datetime
 
 TOKEN = None
-with open("token.txt") as f:
+with open("./data/token.txt") as f:
     TOKEN = f.read().strip()
 
 # Dictionary to store message pairs (command_id, response_id)
@@ -41,9 +41,5 @@ if __name__ == "__main__":
     application.add_handler(moves_handler, group=1)
     application.add_handler(truths_handler, group=2)
     application.add_handler(challenge_handler, group=3)
-
-    # Add command handlers
-    # application.add_handler(CommandHandler("moves", moves),group = 1)
-    # application.add_handler(CallbackQueryHandler(moves_button_callback),group = 1)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

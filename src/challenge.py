@@ -7,13 +7,9 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-from utils import *
+from src.utils import *
 import random
-
-# Placeholder sticker IDs (replace with actual sticker IDs)
-sticker_placeholder = (
-    "CAACAgQAAxkBAAEs7Vxmq-5f3Rk0lmeUDu3EsHD5tiYJiAACrxgAAmGbYVE_O0nLRdaoqDUE"
-)
+import json
 
 ACTION_DICE_STATE = 0
 
@@ -26,11 +22,14 @@ async def challenge(
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
 
-    print(num1, num2)
-
     # Send stickers (placeholder stickers)
-    await update.message.reply_sticker(sticker_placeholder)
-    await update.message.reply_sticker(sticker_placeholder)
+    with open('./data/d8_sticker_id.json', 'r') as file:
+        d8_sticker_id = json.load(file)
+    await update.message.reply_sticker(d8_sticker_id[str(num1)])
+    await update.message.reply_sticker(d8_sticker_id[str(num2)])
+    
+    context.user_data['num1'] = num1
+    context.user_data['num2'] = num1
 
     # Create an inline keyboard button
     keyboard = [
@@ -55,17 +54,20 @@ async def action_dice_callback(
 ) -> None:
     query = update.callback_query
     await query.answer()
-
+    await query.message.edit_text(f"Action dice lanciato!")
     # Generate a random number between 1 and 6
     action_number = random.randint(1, 6)
 
     # Send sticker (placeholder sticker)
-    await query.message.reply_sticker(sticker_placeholder)
+    with open('./data/d8_sticker_id.json', 'r') as file:
+        d6_sticker_id = json.load(file)
+    await query.message.reply_sticker(d6_sticker_id[str(action_number)])
 
     # Send the message with the action number
-    await query.message.reply_text(f"Il numero dell'action dice è {action_number}")
+    await query.message.reply_text(f"È uscito {action_number}")
 
     return ConversationHandler.END
+    
 
 
 challenge_handler = ConversationHandler(
