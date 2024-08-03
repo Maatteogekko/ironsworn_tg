@@ -5,6 +5,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
+from src.oracle import oracle_command
 
 TOKEN = None
 with open("./data/token.txt", encoding="utf-8") as f:
@@ -43,5 +44,7 @@ if __name__ == "__main__":
     application.add_handler(moves_handler, group=1)
     application.add_handler(truths_handler, group=2)
     application.add_handler(challenge_handler, group=3)
+    application.add_handler(CommandHandler("oracle", oracle_command),group = 4)
+
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
