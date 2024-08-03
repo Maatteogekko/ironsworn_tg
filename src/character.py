@@ -1,19 +1,13 @@
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
-from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, ContextTypes, filters
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, ContextTypes, filters
 from PIL import Image, ImageDraw
+import random
 
 from src.utils import cancel, end_conversation, flip_page, split_text
 
 # Define conversation states
 SHOWING_CHARACTER = 0
 
-# Sarchiapone modifies the json based on button pressed.
-async def update_sheet(button: str) -> str:
-    print(button)
-    # For now, just return the path to the original image
-    return
-
-# Sarchiapone create image based on the content of the character json (and probably the chat_id)
 async def create_sheet(image_path: str) -> str:
     # Open the image
     img = Image.open(image_path)
@@ -22,7 +16,7 @@ async def create_sheet(image_path: str) -> str:
     draw = ImageDraw.Draw(img)
     
     # Draw a black line from (300,300) to (400,400)
-    draw.line([(300, 300), (400, 400)], fill="black", width=2)
+    draw.line([(random.random()*1000, random.random()*1000), (random.random()*1000, random.random()*1000)], fill="black", width=2)
     
     # Save the modified image
     modified_image_path = "./data/modified_character_sheet.png"
@@ -32,52 +26,53 @@ async def create_sheet(image_path: str) -> str:
 
 def get_main_keyboard():
     keyboard = [
-        ["Ironsworn"],
-        ["Momentum"],
-        ["Condition"],
-        ["Character"]
+        [InlineKeyboardButton("Ironsworn", callback_data='ironsworn')],
+        [InlineKeyboardButton("Momentum", callback_data='momentum')],
+        [InlineKeyboardButton("Condition", callback_data='condition')],
+        [InlineKeyboardButton("Character", callback_data='character')]
     ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    return InlineKeyboardMarkup(keyboard)
 
 def get_ironsworn_keyboard():
     keyboard = [
-        ["Vows"],
-        ["Bonds"],
-        ["Assets"],
-        ["Back"]
+        [InlineKeyboardButton("Vows", callback_data='vows')],
+        [InlineKeyboardButton("Bonds", callback_data='bonds')],
+        [InlineKeyboardButton("Assets", callback_data='assets')],
+        [InlineKeyboardButton("Back", callback_data='back_to_main')]
     ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    return InlineKeyboardMarkup(keyboard)
 
 def get_momentum_keyboard():
     keyboard = [
-        ["Momentum-", "Momentum+"],
-        ["Max Momentum", "Momentum Reset"],
-        ["Back"]
+        [
+            InlineKeyboardButton("Momentum-", callback_data='momentum_minus'),
+            InlineKeyboardButton("Momentum+", callback_data='momentum_plus')
+        ],
+        [InlineKeyboardButton("Back", callback_data='back_to_main')]
     ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    return InlineKeyboardMarkup(keyboard)
 
 def get_condition_keyboard():
     keyboard = [
-        ["Health-", "Health+"],
-        ["Spirit-", "Spirit+"],
-        ["Supply-", "Supply+"],
-        ["Back"]
+        [
+            InlineKeyboardButton("Health-", callback_data='health_minus'),
+            InlineKeyboardButton("Health+", callback_data='health_plus')
+        ],
+        [
+            InlineKeyboardButton("Spirit-", callback_data='spirit_minus'),
+            InlineKeyboardButton("Spirit+", callback_data='spirit_plus')
+        ],
+        [
+            InlineKeyboardButton("Supply-", callback_data='supply_minus'),
+            InlineKeyboardButton("Supply+", callback_data='supply_plus')
+        ],
+        [InlineKeyboardButton("Back", callback_data='back_to_main')]
     ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-def get_character_keyboard():
-    keyboard = [
-        ["Character Name"],
-        ["Character Stats"],
-        ["Character Exp"],
-        ["Back"]
-    ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
+    return InlineKeyboardMarkup(keyboard)
 
 async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Create the character sheet
-    image_path = "./data/Ironsworn_sheet.png"
+    image_path = "./data/Ironsworn_sheet.png"  # Replace with your image path
     modified_image_path = await create_sheet(image_path)
     
     # Send the message with the image and keyboard
@@ -90,58 +85,34 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return SHOWING_CHARACTER
 
 async def character_button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    button_pressed = update.message.text
+    query = update.callback_query
+    await query.answer()
 
-    # Call update_sheet function
-    await update_sheet(button_pressed) #Sarchiapone ideally, this modifies the json
-
-    # Create updated sheet
-    image_path = "./data/Ironsworn_sheet.png"
-    modified_image_path = await create_sheet(image_path)
-
-    if button_pressed == "Ironsworn":
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption="Ironsworn options",
-            reply_markup=get_ironsworn_keyboard()
-        )
-    elif button_pressed == "Momentum":
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption="Momentum options",
-            reply_markup=get_momentum_keyboard()
-        )
-    elif button_pressed == "Condition":
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption="Condition options",
-            reply_markup=get_condition_keyboard()
-        )
-    elif button_pressed == "Character":
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption="Character options",
-            reply_markup=get_character_keyboard()
-        )
-    elif button_pressed == "Back":
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption="Main menu",
-            reply_markup=get_main_keyboard()
-        )
+    if query.data == 'ironsworn':
+        await query.edit_message_reply_markup(reply_markup=get_ironsworn_keyboard())
+    elif query.data == 'momentum':
+        await query.edit_message_reply_markup(reply_markup=get_momentum_keyboard())
+    elif query.data == 'condition':
+        await query.edit_message_reply_markup(reply_markup=get_condition_keyboard())
+    elif query.data == 'back_to_main':
+        await query.edit_message_reply_markup(reply_markup=get_main_keyboard())
+    elif query.data in ['health_minus', 'health_plus', 'spirit_minus', 'spirit_plus', 'supply_minus', 'supply_plus']:
+        # Here you would implement the logic to update the character's stats
+        # For now, we'll just acknowledge the button press
+        stat, direction = query.data.split('_')
+        await query.edit_message_text(f"{stat.capitalize()} {'decreased' if direction == 'minus' else 'increased'}.")
+        await query.edit_message_reply_markup(reply_markup=get_condition_keyboard())
     else:
-        await update.message.reply_photo(
-            photo=open(modified_image_path, 'rb'),
-            caption=f"You selected: {button_pressed}",
-            reply_markup=get_main_keyboard()
-        )
+        # Handle other button callbacks (character, vows, bonds, assets, momentum+/-)
+        await query.edit_message_text(text=f"You clicked: {query.data}")
+        await query.edit_message_reply_markup(reply_markup=get_main_keyboard())
     
     return SHOWING_CHARACTER
 
 character_handler = ConversationHandler(
     entry_points=[CommandHandler("character", character)],
     states={
-        SHOWING_CHARACTER: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_button_callback)],
+        SHOWING_CHARACTER: [CallbackQueryHandler(character_button_callback)],
     },
     fallbacks=[
         CommandHandler("cancel", cancel),
