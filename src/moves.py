@@ -295,13 +295,9 @@ On a *strong hit*, this test has strengthened your bond. Choose one.
 • Take +1 spirit.
 • Take +2 momentum.
 
-On a *weak hit*, your bond is fragile and you must prove your loyalty. 
-Envision what they ask of you (_Ask the Oracle_ if unsure), and do it (or 
-_Swear an Iron Vow_). If you decline or fail, clear the bond and _Pay the 
-Price_.
+On a *weak hit*, your bond is fragile and you must prove your loyalty. Envision what they ask of you (_Ask the Oracle_ if unsure), and do it (or _Swear an Iron Vow_). If you decline or fail, clear the bond and _Pay the Price_.
 
-On a *miss*, or if you have no interest in maintaining this relationship, 
-clear the bond and _Pay the Price_.
+On a *miss*, or if you have no interest in maintaining this relationship, clear the bond and _Pay the Price_.
                 """
             back_type = 'back_to_relationship'
 
@@ -327,6 +323,63 @@ On a *weak hit*, your life takes an unexpected turn, but not necessarily for the
 On a miss, your fears are realized.
             """
             back_type = 'back_to_relationship'
+
+        case "Enter Fray":
+            text ="""
+*ENTER THE FRAY*
+
+When *you enter into combat*, first set the rank of each of your foes.
+• Troublesome foe: 3 progress per harm; inflicts 1 harm.
+• Dangerous foe: 2 progress per harm; inflicts 2 harm.
+• Formidable foe: 1 progress per harm; inflicts 3 harm.
+• Extreme foe: 2 ticks per harm; inflicts 4 harm.
+• Epic foe: 1 tick per harm; inflicts 5 harm.
+
+Then, roll to determine who is in control. If you are...
+• Facing off against your foe: Roll +heart.
+• Moving into position against an unaware foe, or striking without 
+warning: Roll +shadow.
+• Ambushed: Roll +wits.
+
+On a *strong hit*, take +2 momentum. You have initiative.
+
+On a *weak hit*, choose one.
+• Bolster your position: Take +2 momentum.
+• Prepare to act: Take initiative.
+
+On a *miss*, combat begins with you at a disadvantage. _Pay the Price_. Your foe has initiative.
+"""
+            back_type = 'back_to_combat'
+        case "Strike":
+            text ="""
+*STRIKE*
+
+When *you have initiative and attack in close quarters*, roll +iron 
+When *you have initiative and attack at range*, roll +edge.
+
+On a *strong hit*, inflict +1 harm. You retain initiative.
+
+On a *weak hit*, inflict your harm and lose initiative.
+
+On a *miss*, your attack fails and you must _Pay the Price_. Your foe has initiative.
+"""
+            back_type = 'back_to_combat'
+        case "Clash":
+            text = """
+*CLASH*
+
+When *your foe has initiative and you fight with them in close quarters*, roll +iron. When *you exchange a volley at range, or shoot at an advancing foe*, roll +edge.
+
+On a *strong hit*, inflict your harm and choose one. You have the 
+initiative.
+• You bolster your position: Take +1 momentum.
+• You find an opening: Inflict +1 harm.
+
+On a *weak hit*, inflict your harm, but then _Pay the Price_. Your foe has initiative.
+
+On a *miss*, you are outmatched and must _Pay the Price_. Your foe has initiative.
+"""
+            back_type ='back_to_combat'
 
 
     keyboard = [
@@ -586,6 +639,46 @@ You make this move only once—when all your vows are fulfilled or forsaken and 
 This is a progress move. Tally the number of filled boxes on your bonds progress track as your progress score. Only add fully filled boxes (those with four ticks). Then, roll your challenge dice, compare to your progress score, and resolve a strong hit, weak hit, or miss as normal. You may not burn momentum on this roll, and you are not affected by negative momentum.
 
 Based on the result of this move, envision how you spend the remainder of your days.
+"""
+        case "Enter Fray":
+            text = """
+Make this move when combat is joined. Set up your progress tracks for your foes and roll to see who is initially in control. Then, play to see what happens.
+
+If you are fighting with allies, each of you make your own move to _Enter the Fray_. The outcome determines your initial positioning and readiness. You and the other players then envision the scene and make moves as appropriate. If you have initiative, you are positioned to make proactive moves. If not, you make moves to defend against attacks or get into position. If you and your allies are fighting against common enemies, you share progress tracks and mark the harm you each inflict.
+
+If you are fighting a group of troublesome or dangerous foes, you can combine them into a single progress track. This is called a *pack*. Managing your progress against a pack is easier than tracking them as individuals, and will make combat go a bit faster. For a small pack (about 3 to 5), increase the rank by one. For a large pack (about 6 to 10) increase the rank by two. If you are facing more than 10 troublesome or dangerous foes, group them into smaller packs and associated progress tracks as appropriate. 
+
+For more about the foes you might face in the Ironlands, see page 133.
+"""
+        case "Strike":
+            text = """
+Make this move when you have initiative and act to inflict harm on your foe. Narratively, this move might represent a focused moment in time—a single sweep of your axe or the flight of an arrow. Or, it can depict a flurry of attacks as you put your opponent on the defensive. 
+
+On a strong hit, you strike true. By default you inflict 2 harm if you are armed with a deadly weapon (such as a sword, axe, spear, or bow), and 1 harm if not. A strong hit on this move gives you an additional +1 harm (so, 3 harm with a deadly weapon). You may also have additional bonuses provided by assets.
+
+Each point of harm you inflict is marked as progress on your foe’s progress track, as appropriate to their rank. For example, each point of harm equals 2 ticks when fighting an extreme enemy, or 2 full progress boxes when fighting a dangerous enemy. See page 134 for more on NPC ranks and inflicting harm.
+
+Narratively, a strong hit represents wounding your enemy or wearing them down. You have initiative and can make your next move. If this attack was intended as a decisive blow, you can attempt to _End the Fight_.
+
+On a weak hit, you’ve done some damage but have overextended or your foe counters. You mark your harm, and your foe has initiative. What do they do next?
+
+On a miss, you must _Pay the Price_. Your opponent strikes back and you _Endure Harm_. You lose position or advantage and suffer -momentum. You face a new or intensified danger. A companion or ally is put in harm’s way. Your weapon is dropped or broken. Let the outcome flow out of the fiction, or roll on the _Pay the Price_ table to see what happens. 
+"""
+        case "Clash":
+            text ="""
+When your foe has initiative and attacks, and you choose to fight back, make this move.
+
+First, envision your action and the fiction of the exchange. Is this a focused, dramatic moment where you each seek an opening? Or is it a flurry of attacks and parries, advances and retreats? The outcome of the _Clash_ determines if your foe presses their advantage, or if you take control of the fight.
+
+On a strong hit, you inflict your harm and steal back initiative. On a weak hit, you manage to inflict harm, but your foe retains initiative and you must _Pay the Price_. The price might be that you _Endure Harm_ as your foe counters. Or, you may face some other dramatic outcome as appropriate to the current situation and your foe’s intent.
+
+On a miss, you fail to inflict harm and must _Pay the Price_. This fight is turning against you.
+
+As with the _Strike_ move, each point of harm you inflict is marked on your foe’s progress track, as appropriate to their rank (page 134).
+
+If you aren’t actively fighting back—you’re just trying to avoid the attack or seeking cover—you should _Face Danger_ instead of _Clash_. Using that move gives you more flexibility to bring a favored stat into play, and you suffer a relatively minor cost on a weak hit. Unfortunately, you also give up the opportunity to inflict harm on your foe. See page 85 for more about using _Face Danger_ in a fight.
+
+If you ever respond to an attack by just taking the hit, that’s not a move. The outcome isn’t in much doubt. _Pay the Price_.
 """
 
     if len(text) < 4096:
