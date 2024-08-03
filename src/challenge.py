@@ -63,7 +63,7 @@ async def action_dice_callback(
     action_number = random.randint(1, 6)
 
     # Send sticker (placeholder sticker)
-    with open("./data/d8_sticker_id.json", "r", encoding="utf-8") as file:
+    with open("./data/d6_sticker_id.json", "r", encoding="utf-8") as file:
         d6_sticker_id = json.load(file)
     await query.message.reply_sticker(d6_sticker_id[str(action_number)])
 
