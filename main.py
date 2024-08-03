@@ -22,6 +22,7 @@ logging.basicConfig(
 
 async def set_bot_commands(app: Application) -> None:
     commands = [
+        BotCommand("character", "Modify you character"),
         BotCommand("challenge", "Take action!"),
         BotCommand("moves", "List and explanation of moves"),
         BotCommand("assets", "List and explanation of assets"),
