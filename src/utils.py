@@ -1,6 +1,6 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-
+import json
 
 def split_text(text, max_length=4096):
     """Split the text by lines."""
@@ -96,8 +96,23 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
     return ConversationHandler.END
 
-
 async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
     del update, context
 
     return ConversationHandler.END
+
+async def delete_summon_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+    # cancella ogni summon message in cancel.json
+    with open("./data/cancel.json", 'r') as file:
+        data = json.load(file)        
+        for summon_command in data['summon_command']:
+            try:
+                await context.bot.delete_message(
+                    chat_id=update.effective_chat.id,
+                    message_id=summon_command
+                )
+            except Exception as e:
+                print(f"Error deleting command message: {e}")
+        data['summon_command'] = []

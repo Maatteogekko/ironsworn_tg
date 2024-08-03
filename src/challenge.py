@@ -20,6 +20,14 @@ async def challenge(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
+    
+    # Appendi il summon message in cancel.json
+    with open("./data/cancel.json", 'r') as file:
+        data = json.load(file)
+    data['summon_command'].append(update.message.message_id)
+    with open("./data/cancel.json", 'w') as file:
+        json.dump(data, file, indent=4)
+
     # Generate two random numbers between 1 and 10
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
@@ -54,7 +62,6 @@ async def action_dice_callback(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    del context
 
     query = update.callback_query
     await query.answer()
