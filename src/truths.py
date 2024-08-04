@@ -18,14 +18,6 @@ SHOWING_TRUTHS = 0
 
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    
-    # Appendi il summon message in cancel.json
-    with open("./data/cancel.json", 'r') as file:
-        data = json.load(file)
-    data['summon_command'].append(update.message.message_id)
-    with open("./data/cancel.json", 'w') as file:
-        json.dump(data, file, indent=4)
-
     del context
 
     keyboard = [

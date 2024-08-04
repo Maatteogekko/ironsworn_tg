@@ -95,13 +95,6 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     
     # Store the message IDs for later deletion
     context.user_data['bot_message_id'] = message.message_id 
-
-    # Appendi il summon message in cancel.json
-    with open("./data/cancel.json", 'r') as file:
-        data = json.load(file)
-    data['summon_command'].append(update.message.message_id)
-    with open("./data/cancel.json", 'w') as file:
-        json.dump(data, file, indent=4)
     
     return SHOWING_CHARACTER
 

@@ -102,6 +102,19 @@ async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
     return ConversationHandler.END
 
+
+
+# PARTE PER CANCELLARE AUTOMATICAMENTE
+"""
+await delete_summon_command(update,context)
+# Appendi il summon message in cancel.json
+with open("./data/cancel.json", 'r') as file:
+    data = json.load(file)
+data['summon_command'].append(update.message.message_id)
+with open("./data/cancel.json", 'w') as file:
+    json.dump(data, file, indent=4)
+
+
 async def delete_summon_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # cancella ogni summon message in cancel.json
@@ -116,3 +129,4 @@ async def delete_summon_command(update: Update, context: ContextTypes.DEFAULT_TY
             except Exception as e:
                 print(f"Error deleting command message: {e}")
         data['summon_command'] = []
+"""
