@@ -9,6 +9,37 @@ from src.utils import cancel, end_conversation, flip_page, split_text
 # Define conversation states
 SHOWING_CHARACTER = 0
 
+async def update_sheet(task, new, chat_id) -> str:
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    if task == 'changing_name':
+        data[chat_id]["name"] = new
+    if task == 'changing_stats':
+        data[chat_id]["stats"] = new
+    if task == 'exp_minus':
+        data[chat_id]["experience"]["gained"] -=1
+    if task == 'exp_plus':
+        data[chat_id]["experience"]["gained"] +=1
+    if task == 'spend_minus':
+        data[chat_id]["experience"]["used"] -=1
+    if task == 'spend_plus':
+        data[chat_id]["experience"]["used"] +=1
+    if task == 'health_plus':
+        data[chat_id]["state"]["health"] +=1
+    if task == 'health_minus':
+        data[chat_id]["state"]["health"] -=1
+    if task == 'spirit_plus':
+        data[chat_id]["state"]["spirit"] +=1
+    if task == 'spirit_minus':
+        data[chat_id]["state"]["spirit"] -=1
+    if task == 'supply_plus':
+        data[chat_id]["state"]["supply"] +=1
+    if task == 'supply_minus':
+        data[chat_id]["state"]["supply"] -=1
+    with open("./data/character.json", 'w') as file:
+        json.dump(data, file, indent=4)
+    return "./data/Ironsworn_sheet.png"
+
 async def create_sheet(chat_id, image_path: str) -> str:
 
     # Open the character data
@@ -35,7 +66,7 @@ async def create_sheet(chat_id, image_path: str) -> str:
     x = 349
     dx = 237
     draw.text((x, 240), str(data["stats"]["edge"]), fill = mycolor, font = myfont(80))
-    draw.text((x+dx, 240), str(data["stats"]["hearth"]), fill = mycolor, font = myfont(80))
+    draw.text((x+dx, 240), str(data["stats"]["heart"]), fill = mycolor, font = myfont(80))
     draw.text((x+2*dx, 240), str(data["stats"]["iron"]), fill = mycolor, font = myfont(80))
     draw.text((x+3*dx, 240), str(data["stats"]["shadow"]), fill = mycolor, font = myfont(80))
     draw.text((x+4*dx, 240), str(data["stats"]["wits"]), fill = mycolor, font = myfont(80))
@@ -140,7 +171,22 @@ def get_state_keyboard():
          InlineKeyboardButton("Spirit+", callback_data='spirit_plus')],
         [InlineKeyboardButton("Supply-", callback_data='supply_minus'),
          InlineKeyboardButton("Supply+", callback_data='supply_plus')],
+        [InlineKeyboardButton("Conditions", callback_data='conditions')],
         [InlineKeyboardButton("Back", callback_data='back_to_main')]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_condition_keyboard():
+    keyboard = [
+        [InlineKeyboardButton("Wounded", callback_data='wounded'),
+         InlineKeyboardButton("Shaken", callback_data='shaken')],
+        [InlineKeyboardButton("Unprepared", callback_data='unprepared'),
+         InlineKeyboardButton("Encumbered", callback_data='encumbered')],
+        [InlineKeyboardButton("Maimed", callback_data='maimed'),
+         InlineKeyboardButton("Corrupted", callback_data='corrupted')],
+        [InlineKeyboardButton("Cursed", callback_data='cursed'),
+         InlineKeyboardButton("Tormented", callback_data='tormented')],
+        [InlineKeyboardButton("Back", callback_data='back_to_state')]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -153,10 +199,15 @@ def get_character_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-async def update_sheet(button: str) -> str:
-    print(button)
-    # For now, just return the path to the original image
-    return "./data/Ironsworn_sheet.png"
+def get_exp_keyboard():
+    keyboard = [
+        [InlineKeyboardButton("Exp -", callback_data='exp_minus'),
+         InlineKeyboardButton("Exp +", callback_data='exp_plus')],
+        [InlineKeyboardButton("Spend -", callback_data='spend_minus'),
+         InlineKeyboardButton("Spend +", callback_data='spend_plus')],
+        [InlineKeyboardButton("Back", callback_data='back_to_character')]
+    ]
+    return InlineKeyboardMarkup(keyboard)
 
 async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
@@ -177,12 +228,6 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     
     return SHOWING_CHARACTER
 
-async def character_button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    query = update.callback_query
-    await query.answer()
-
-    if query.data == 'ironsworn':
-
         # PASSAGGI PER UPDATE DELLL'IMMAGINE
         # Call update_sheet function
         #updated_image_path = await update_sheet(query.data)
@@ -193,24 +238,121 @@ async def character_button_callback(update: Update, context: ContextTypes.DEFAUL
             #media=InputMediaPhoto(open(modified_image_path, 'rb'), caption="Ironsworn options"),
             #reply_markup=get_ironsworn_keyboard()
         #)
-        await query.edit_message_caption("Test Ironsworn",reply_markup=get_ironsworn_keyboard())
+
+async def character_button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == 'ironsworn':
+        await query.edit_message_caption("Test Ironsworn", reply_markup=get_ironsworn_keyboard())
     elif query.data == 'momentum':
-        await query.edit_message_caption("Test momentum",reply_markup=get_momentum_keyboard())
+        await query.edit_message_caption("Test momentum", reply_markup=get_momentum_keyboard())
     elif query.data == 'state':
-        await query.edit_message_caption("Test state",reply_markup=get_state_keyboard())
+        await query.edit_message_caption("Test state", reply_markup=get_state_keyboard())
     elif query.data == 'character':
-        await query.edit_message_caption("Test character",reply_markup=get_character_keyboard())
+        await query.edit_message_caption("Character options", reply_markup=get_character_keyboard())
     elif query.data == 'back_to_main':
-        await query.edit_message_caption("Test back",reply_markup=get_main_keyboard())
+        await query.edit_message_caption("Main menu", reply_markup=get_main_keyboard())
+    elif query.data == 'back_to_character':
+        await query.edit_message_caption("Character options", reply_markup=get_character_keyboard())
+    elif query.data == 'back_to_state':
+        await query.edit_message_caption("State options", reply_markup=get_state_keyboard())
+    elif query.data == 'character_name':
+        await context.bot.delete_message(
+                    chat_id=update.effective_chat.id,
+                    message_id=query.message.message_id
+            )
+        await query.message.reply_text("Send me the name of the character:")
+        return WAITING_NAME
+    elif query.data == 'character_stats':
+        await context.bot.delete_message(
+                    chat_id=update.effective_chat.id,
+                    message_id=query.message.message_id
+            )
+        await query.message.reply_text("Send me the character stats in the format: Edge,Heart,Iron,Shadow,Wits")
+        return WAITING_STATS
+    elif query.data == 'character_exp':
+        await query.edit_message_caption("Experience options", reply_markup=get_exp_keyboard())
+    elif query.data == 'conditions':
+        await query.edit_message_caption("Condition options", reply_markup=get_condition_keyboard())
+    elif query.data in ['health_plus', 'health_minus', 'spirit_plus', 'spirit_minus','supply_plus','supply_minus']:
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+        await query.message.edit_media(
+            media=InputMediaPhoto(open(modified_image_path, 'rb'), caption="State updated"),
+            reply_markup=get_state_keyboard()
+        )
+    elif query.data in ['exp_minus', 'exp_plus', 'spend_minus', 'spend_plus']:
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+        await query.message.edit_media(
+            media=InputMediaPhoto(open(modified_image_path, 'rb'), caption="Experience updated"),
+            reply_markup=get_exp_keyboard()
+        )
     else:
-        await query.edit_message_caption("Test impossibile arrivarci?",reply_markup=get_main_keyboard())
+        await query.edit_message_caption("Unknown option", reply_markup=get_main_keyboard())
 
     return SHOWING_CHARACTER
+
+async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    name = update.message.text
+    await update_sheet("changing_name",name,str(update.effective_user.id))
+    
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+    
+    await update.message.reply_photo(
+        photo=open(modified_image_path, 'rb'),
+        caption="Character name updated",
+        reply_markup=get_character_keyboard()
+    )
+    return SHOWING_CHARACTER
+
+async def handle_stats_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    stats = str(update.message.text)
+    stats = stats.replace(' ','')
+    stats = stats.replace(',','')
+    stats = stats.replace('/n','')
+    if len(stats) != 5:
+        await update.message.reply_text("Invalid format. Please send stats in the format: Edge, Heart, Iron, Shadow, Wits")
+        return WAITING_STATS
+    
+    stats_dict = {
+        "edge": int(stats[0]),
+        "heart": int(stats[1]),
+        "iron": int(stats[2]),
+        "shadow": int(stats[3]),
+        "wits": int(stats[4])
+    }
+    
+    await update_sheet("changing_stats", stats_dict,str(update.effective_user.id))
+    
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+    
+    await update.message.reply_photo(
+        photo=open(modified_image_path, 'rb'),
+        caption="Character stats updated",
+        reply_markup=get_character_keyboard()
+    )
+    return SHOWING_CHARACTER
+
+# Define new states
+WAITING_NAME = 1
+WAITING_STATS = 2
 
 character_handler = ConversationHandler(
     entry_points=[CommandHandler("character", character)],
     states={
         SHOWING_CHARACTER: [CallbackQueryHandler(character_button_callback)],
+        WAITING_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_name_input)],
+        WAITING_STATS: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_stats_input)],
     },
     fallbacks=[
         CommandHandler("cancel", cancel),
