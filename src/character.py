@@ -32,14 +32,68 @@ async def create_sheet(chat_id, image_path: str) -> str:
     draw.text((140, 120), data["name"], fill = mycolor, font = myfont(50))
     
     # Insert the Stats
-    x = 350
-    dx = 235
+    x = 349
+    dx = 237
     draw.text((x, 240), str(data["stats"]["edge"]), fill = mycolor, font = myfont(80))
     draw.text((x+dx, 240), str(data["stats"]["hearth"]), fill = mycolor, font = myfont(80))
     draw.text((x+2*dx, 240), str(data["stats"]["iron"]), fill = mycolor, font = myfont(80))
     draw.text((x+3*dx, 240), str(data["stats"]["shadow"]), fill = mycolor, font = myfont(80))
     draw.text((x+4*dx, 240), str(data["stats"]["wits"]), fill = mycolor, font = myfont(80))
 
+    # Insert Exp
+    dots = data['experience']['used']
+    xs = data['experience']['gained']
+    positions_x = [1088.5+_*36.48 for _ in range(15)]
+    positions_y = [117,154]
+    for i,y in enumerate(positions_y):
+        for j,x in enumerate(positions_x):
+            if (j+i*15)<dots:
+                draw.ellipse([x,y,x+26,y+26], fill=mycolor)
+            elif (j+i*15)<xs:
+                draw.line([(x, y), (x+26, y+26)], fill=mycolor, width=5)
+                draw.line([(x, y+26), (x+26, y)], fill=mycolor, width=5)
+
+    # Insert Momentum
+    max =  data['momentum']['max']
+    if len(str(max))==1:
+        draw.text((134, 1875), str(max), fill = mycolor, font = myfont(40))
+    else:
+        draw.text((120, 1875), str(max), fill = mycolor, font = myfont(40))
+    reset =  data['momentum']['reset']
+    if len(str(reset))==1: 
+        draw.text((134, 1998), str(reset), fill = mycolor, font = myfont(40))
+    else:
+        draw.text((120, 1998), str(reset), fill = mycolor, font = myfont(40))
+    current =  data['momentum']['current']
+    c_c_x = 147.9
+    c_c_y = 1214-current*94.5-(0.5*current if current<0 else 0)
+    top_left = (c_c_x - 110 // 2, c_c_y - 55 // 2)
+    bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
+    draw.rectangle([top_left, bottom_right], outline=mycolor, width=10)
+
+    # Insert Health
+    health =  data['state']['health']
+    c_c_x = 1552
+    c_c_y = 785.5-health*94.5
+    top_left = (c_c_x - 110 // 2, c_c_y - 55 // 2)
+    bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
+    draw.rectangle([top_left, bottom_right], outline=mycolor, width=10)
+
+    # Insert Spirit
+    spirit =  data['state']['spirit']
+    c_c_x = 1552
+    c_c_y = 1398.5-spirit*94.5
+    top_left = (c_c_x - 110 // 2, c_c_y - 55 // 2)
+    bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
+    draw.rectangle([top_left, bottom_right], outline=mycolor, width=10)
+
+    # Insert Supply
+    supply =  data['state']['supply']
+    c_c_x = 1552
+    c_c_y = 2011.5-supply*94.5
+    top_left = (c_c_x - 110 // 2, c_c_y - 55 // 2)
+    bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
+    draw.rectangle([top_left, bottom_right], outline=mycolor, width=10)
 
     # Draw a black line from (300,300) to (400,400)
     draw.line([(random.random()*1000, random.random()*1000), (random.random()*1000, random.random()*1000)], fill="black", width=2)
