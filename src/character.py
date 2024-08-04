@@ -1,6 +1,6 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, ContextTypes, filters
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import random
 import json
 
@@ -9,18 +9,43 @@ from src.utils import cancel, end_conversation, flip_page, split_text
 # Define conversation states
 SHOWING_CHARACTER = 0
 
-async def create_sheet(image_path: str) -> str:
+async def create_sheet(chat_id, image_path: str) -> str:
+
+    # Open the character data
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    data = data[chat_id]
     # Open the image
     img = Image.open(image_path)
     
     # Create a drawing object
     draw = ImageDraw.Draw(img)
+    def myfont(size = 30):
+        try:
+            return ImageFont.truetype("./data/Modesto Expanded.ttf", size)
+        except IOError:
+            return ImageFont.load_default(size)
+    mycolor = (45,45,45)
     
+    
+    # Insert the name
+    draw.text((140, 120), data["name"], fill = mycolor, font = myfont(50))
+    
+    # Insert the Stats
+    x = 350
+    dx = 235
+    draw.text((x, 240), str(data["stats"]["edge"]), fill = mycolor, font = myfont(80))
+    draw.text((x+dx, 240), str(data["stats"]["hearth"]), fill = mycolor, font = myfont(80))
+    draw.text((x+2*dx, 240), str(data["stats"]["iron"]), fill = mycolor, font = myfont(80))
+    draw.text((x+3*dx, 240), str(data["stats"]["shadow"]), fill = mycolor, font = myfont(80))
+    draw.text((x+4*dx, 240), str(data["stats"]["wits"]), fill = mycolor, font = myfont(80))
+
+
     # Draw a black line from (300,300) to (400,400)
     draw.line([(random.random()*1000, random.random()*1000), (random.random()*1000, random.random()*1000)], fill="black", width=2)
     
     # Save the modified image
-    modified_image_path = "./data/modified_character_sheet.png"
+    modified_image_path = "./data/"+data['name']+"_character_sheet.png"
     img.save(modified_image_path)
     
     return modified_image_path
@@ -29,9 +54,8 @@ def get_main_keyboard():
     keyboard = [
         [InlineKeyboardButton("Ironsworn", callback_data='ironsworn')],
         [InlineKeyboardButton("Momentum", callback_data='momentum')],
-        [InlineKeyboardButton("Condition", callback_data='condition')],
-        [InlineKeyboardButton("Character", callback_data='character')],
-        [InlineKeyboardButton("Close and Cancel", callback_data='close_and_cancel')]
+        [InlineKeyboardButton("State", callback_data='state')],
+        [InlineKeyboardButton("Character", callback_data='character')]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -54,7 +78,7 @@ def get_momentum_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-def get_condition_keyboard():
+def get_state_keyboard():
     keyboard = [
         [InlineKeyboardButton("Health-", callback_data='health_minus'),
          InlineKeyboardButton("Health+", callback_data='health_plus')],
@@ -84,7 +108,8 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     # Create the character sheet
     image_path = "./data/Ironsworn_sheet.png"
-    modified_image_path = await create_sheet(image_path)
+    chat_id = str(update.effective_user.id)
+    modified_image_path = await create_sheet(chat_id, image_path)
     
     # Send the message with the image and keyboard
     message = await update.message.reply_photo(
@@ -102,18 +127,6 @@ async def character_button_callback(update: Update, context: ContextTypes.DEFAUL
     query = update.callback_query
     await query.answer()
 
-    if query.data == 'close_and_cancel':
-        print('cancellando tutto...?')
-        # Try to delete the character sheet message
-        try:
-            await query.message.delete()
-        except Exception as e:
-            print(f"Error deleting character sheet message: {e}")
-
-
-        return ConversationHandler.END
-
-
     if query.data == 'ironsworn':
 
         # PASSAGGI PER UPDATE DELLL'IMMAGINE
@@ -129,8 +142,8 @@ async def character_button_callback(update: Update, context: ContextTypes.DEFAUL
         await query.edit_message_caption("Test Ironsworn",reply_markup=get_ironsworn_keyboard())
     elif query.data == 'momentum':
         await query.edit_message_caption("Test momentum",reply_markup=get_momentum_keyboard())
-    elif query.data == 'condition':
-        await query.edit_message_caption("Test condition",reply_markup=get_condition_keyboard())
+    elif query.data == 'state':
+        await query.edit_message_caption("Test state",reply_markup=get_state_keyboard())
     elif query.data == 'character':
         await query.edit_message_caption("Test character",reply_markup=get_character_keyboard())
     elif query.data == 'back_to_main':

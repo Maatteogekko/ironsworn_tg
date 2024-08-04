@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 import json
 
-from src.utils import cancel, end_conversation, flip_page, split_text, delete_summon_command
+from src.utils import cancel, end_conversation, flip_page, split_text
 
 # Define states
 SHOWING_MOVES = 0
