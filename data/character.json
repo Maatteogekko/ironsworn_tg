@@ -20,7 +20,7 @@
         "state": {
             "health": 5,
             "spirit": 5,
-            "supply": 4
+            "supply": 5
         },
         "condition": {
             "wounded": 0,
@@ -47,7 +47,7 @@
         }
     },
     "884215232": {
-        "name": "Selune (AKA Tessa)",
+        "name": "Selune (Tessa)",
         "experience": {
             "gained": 0,
             "used": 0
