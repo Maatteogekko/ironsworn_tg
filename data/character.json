@@ -44,7 +44,8 @@
                 "Tracker": 10,
                 "description": "Not now"
             }
-        }
+        },
+        "assets": ["Improviser","Wayfinder","Ironclad"]
     },
     "884215232": {
         "name": "Selune (Tessa)",

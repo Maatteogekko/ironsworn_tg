@@ -1,5 +1,6 @@
 import json
 import random
+import math
 
 from PIL import Image, ImageDraw, ImageFont
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
@@ -60,6 +61,10 @@ async def update_sheet(task, new, chat_id) -> str:
         "tormented",
     ]:
         data[chat_id]["condition"][task] = int(not data[chat_id]["condition"][task])
+    if task == 'bonds+':
+        data[chat_id]["bonds"] +=1
+    if task == 'bonds-':
+        data[chat_id]["bonds"] -=1
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -154,6 +159,18 @@ async def create_sheet(chat_id, image_path: str) -> str:
     bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
     draw.rectangle([top_left, bottom_right], outline=color, width=10)
 
+    # Insert Bonds
+    bonds = data["bonds"]
+    print("bonds",bonds)
+    c_y = 574.8
+    s_y = 500
+    for i in range(int(bonds/4)):
+        for l in ticks([c_y,s_y], 4):
+            draw.line(l, fill=color, width=7,)
+        c_y = c_y+61.3
+    for l in ticks([c_y,s_y], bonds%4):
+        draw.line(l, fill=color, width=7,)  
+
     # Insert Conditions
     conditions = [
         "wounded",
@@ -188,7 +205,7 @@ async def create_sheet(chat_id, image_path: str) -> str:
             (random.random() * 1000, random.random() * 1000),
         ],
         fill="black",
-        width=2,
+        width=20,
     )
 
     # Save the modified image
@@ -197,6 +214,48 @@ async def create_sheet(chat_id, image_path: str) -> str:
 
     return modified_image_path
 
+def ticks(center, ticks):
+    lines =[]
+    if ticks >= 1:
+        lines.append([(center[0]-19,center[1]-19),(center[0]+19,center[1]+19)])
+    if ticks >= 2:
+        lines.append([(center[0]+19,center[1]-19),(center[0]-19,center[1]+19)])
+    if ticks >= 3:
+        lines.append([(center[0]-22,center[1]),(center[0]+22,center[1])])
+    if ticks >= 4:
+        lines.append([(center[0],center[1]-22),(center[0],center[1]+22)])
+        
+    return lines
+
+def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10):
+    # Open all images and resize them
+    images = [Image.open(name).resize(thumbnail_size, Image.LANCZOS) for name in image_names]
+    
+    # Calculate the number of rows and columns
+    num_images = len(images)
+    cols = 3
+    rows = math.ceil(num_images / cols)
+    
+    # Create a new image with the appropriate size
+    collage_width = cols * thumbnail_size[0] + (cols + 1) * spacing
+    collage_height = rows * thumbnail_size[1] + (rows + 1) * spacing
+    collage = Image.new('RGB', (collage_width, collage_height), color='white')
+    
+    # Paste the images into the collage
+    for i, img in enumerate(images):
+        row = i // cols
+        col = i % cols
+        x = spacing + col * (thumbnail_size[0] + spacing)
+        y = spacing + row * (thumbnail_size[1] + spacing)
+        collage.paste(img, (x, y))
+    
+    # Save the collage
+    collage.save(output_filename)
+    print(f"Collage saved as {output_filename}")
+
+# Example usage:
+# image_names = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg']
+# create_collage(image_names)
 
 def get_main_keyboard():
     keyboard = [
@@ -211,7 +270,7 @@ def get_main_keyboard():
 def get_ironsworn_keyboard():
     keyboard = [
         [InlineKeyboardButton("Vows", callback_data="vows")],
-        [InlineKeyboardButton("Bonds", callback_data="bonds")],
+        [InlineKeyboardButton("Bonds -", callback_data="bonds-"),InlineKeyboardButton("Bonds +", callback_data="bonds+")],
         [InlineKeyboardButton("Assets", callback_data="assets")],
         [InlineKeyboardButton("Back", callback_data="back_to_main")],
     ]
@@ -421,6 +480,35 @@ async def character_button_callback(
             ),
             reply_markup=get_state_keyboard(),
         )
+
+    elif query.data in [
+        "bonds+","bonds-"
+    ]:
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(
+            str(update.effective_user.id), image_path
+        )
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Bond updated"
+            ),
+            reply_markup=get_ironsworn_keyboard(),
+        )
+    elif query.data == 'assets':
+        with open("./data/character.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+        # Refresh the character sheet image
+        assets = data[str(update.effective_user.id)]['assets']
+        modified_image_path = create_collage(['./data/assets'+a+'.png' for a in assets], output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10)
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Bond updated"
+            ),
+            reply_markup=get_ironsworn_keyboard(),
+        )
+
     elif query.data in ["exp_minus", "exp_plus", "spend_minus", "spend_plus"]:
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
