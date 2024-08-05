@@ -47,17 +47,17 @@
         }
     },
     "884215232": {
-        "name": "Gekko",
+        "name": "Selune (Tessa)",
         "experience": {
             "gained": 0,
             "used": 0
         },
         "stats": {
-            "edge": 0,
-            "heart": 0,
-            "iron": 0,
-            "shadow": 0,
-            "wits": 0
+            "edge": 2,
+            "heart": 1,
+            "iron": 1,
+            "shadow": 2,
+            "wits": 3
         },
         "momentum": {
             "current": 0,
