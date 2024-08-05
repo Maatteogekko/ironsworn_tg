@@ -231,7 +231,7 @@ def ticks(center, ticks):
         
     return lines
 
-def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10):
+def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 400), spacing=5):
     # Open all images and resize them
     images = [Image.open(name).resize(thumbnail_size, Image.LANCZOS) for name in image_names]
     
@@ -255,13 +255,8 @@ def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=
     
     # Save the collage
     collage.save(output_filename)
-    print(f"Collage saved as {output_filename}")
 
     return output_filename;
-
-# Example usage:
-# image_names = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg']
-# create_collage(image_names)
 
 def get_main_keyboard():
     keyboard = [
@@ -353,6 +348,14 @@ def get_character_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+def get_asset_keyboard():
+    keyboard = [
+        [InlineKeyboardButton("Add Asset", callback_data="add_asset")],
+        [InlineKeyboardButton("Upgrade Asset", callback_data="upgrade_asset")],
+        [InlineKeyboardButton("Back", callback_data="back_to_ironsworn")],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
 
 def get_exp_keyboard():
     keyboard = [
@@ -372,9 +375,14 @@ def get_exp_keyboard():
 async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     # Create the character sheet
-    image_path = "./data/Ironsworn_sheet.png"
     chat_id = str(update.effective_user.id)
-    modified_image_path = await create_sheet(chat_id, image_path)
+    try:
+        with open("./data/character.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+        modified_image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
+    except:
+        image_path = "./data/Ironsworn_sheet.png"
+
 
     # Send the message with the image and keyboard
     message = await update.message.reply_photo(
@@ -524,12 +532,12 @@ async def character_button_callback(
             data = json.load(file)
         # Refresh the character sheet image
         assets = data[str(update.effective_user.id)]['assets']
-        modified_image_path = create_collage(['./data/assets/'+a.lower()+'.png' for a in assets], output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10)
+        modified_image_path = create_collage(['./data/assets/'+a.lower()+'.png' for a in assets], output_filename='./data/'+data[str(update.effective_user.id)]['name']+'.jpg')
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption="Bond updated"
+                open(modified_image_path, "rb"), caption="Assets updated"
             ),
-            reply_markup=get_ironsworn_keyboard(),
+            reply_markup=get_asset_keyboard(),
         )
 
     elif query.data in ["exp_minus", "exp_plus", "spend_minus", "spend_plus"]:
@@ -569,7 +577,7 @@ async def character_button_callback(
         )
     else:
         await query.edit_message_caption(
-            "Unknown option", reply_markup=get_main_keyboard()
+            "Yeah we won't implement that", reply_markup=get_main_keyboard()
         )
 
     return SHOWING_CHARACTER
