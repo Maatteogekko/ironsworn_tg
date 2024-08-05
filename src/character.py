@@ -50,6 +50,10 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["state"]["supply"] += 1
     if task == "supply_minus":
         data[chat_id]["state"]["supply"] -= 1
+    if task == 'momentum_plus':
+        data[chat_id]["momentum"]["current"] += 1
+    if task == 'momentum_minus':
+        data[chat_id]["momentum"]["current"] -= 1
     if task in [
         "wounded",
         "shaken",
@@ -480,6 +484,23 @@ async def character_button_callback(
             ),
             reply_markup=get_state_keyboard(),
         )
+        
+    elif query.data in [
+        "momentum_plus","momentum_minus"
+    ]:
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(
+            str(update.effective_user.id), image_path
+        )
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Bond updated"
+            ),
+            reply_markup=get_ironsworn_keyboard(),
+        )
+
 
     elif query.data in [
         "bonds+","bonds-"
