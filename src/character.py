@@ -498,7 +498,7 @@ async def character_button_callback(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="Bond updated"
             ),
-            reply_markup=get_ironsworn_keyboard(),
+            reply_markup=get_momentum_keyboard(),
         )
 
 
@@ -522,7 +522,7 @@ async def character_button_callback(
             data = json.load(file)
         # Refresh the character sheet image
         assets = data[str(update.effective_user.id)]['assets']
-        modified_image_path = create_collage(['./data/assets'+a.lower()+'.png' for a in assets], output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10)
+        modified_image_path = create_collage(['./data/assets/'+a.lower()+'.png' for a in assets], output_filename='./collage.jpg', thumbnail_size=(300, 300), spacing=10)
         await query.message.edit_media(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="Bond updated"
