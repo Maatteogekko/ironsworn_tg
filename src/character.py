@@ -6,6 +6,10 @@ import json
 
 from src.utils import cancel, end_conversation, flip_page, split_text
 
+# Da fare: 
+# tutto bonds
+# tutto Vows
+
 # Define conversation states
 SHOWING_CHARACTER = 0
 
@@ -36,6 +40,8 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["state"]["supply"] +=1
     if task == 'supply_minus':
         data[chat_id]["state"]["supply"] -=1
+    if task in ['wounded','shaken','unprepared','encumbered','maimed','corrupted','cursed','tormented']:
+        data[chat_id]["condition"][task] = int(not data[chat_id]["condition"][task])
     with open("./data/character.json", 'w') as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -57,7 +63,6 @@ async def create_sheet(chat_id, image_path: str) -> str:
         except IOError:
             return ImageFont.load_default(size)
     mycolor = (45,45,45)
-    
     
     # Insert the name
     draw.text((140, 120), data["name"], fill = mycolor, font = myfont(50))
@@ -126,6 +131,15 @@ async def create_sheet(chat_id, image_path: str) -> str:
     bottom_right = (c_c_x + 110 // 2, c_c_y + 55 // 2)
     draw.rectangle([top_left, bottom_right], outline=mycolor, width=10)
 
+    # Insert Conditions
+    conds = ['wounded','shaken','unprepared','encumbered','maimed','corrupted','cursed','tormented']
+    pos = [[270,1720],[571,1720],[270,1764],[571,1764],[955,1720],[1205,1720],[957,1825],[1205,1825]]
+    for i,cond in enumerate(conds):
+        if data['condition'][cond]:
+            draw.ellipse([pos[i][0],pos[i][1],pos[i][0]+26,pos[i][1]+26], fill=mycolor)
+
+
+
     # Draw a black line from (300,300) to (400,400)
     draw.line([(random.random()*1000, random.random()*1000), (random.random()*1000, random.random()*1000)], fill="black", width=2)
     
@@ -176,16 +190,19 @@ def get_state_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
-def get_condition_keyboard():
+def get_condition_keyboard(update: Update):
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)[str(update.effective_user.id)]
+    p = ["❌" if data['condition'][k] == 0 else "✔️" for k in data['condition'].keys()]
     keyboard = [
-        [InlineKeyboardButton("Wounded", callback_data='wounded'),
-         InlineKeyboardButton("Shaken", callback_data='shaken')],
-        [InlineKeyboardButton("Unprepared", callback_data='unprepared'),
-         InlineKeyboardButton("Encumbered", callback_data='encumbered')],
-        [InlineKeyboardButton("Maimed", callback_data='maimed'),
-         InlineKeyboardButton("Corrupted", callback_data='corrupted')],
-        [InlineKeyboardButton("Cursed", callback_data='cursed'),
-         InlineKeyboardButton("Tormented", callback_data='tormented')],
+        [InlineKeyboardButton("Wounded"+p[0], callback_data='wounded'),
+         InlineKeyboardButton("Shaken"+p[1], callback_data='shaken')],
+        [InlineKeyboardButton("Unprepared"+p[2], callback_data='unprepared'),
+         InlineKeyboardButton("Encumbered"+p[3], callback_data='encumbered')],
+        [InlineKeyboardButton("Maimed"+p[4], callback_data='maimed'),
+         InlineKeyboardButton("Corrupted"+p[5], callback_data='corrupted')],
+        [InlineKeyboardButton("Cursed"+p[6], callback_data='cursed'),
+         InlineKeyboardButton("Tormented"+p[7], callback_data='tormented')],
         [InlineKeyboardButton("Back", callback_data='back_to_state')]
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -274,7 +291,7 @@ async def character_button_callback(update: Update, context: ContextTypes.DEFAUL
     elif query.data == 'character_exp':
         await query.edit_message_caption("Experience options", reply_markup=get_exp_keyboard())
     elif query.data == 'conditions':
-        await query.edit_message_caption("Condition options", reply_markup=get_condition_keyboard())
+        await query.edit_message_caption("Condition options", reply_markup=get_condition_keyboard(update))
     elif query.data in ['health_plus', 'health_minus', 'spirit_plus', 'spirit_minus','supply_plus','supply_minus']:
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
@@ -292,6 +309,15 @@ async def character_button_callback(update: Update, context: ContextTypes.DEFAUL
         await query.message.edit_media(
             media=InputMediaPhoto(open(modified_image_path, 'rb'), caption="Experience updated"),
             reply_markup=get_exp_keyboard()
+        )
+    elif query.data in ['wounded','shaken','unprepared','encumbered','maimed','corrupted','cursed','tormented']:
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+        await query.message.edit_media(
+            media=InputMediaPhoto(open(modified_image_path, 'rb'), caption="Condition updated"),
+            reply_markup=get_condition_keyboard(update)
         )
     else:
         await query.edit_message_caption("Unknown option", reply_markup=get_main_keyboard())

@@ -2,8 +2,8 @@
     "454010613": {
         "name": "Noah",
         "experience": {
-            "gained": 10,
-            "used": 6
+            "gained": 11,
+            "used": 7
         },
         "stats": {
             "edge": 1,
@@ -21,6 +21,16 @@
             "health": 5,
             "spirit": 5,
             "supply": 5
+        },
+        "condition": {
+            "wounded": 0,
+            "shaken": 0,
+            "unprepared": 0,
+            "encumbered": 0,
+            "maimed": 0,
+            "corrupted": 0,
+            "cursed": 0,
+            "tormented": 0
         },
         "bonds": 2,
         "vows": {
@@ -58,6 +68,18 @@
             "health": 5,
             "spirit": 5,
             "supply": 5
-        }
+        },
+        "condition": {
+            "wounded": 0,
+            "shaken": 0,
+            "unprepared": 0,
+            "encumbered": 0,
+            "maimed": 0,
+            "corrupted": 0,
+            "cursed": 0,
+            "tormented": 0
+        },
+        "bonds": 2,
+        "vows": {}
     }
 }
