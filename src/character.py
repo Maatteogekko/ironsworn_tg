@@ -368,17 +368,29 @@ async def character_button_callback(
             "State options", reply_markup=get_state_keyboard()
         )
     elif query.data == "character_name":
-        await context.bot.delete_message(
-            chat_id=update.effective_chat.id, message_id=query.message.message_id
-        )
         await query.message.reply_text("Send me the name of the character:")
-        return WAITING_NAME
-    elif query.data == "character_stats":
         await context.bot.delete_message(
             chat_id=update.effective_chat.id, message_id=query.message.message_id
         )
+        return WAITING_NAME
+    elif query.data == "max_momentum":
+        await query.message.reply_text("Send me the new max momentum value:")
+        await context.bot.delete_message(
+            chat_id=update.effective_chat.id, message_id=query.message.message_id
+        )
+        return WAITING_MOMENTUM_MAX
+    elif query.data == "momuentum_reset":
+        await query.message.reply_text("Send me the new momentum reset value:")
+        await context.bot.delete_message(
+            chat_id=update.effective_chat.id, message_id=query.message.message_id
+        )
+        return WAITING_MOMENTUM_RESET
+    elif query.data == "character_stats":
         await query.message.reply_text(
             "Send me the character stats in the format: Edge,Heart,Iron,Shadow,Wits"
+        )
+        await context.bot.delete_message(
+            chat_id=update.effective_chat.id, message_id=query.message.message_id
         )
         return WAITING_STATS
     elif query.data == "character_exp":
@@ -469,6 +481,40 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     )
     return SHOWING_CHARACTER
 
+async def handle_momentum_max_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del context
+
+    momentum_max = update.message.text
+    await update_sheet("changing_momentum_max", momentum_max, str(update.effective_user.id))
+
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+
+    await update.message.reply_photo(
+        photo=open(modified_image_path, "rb"),
+        caption="Max momentum updated",
+        reply_markup=get_momentum_keyboard(),
+    )
+    return SHOWING_CHARACTER
+
+async def handle_momentum_reset_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del context
+
+    momentum_reset = update.message.text
+    await update_sheet("changing_momentum_reset", momentum_reset, str(update.effective_user.id))
+
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+
+    await update.message.reply_photo(
+        photo=open(modified_image_path, "rb"),
+        caption="Momentum Reset updated",
+        reply_markup=get_momentum_keyboard(),
+    )
+    return SHOWING_CHARACTER
+
 
 async def handle_stats_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
@@ -508,6 +554,8 @@ async def handle_stats_input(update: Update, context: ContextTypes.DEFAULT_TYPE)
 # Define new states
 WAITING_NAME = 1
 WAITING_STATS = 2
+WAITING_MOMENTUM_MAX = 3
+WAITING_MOMENTUM_RESET = 4
 
 character_handler = ConversationHandler(
     entry_points=[
@@ -520,6 +568,12 @@ character_handler = ConversationHandler(
         ],
         WAITING_STATS: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_stats_input)
+        ],
+        WAITING_MOMENTUM_MAX: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_momentum_max_input)
+        ],
+        WAITING_MOMENTUM_RESET: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_momentum_reset_input)
         ],
     },
     fallbacks=[
