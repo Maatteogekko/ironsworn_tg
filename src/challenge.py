@@ -55,6 +55,7 @@ async def action_dice_callback(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
+    del context
 
     query = update.callback_query
     await query.answer()
