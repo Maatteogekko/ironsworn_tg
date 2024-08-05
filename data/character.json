@@ -13,7 +13,7 @@
             "wits": 3
         },
         "momentum": {
-            "current": 7,
+            "current": 0,
             "max": 10,
             "reset": 2
         },
@@ -45,7 +45,11 @@
                 "description": "Not now"
             }
         },
-        "assets": ["Improviser","Wayfinder","Ironclad"]
+        "assets": [
+            "Improviser",
+            "Wayfinder",
+            "Ironclad"
+        ]
     },
     "884215232": {
         "name": "Selune (Tessa)",
