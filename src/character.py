@@ -50,9 +50,9 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["state"]["supply"] += 1
     if task == "supply_minus":
         data[chat_id]["state"]["supply"] -= 1
-    if task == 'momentum_plus':
+    if task == "momentum_plus":
         data[chat_id]["momentum"]["current"] += 1
-    if task == 'momentum_minus':
+    if task == "momentum_minus":
         data[chat_id]["momentum"]["current"] -= 1
     if task in [
         "wounded",
@@ -65,10 +65,10 @@ async def update_sheet(task, new, chat_id) -> str:
         "tormented",
     ]:
         data[chat_id]["condition"][task] = int(not data[chat_id]["condition"][task])
-    if task == 'bonds+':
-        data[chat_id]["bonds"] +=1
-    if task == 'bonds-':
-        data[chat_id]["bonds"] -=1
+    if task == "bonds+":
+        data[chat_id]["bonds"] += 1
+    if task == "bonds-":
+        data[chat_id]["bonds"] -= 1
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -165,15 +165,23 @@ async def create_sheet(chat_id, image_path: str) -> str:
 
     # Insert Bonds
     bonds = data["bonds"]
-    print("bonds",bonds)
+    print("bonds", bonds)
     c_y = 574.8
     s_y = 500
-    for i in range(int(bonds/4)):
-        for l in ticks([c_y,s_y], 4):
-            draw.line(l, fill=color, width=7,)
-        c_y = c_y+61.3
-    for l in ticks([c_y,s_y], bonds%4):
-        draw.line(l, fill=color, width=7,)  
+    for i in range(int(bonds / 4)):
+        for l in ticks([c_y, s_y], 4):
+            draw.line(
+                l,
+                fill=color,
+                width=7,
+            )
+        c_y = c_y + 61.3
+    for l in ticks([c_y, s_y], bonds % 4):
+        draw.line(
+            l,
+            fill=color,
+            width=7,
+        )
 
     # Insert Conditions
     conditions = [
@@ -218,33 +226,44 @@ async def create_sheet(chat_id, image_path: str) -> str:
 
     return modified_image_path
 
+
 def ticks(center, ticks):
-    lines =[]
+    lines = []
     if ticks >= 1:
-        lines.append([(center[0]-19,center[1]-19),(center[0]+19,center[1]+19)])
+        lines.append(
+            [(center[0] - 19, center[1] - 19), (center[0] + 19, center[1] + 19)]
+        )
     if ticks >= 2:
-        lines.append([(center[0]+19,center[1]-19),(center[0]-19,center[1]+19)])
+        lines.append(
+            [(center[0] + 19, center[1] - 19), (center[0] - 19, center[1] + 19)]
+        )
     if ticks >= 3:
-        lines.append([(center[0]-22,center[1]),(center[0]+22,center[1])])
+        lines.append([(center[0] - 22, center[1]), (center[0] + 22, center[1])])
     if ticks >= 4:
-        lines.append([(center[0],center[1]-22),(center[0],center[1]+22)])
-        
+        lines.append([(center[0], center[1] - 22), (center[0], center[1] + 22)])
+
     return lines
 
-def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 400), spacing=5):
+
+def create_collage(
+    image_names, output_filename="./collage.jpg", thumbnail_size=(300, 400), spacing=5
+):
     # Open all images and resize them
-    images = [Image.open(name).resize(thumbnail_size, Image.LANCZOS) for name in image_names]
-    
+    images = [
+        Image.open(name).resize(thumbnail_size, Image.Resampling.LANCZOS)
+        for name in image_names
+    ]
+
     # Calculate the number of rows and columns
     num_images = len(images)
     cols = 3
     rows = math.ceil(num_images / cols)
-    
+
     # Create a new image with the appropriate size
     collage_width = cols * thumbnail_size[0] + (cols + 1) * spacing
     collage_height = rows * thumbnail_size[1] + (rows + 1) * spacing
-    collage = Image.new('RGB', (collage_width, collage_height), color='white')
-    
+    collage = Image.new("RGB", (collage_width, collage_height), color="white")
+
     # Paste the images into the collage
     for i, img in enumerate(images):
         row = i // cols
@@ -252,11 +271,12 @@ def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=
         x = spacing + col * (thumbnail_size[0] + spacing)
         y = spacing + row * (thumbnail_size[1] + spacing)
         collage.paste(img, (x, y))
-    
+
     # Save the collage
     collage.save(output_filename)
 
-    return output_filename;
+    return output_filename
+
 
 def get_main_keyboard():
     keyboard = [
@@ -271,7 +291,10 @@ def get_main_keyboard():
 def get_ironsworn_keyboard():
     keyboard = [
         [InlineKeyboardButton("Vows", callback_data="vows")],
-        [InlineKeyboardButton("Bonds -", callback_data="bonds-"),InlineKeyboardButton("Bonds +", callback_data="bonds+")],
+        [
+            InlineKeyboardButton("Bonds -", callback_data="bonds-"),
+            InlineKeyboardButton("Bonds +", callback_data="bonds+"),
+        ],
         [InlineKeyboardButton("Assets", callback_data="assets")],
         [InlineKeyboardButton("Back", callback_data="back_to_main")],
     ]
@@ -348,6 +371,7 @@ def get_character_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+
 def get_asset_keyboard():
     keyboard = [
         [InlineKeyboardButton("Add Asset", callback_data="add_asset")],
@@ -382,7 +406,6 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         modified_image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
     except:
         image_path = "./data/Ironsworn_sheet.png"
-
 
     # Send the message with the image and keyboard
     message = await update.message.reply_photo(
@@ -494,10 +517,8 @@ async def character_button_callback(
             ),
             reply_markup=get_state_keyboard(),
         )
-        
-    elif query.data in [
-        "momentum_plus","momentum_minus"
-    ]:
+
+    elif query.data in ["momentum_plus", "momentum_minus"]:
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
         image_path = "./data/Ironsworn_sheet.png"
@@ -511,10 +532,7 @@ async def character_button_callback(
             reply_markup=get_momentum_keyboard(),
         )
 
-
-    elif query.data in [
-        "bonds+","bonds-"
-    ]:
+    elif query.data in ["bonds+", "bonds-"]:
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
         image_path = "./data/Ironsworn_sheet.png"
@@ -527,12 +545,17 @@ async def character_button_callback(
             ),
             reply_markup=get_ironsworn_keyboard(),
         )
-    elif query.data == 'assets':
+    elif query.data == "assets":
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
         # Refresh the character sheet image
-        assets = data[str(update.effective_user.id)]['assets']
-        modified_image_path = create_collage(['./data/assets/'+a.lower()+'.png' for a in assets], output_filename='./data/'+data[str(update.effective_user.id)]['name']+'.jpg')
+        assets = data[str(update.effective_user.id)]["assets"]
+        modified_image_path = create_collage(
+            ["./data/assets/" + a.lower() + ".png" for a in assets],
+            output_filename="./data/"
+            + data[str(update.effective_user.id)]["name"]
+            + ".jpg",
+        )
         await query.message.edit_media(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="Assets updated"
@@ -600,11 +623,16 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     )
     return SHOWING_CHARACTER
 
-async def handle_momentum_max_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def handle_momentum_max_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     del context
 
     momentum_max = update.message.text
-    await update_sheet("changing_momentum_max", momentum_max, str(update.effective_user.id))
+    await update_sheet(
+        "changing_momentum_max", momentum_max, str(update.effective_user.id)
+    )
 
     # Refresh the character sheet image
     image_path = "./data/Ironsworn_sheet.png"
@@ -617,11 +645,16 @@ async def handle_momentum_max_input(update: Update, context: ContextTypes.DEFAUL
     )
     return SHOWING_CHARACTER
 
-async def handle_momentum_reset_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def handle_momentum_reset_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     del context
 
     momentum_reset = update.message.text
-    await update_sheet("changing_momentum_reset", momentum_reset, str(update.effective_user.id))
+    await update_sheet(
+        "changing_momentum_reset", momentum_reset, str(update.effective_user.id)
+    )
 
     # Refresh the character sheet image
     image_path = "./data/Ironsworn_sheet.png"
