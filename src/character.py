@@ -257,6 +257,8 @@ def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=
     collage.save(output_filename)
     print(f"Collage saved as {output_filename}")
 
+    return output_filename;
+
 # Example usage:
 # image_names = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg']
 # create_collage(image_names)
