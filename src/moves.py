@@ -8,7 +8,6 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-import json
 
 from src.utils import cancel, end_conversation, flip_page, split_text
 
@@ -300,7 +299,7 @@ On a *weak hit*, your bond is fragile and you must prove your loyalty. Envision 
 
 On a *miss*, or if you have no interest in maintaining this relationship, clear the bond and _Pay the Price_.
                 """
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
 
         case "Aid Ally":
             text = """
@@ -308,7 +307,7 @@ On a *miss*, or if you have no interest in maintaining this relationship, clear 
 
 When *you _Secure an Advantage_ in direct support of an ally*, and score a hit, they (instead of you) can take the benefits of the move. If you are in combat and score a strong hit, you and your ally have initiative.
             """
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
         case "Write Epilogue":
             text = """
 *WRITE YOUR EPILOGUE*
@@ -323,10 +322,10 @@ On a *weak hit*, your life takes an unexpected turn, but not necessarily for the
 
 On a miss, your fears are realized.
             """
-            back_type = 'back_to_relationship'
+            back_type = "back_to_relationship"
 
         case "Enter Fray":
-            text ="""
+            text = """
 *ENTER THE FRAY*
 
 When *you enter into combat*, first set the rank of each of your foes.
@@ -350,9 +349,9 @@ On a *weak hit*, choose one.
 
 On a *miss*, combat begins with you at a disadvantage. _Pay the Price_. Your foe has initiative.
 """
-            back_type = 'back_to_combat'
+            back_type = "back_to_combat"
         case "Strike":
-            text ="""
+            text = """
 *STRIKE*
 
 When *you have initiative and attack in close quarters*, roll +iron 
@@ -364,7 +363,7 @@ On a *weak hit*, inflict your harm and lose initiative.
 
 On a *miss*, your attack fails and you must _Pay the Price_. Your foe has initiative.
 """
-            back_type = 'back_to_combat'
+            back_type = "back_to_combat"
         case "Clash":
             text = """
 *CLASH*
@@ -380,7 +379,7 @@ On a *weak hit*, inflict your harm, but then _Pay the Price_. Your foe has initi
 
 On a *miss*, you are outmatched and must _Pay the Price_. Your foe has initiative.
 """
-            back_type ='back_to_combat'
+            back_type = "back_to_combat"
         case "Turn Tide":
             text = """
 *TURN THE TIDE*
@@ -389,7 +388,7 @@ Once per fight, when *you risk it all*, you may steal initiative from your foe t
 
 If you fail to score a hit on that move, you must suffer a dire outcome. _Pay the Price_.
 """
-            back_type = 'back_to_combat'
+            back_type = "back_to_combat"
 
     keyboard = [
         [InlineKeyboardButton("Manual", callback_data=f"manual_{move_name}")],
@@ -642,7 +641,7 @@ If multiple characters make this move to contribute to an ally action, all _Secu
 Don’t ping pong this move back and forth between two characters in an attempt to build momentum. Envision what you are doing to _Aid Your Ally_, make the _Secure an Advantage_ move, resolve it, and hand the reins over to your ally as they leverage the advantage. Keep it moving. Make things happen.
 """
         case "Write Epilogue":
-            text ="""
+            text = """
 You make this move only once—when all your vows are fulfilled or forsaken and you choose to end your character’s adventuring life. For better or worse, the bonds you’ve made will echo through your days. How have you left your mark? Where are you welcomed and where are you shunned? What remains of you when your quests are at an end? 
 
 This is a progress move. Tally the number of filled boxes on your bonds progress track as your progress score. Only add fully filled boxes (those with four ticks). Then, roll your challenge dice, compare to your progress score, and resolve a strong hit, weak hit, or miss as normal. You may not burn momentum on this roll, and you are not affected by negative momentum.
@@ -674,7 +673,7 @@ On a weak hit, you’ve done some damage but have overextended or your foe count
 On a miss, you must _Pay the Price_. Your opponent strikes back and you _Endure Harm_. You lose position or advantage and suffer -momentum. You face a new or intensified danger. A companion or ally is put in harm’s way. Your weapon is dropped or broken. Let the outcome flow out of the fiction, or roll on the _Pay the Price_ table to see what happens. 
 """
         case "Clash":
-            text ="""
+            text = """
 When your foe has initiative and attacks, and you choose to fight back, make this move.
 
 First, envision your action and the fiction of the exchange. Is this a focused, dramatic moment where you each seek an opening? Or is it a flurry of attacks and parries, advances and retreats? The outcome of the _Clash_ determines if your foe presses their advantage, or if you take control of the fight.
@@ -891,24 +890,20 @@ async def back_to_relationship_callback(
 ):
     await relationship_callback(update, context)
 
-async def back_to_combat_callback(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-):
+
+async def back_to_combat_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await combat_callback(update, context)
 
-async def back_to_suffer_callback(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-):
+
+async def back_to_suffer_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await suffer_callback(update, context)
 
-async def back_to_quest_callback(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-):
+
+async def back_to_quest_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await quest_callback(update, context)
 
-async def back_to_fate_callback(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-):
+
+async def back_to_fate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await fate_callback(update, context)
 
 

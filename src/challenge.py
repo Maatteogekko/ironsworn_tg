@@ -26,10 +26,10 @@ async def challenge(
     num2 = random.randint(1, 10)
 
     # Send stickers (placeholder stickers)
-    with open("./data/d8_sticker_id.json", "r", encoding="utf-8") as file:
-        d8_sticker_id = json.load(file)
-    await update.message.reply_sticker(d8_sticker_id[str(num1)])
-    await update.message.reply_sticker(d8_sticker_id[str(num2)])
+    with open("./data/d10_sticker_id.json", "r", encoding="utf-8") as file:
+        d10_sticker_id = json.load(file)
+    await update.message.reply_sticker(d10_sticker_id[str(num1)])
+    await update.message.reply_sticker(d10_sticker_id[str(num2)])
 
     context.user_data["num1"] = num1
     context.user_data["num2"] = num1
@@ -55,6 +55,7 @@ async def action_dice_callback(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
+    del context
 
     query = update.callback_query
     await query.answer()

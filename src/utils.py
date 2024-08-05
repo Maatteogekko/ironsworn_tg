@@ -1,6 +1,6 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-import json
+
 
 def split_text(text, max_length=4096):
     """Split the text by lines."""
@@ -96,6 +96,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
     return ConversationHandler.END
 
+
 async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     del update, context
@@ -103,8 +104,8 @@ async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     return ConversationHandler.END
 
 
-
 # PARTE PER CANCELLARE AUTOMATICAMENTE
+# pylint: disable=pointless-string-statement
 """
 await delete_summon_command(update,context)
 # Appendi il summon message in cancel.json

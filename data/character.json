@@ -20,7 +20,7 @@
         "state": {
             "health": 5,
             "spirit": 5,
-            "supply": 4
+            "supply": 5
         },
         "condition": {
             "wounded": 0,
@@ -39,7 +39,7 @@
                 "Tracker": 0,
                 "description": "Not now"
             },
-            "Current Objectvie: Survive": {
+            "Current Objective: Survive": {
                 "difficulty": "Dangerous",
                 "Tracker": 10,
                 "description": "Not now"
@@ -69,6 +69,19 @@
             "spirit": 5,
             "supply": 5
         },
+        "bonds": 2,
+        "vows": {
+            "Show that Margaret was right": {
+                "difficulty": "Epic",
+                "Tracker": 0,
+                "description": "Not now"
+            },
+            "Current Objective: Investigate the fallen ship": {
+                "difficulty": "Dangerous",
+                "Tracker": 0,
+                "description": "Not now"
+            }
+        },
         "condition": {
             "wounded": 0,
             "shaken": 0,
@@ -78,8 +91,6 @@
             "corrupted": 0,
             "cursed": 0,
             "tormented": 0
-        },
-        "bonds": 2,
-        "vows": {}
+        }
     }
 }
