@@ -20,7 +20,7 @@
         "state": {
             "health": 5,
             "spirit": 5,
-            "supply": 5
+            "supply": 4
         },
         "condition": {
             "wounded": 0,
