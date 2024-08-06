@@ -308,6 +308,7 @@ On a *miss*, or if you have no interest in maintaining this relationship, clear 
 When *you _Secure an Advantage_ in direct support of an ally*, and score a hit, they (instead of you) can take the benefits of the move. If you are in combat and score a strong hit, you and your ally have initiative.
             """
             back_type = "back_to_relationship"
+
         case "Write Epilogue":
             text = """
 *WRITE YOUR EPILOGUE*
@@ -350,6 +351,7 @@ On a *weak hit*, choose one.
 On a *miss*, combat begins with you at a disadvantage. _Pay the Price_. Your foe has initiative.
 """
             back_type = "back_to_combat"
+
         case "Strike":
             text = """
 *STRIKE*
@@ -364,6 +366,7 @@ On a *weak hit*, inflict your harm and lose initiative.
 On a *miss*, your attack fails and you must _Pay the Price_. Your foe has initiative.
 """
             back_type = "back_to_combat"
+
         case "Clash":
             text = """
 *CLASH*
@@ -380,7 +383,8 @@ On a *weak hit*, inflict your harm, but then _Pay the Price_. Your foe has initi
 On a *miss*, you are outmatched and must _Pay the Price_. Your foe has initiative.
 """
             back_type = "back_to_combat"
-        case "Turn the Tide":
+
+        case "Turn Tide":
             text = """
 *TURN THE TIDE*
 
@@ -390,7 +394,7 @@ If you fail to score a hit on that move, you must suffer a dire outcome. _Pay th
 """
             back_type = "back_to_combat"
 
-        case "End the Fight":
+        case "End Fight":
             text = """
 *END THE FIGHT*
 
@@ -435,7 +439,7 @@ On a *miss*, you are defeated and the objective is lost to you. _Pay the Price_.
 """
             back_type = "back_to_combat"
 
-        case "Other moves":
+        case "Other Battle Moves":
             text = """
 *OTHER MOVES*
 
@@ -465,11 +469,12 @@ exchange for +1 health.
 On a *weak hit*, you press on.
 
 On a *miss*, also suffer -1 momentum. If you are at 0 health, you must mark wounded or maimed (if currently unmarked) or roll on the following table.
-• *1-10*: The harm is mortal. _Face Death_.
-• *11-20*: You are dying. You need to _Heal_ within an hour or two or _Face Death_.
-• *21-35*: You are unconscious and out of action. If left alone, you come back to your senses in an hour or two. If you are vulnerable to a foe not inclined to show mercy, _Face Death_.
-• *36-50*: You are reeling and fighting to stay conscious. If you engage in any vigorous activity (such as running or fighting) before taking a breather for a few minutes, roll on this table again (before resolving the other move).
-• *51-00*: You are battered but still standing.
+
+■ *1-10*: The harm is mortal. _Face Death_.
+■ *11-20*: You are dying. You need to _Heal_ within an hour or two or _Face Death_.
+■ *21-35*: You are unconscious and out of action. If left alone, you come back to your senses in an hour or two. If you are vulnerable to a foe not inclined to show mercy, _Face Death_.
+■ *36-50*: You are reeling and fighting to stay conscious. If you engage in any vigorous activity (such as running or fighting) before taking a breather for a few minutes, roll on this table again (before resolving the other move).
+■ *51-00*: You are battered but still standing.
 """
             back_type = "back_to_suffer"
 
@@ -520,10 +525,11 @@ On a *strong hit*, choose one.
 On a *weak hit*, you press on.
 
 On a *miss*, also suffer -1 momentum. If you are at 0 spirit, you must mark shaken or corrupted (if currently unmarked) or roll on the following table.
-• *1-10*: You are overwhelmed. _Face Desolation_.
-• *11-25*: You give up. _Forsake Your Vow_ (if possible, one relevant to your current crisis).
-• *26-50*: You give in to a fear or compulsion, and act against your better instincts.
-• *51-00*: You persevere.
+
+■ *1-10*: You are overwhelmed. _Face Desolation_.
+■ *11-25*: You give up. _Forsake Your Vow_ (if possible, one relevant to your current crisis).
+■ *26-50*: You give in to a fear or compulsion, and act against your better instincts.
+■ *51-00*: You persevere.
 """
             back_type = "back_to_suffer"
 
@@ -543,7 +549,7 @@ On a *miss*, you succumb to despair or horror and are lost.
 """
             back_type = "back_to_suffer"
 
-        case "Out of Supply":
+        case "Out Supply":
             text = """
 *OUT OF SUPPLY*
 
@@ -551,7 +557,7 @@ When *your supply is exhausted* (reduced to 0), mark unprepared. If you suffer a
 """
             back_type = "back_to_suffer"
 
-        case "Face a Setback":
+        case "Face Setback":
             text = """
 *FACE A SETBACK*
 
@@ -560,6 +566,124 @@ When *your momentum is at its minimum* (-6), and you suffer additional -momentum
 • Envision an event or discovery (_Ask the Oracle_ if unsure) which undermines your progress in a current quest, journey, or fight. Then, for each additional -momentum, clear 1 unit of progress on that track per its rank (troublesome=clear 3 progress; dangerous=clear 2 progress; formidable=clear 1 progress; extreme=clear 2 ticks; epic=clear 1 tick).
 """
             back_type = "back_to_suffer"
+
+        case "Swear Iron Vow":
+            text = """
+*SWEAR AN IRON VOW*
+
+When *you swear upon iron to complete a quest*, write your vow and give the quest a rank. Then, roll +heart. If you make this vow to a person or community with whom you share a bond, add +1.
+
+On a *strong hit*, you are emboldened and it is clear what you must do next (_Ask the Oracle_ if unsure). Take +2 momentum.
+
+On a *weak hit*, you are determined but begin your quest with more questions than answers. Take +1 momentum, and envision what you do to find a path forward.
+
+On a *miss*, you face a significant obstacle before you can begin your quest. Envision what stands in your way (_Ask the Oracle_ if unsure), and choose one.
+• You press on: Suffer -2 momentum, and do what you must to overcome this obstacle.
+• You give up: _Forsake Your Vow_.
+"""
+            back_type = "back_to_quest"
+
+        case "Reach Milestone":
+            text = """
+*REACH A MILESTONE*
+
+When *you make significant progress in your quest* by overcoming a critical obstacle, completing a perilous journey, solving a complex mystery, defeating a powerful threat, gaining vital support, or acquiring a crucial item, you may mark progress.
+• Troublesome quest: Mark 3 progress.
+• Dangerous quest: Mark 2 progress.
+• Formidable quest: Mark 1 progress.
+• Extreme quest: Mark 2 ticks.
+• Epic quest: Mark 1 tick.
+"""
+            back_type = "back_to_quest"
+
+        case "Fulfill Vow":
+            text = """
+*FULFILL YOUR VOW*
+
+When *you achieve what you believe to be the fulfillment of your vow*, roll the challenge dice and compare to your progress. Momentum is ignored on this roll.
+
+On a *strong hit*, your quest is complete. Mark experience (troublesome=1; dangerous=2; formidable=3; extreme=4; epic=5).
+
+On a *weak hit*, there is more to be done or you realize the truth of your quest. Envision what you discover (_Ask the Oracle_ if unsure). Then, mark experience (troublesome=0; dangerous=1; formidable=2; extreme=3; epic=4). You may _Swear an Iron Vow_ to set things right. If you do, add +1.
+
+On a *miss*, your quest is undone. Envision what happens (_Ask the Oracle_ if unsure), and choose one.
+• You recommit: Clear all but one filled progress, and raise the quest's rank by one (if not already epic).
+• You give up: _Forsake Your Vow_.
+"""
+            back_type = "back_to_quest"
+
+        case "Forsake Vow":
+            text = """
+*FORSAKE YOUR VOW*
+
+When *you renounce your quest, betray your promise, or the goal is lost to you*, clear the vow and _Endure Stress_. You suffer -spirit equal to the rank of your quest (troublesome=1; dangerous=2; formidable=3; extreme=4; epic=5).
+
+If the vow was made to a person or community with whom you share a bond, _Test Your Bond_ when you next meet.
+"""
+            back_type = "back_to_quest"
+
+        case "Advance":
+            text = """
+*ADVANCE*
+
+When *you focus on your skills, receive training, find inspiration, earn a reward, or gain a companion*, you may spend 3 experience to add a new asset, or 2 experience to upgrade an asset.
+"""
+            back_type = "back_to_quest"
+
+        case "Pay Price":
+            text = """
+*PAY THE PRICE*
+
+When *you suffer the outcome of a move*, choose one.
+
+• Make the most obvious negative outcome happen.
+
+• Envision two negative outcomes. Rate one as "likely", and _Ask the Oracle_ using the yes/no table. On a "yes", make that outcome happen. Otherwise, make it the other.
+
+• Roll on the following table. If you have difficulty interpreting the result to fit the current situation, roll again.
+
+■ *1-2*: Roll again and apply that result but make it worse. If you roll this result yet again, think of something dreadful that changes the course of your quest (Ask the Oracle if unsure) and make it happen.
+■ *3-5*: A person or community you trusted loses faith in you, or acts against you.
+■ *6-9*: A person or community you care about is exposed to danger.
+■ *10-16*: You are separated from something or someone.r.
+■ *17-23*: Your action has an unintended effect.
+■ *24-32*: Something of value is lost or destroyed.
+■ *33-41*: The current situation worsens.
+■ *42-50*: A new danger or foe is revealed.
+■ *51-59*: It causes a delay or puts you at a disadvantage.
+■ *60-68*: It is harmful.
+■ *69-76*: It is stressful.
+■ *77-85*: A surprising development complicates your quest.
+■ *86-90*: It wastes resources.
+■ *91-94*: It forces you to act against your best intentions.
+■ *95-98*: A friend, companion, or ally is put in harm's way (or you are, if alone).
+■ *99-00*: Roll twice more on this table. Both results occur. If they are the same result, make it worse.
+"""
+            back_type = "back_to_fate"
+
+        case "Ask Oracle":
+            text = """
+*ASK THE ORACLE*
+
+When *you seek to resolve questions, discover details in the world, determine how other characters respond, or trigger encounters or events*, you may…
+
+• Draw a conclusion: Decide the answer based on the most interesting and obvious result.
+
+• Ask a yes/no question: Decide the odds of a "yes", and roll on the table below to check the answer.
+
+• Pick two: Envision two options. Rate one as "likely", and roll on the table below to see if it is true. If not, it is the other.
+
+• Spark an idea: Brainstorm or use a random prompt.
+
+■ *Almost Certain*: The answer is "yes" if you roll *11 or greater*.
+■ *Likely*: The answer is "yes" if you roll *26 or greater*.
+■ *50/50*: The answer is "yes" if you roll *51 or greater*.
+■ *Unlikely*: The answer is "yes" if you roll *76 or greater*.
+■ *Small Chance*: The answer is "yes" if you roll *91 or greater*.
+
+On a match, an extreme result or twist has occurred.
+"""
+            back_type = "back_to_fate"
 
     keyboard = [
         [InlineKeyboardButton("Manual", callback_data=f"manual_{move_name}")],
@@ -666,17 +790,17 @@ First, give your journey a rank. Decide how far—and how hazardous—it is base
 
 If the journey is mundane—a relatively short distance through safe territory—don't make this move. Just narrate the trip and jump to what happens or what you do when you arrive.
 
-*ALONG FOR THE RIDE?*\n
+*ALONG FOR THE RIDE?*
 If you are part of a caravan or party of NPCs, and aren't an active participant in the planning or execution of the journey, you won't make this move or track progress. The journey will be resolved in the fiction. You can *Ask the Oracle* to determine what happens en route or when you arrive.
 
-*ALLIES AND JOURNEYS*\n
+*ALLIES AND JOURNEYS*
 If you are traveling with allies, one of you makes the _Undertake a Journey_ roll for each segment, and you share a progress track. The responsibility for leading the journey can switch from segment to segment as you like.
 
 Your fellow travelers can assist by making the _Aid Your Ally_ move. Perhaps they are scouting ahead or sustaining you with a lively song. They can also _Resupply_ to represent foraging or hunting for supplies en route. Everyone should offer narrative color for what they do and see on the journey, even if they are not making moves.
 
 Only the character making the move takes the momentum bonus on a strong hit. But, because your supply track is shared, each of you mark -1 supply when the acting character makes that choice on a strong hit or when they suffer a weak hit.
 
-*WAYPOINTS*\n
+*WAYPOINTS*
 If you score a strong or weak hit on this move, you reach a waypoint. A waypoint is a feature of the landscape, a settlement, or a point-of-interest. Depending on the information you have or whether you have traveled this area before, a specific waypoint may be known to you. If it isn't, envision what you find. If you need inspiration, _Ask the Oracle_.
 
 You will find random tables for waypoint features on page 176, but do not rely too heavily on these generators. Seek inspiration from your fiction and the landscape you envision around you. If it's interesting, wondrous, or creates new opportunities for drama and adventure, bring it to life.
@@ -685,19 +809,19 @@ Depending on the pace of your story and your current situation, you may choose t
 
 When you roll a match (page 9), take the opportunity to introduce something unexpected. This could be an encounter, a surprising or dramatic feature of the landscape, or a turn of events in your current quest.
 
-*MARKING PROGRESS*\n
+*MARKING PROGRESS*
 When you score a hit and reach a waypoint, you mark progress per the rank of the journey. For example, on a dangerous journey you mark 2 progress (filling two boxes on your progress track) for each waypoint. When you feel you have accumulated enough progress and are ready to make a final push towards your destination, make the _Reach Your Destination_ move. For more on progress tracks and progress moves, see page 14.
 
-*TRAVEL TIME*\n
+*TRAVEL TIME*
 Travel time can largely be abstracted. The time between waypoints might be hours or days, depending on the terrain and the distance. If it's important, make a judgment call based on what you know of your journey, or _Ask the Oracle_.
 
-*MOUNTS AND TRANSPORT*\n
+*MOUNTS AND TRANSPORT*
 Horses, mules, and transport (such as boats) influence the fiction of your journey—the logistics of travel and how long it takes. They do not provide a mechanical benefit unless you have an asset which gives you a bonus (such as a *Horse* companion).
 
-*MANAGING RESOURCES*\n
+*MANAGING RESOURCES*
 You can intersperse _Resupply_ or _Make Camp_ moves during your journey to manage your health, spirit and supply, or to create new scenes as diversions. Don't be concerned with using the _Make Camp_ move as an automatic capstone to a day of travel. You can be assumed to rest and camp as appropriate without making the move, and you can roleplay out those scenes or gloss over them as you like. When you want the mechanical benefit of the _Make Camp_ move, or you're interested in playing the move out through the fiction, then do it.
 
-*ON A MISS...*\n
+*ON A MISS...*
 You do not mark progress on a miss. Instead, you encounter a new danger. You might face hazards through the weather, the terrain, encounters with creatures or people, attacks from your enemies, strange discoveries, or supernatural events. Decide what happens based on your current circumstances and surroundings, roll on the _Pay the Price_ table, or _Ask the Oracle_ for inspiration. Depending on your desired narrative pace, you can then play out the event to see what happens, or summarize and apply the consequences immediately.
 
 For example, you roll a miss and decide you encounter a broad, wild river which must be crossed to continue on your journey. If you want to focus on how you deal with the situation, play to see what happens by making moves. You might _Secure an Advantage_ by exploring upriver for a ford and then _Face Danger_ to cross. Or, if want to quickly push the story forward, you could fast-forward to a perilous outcome such as losing some provisions during the crossing (suffer -supply). Mix things up, especially on long journeys.
@@ -925,6 +1049,13 @@ move_names = [
     "face_desolation",
     "out_supply",
     "face_setback",
+    "swear_iron_vow",
+    "reach_milestone",
+    "fulfill_vow",
+    "forsake_vow",
+    "advance",
+    "pay_price",
+    "ask_oracle",
     "back_to_main",
 ]
 
@@ -1047,7 +1178,17 @@ async def quest_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="Quest moves will be implemented here.")
+
+    keyboard = [
+        [InlineKeyboardButton("Swear an Iron Vow", callback_data="swear_iron_vow")],
+        [InlineKeyboardButton("Reach a Milestone", callback_data="reach_milestone")],
+        [InlineKeyboardButton("Fulfill your Vow", callback_data="fulfill_vow")],
+        [InlineKeyboardButton("Forsake your Vow", callback_data="forsake_vow")],
+        [InlineKeyboardButton("Advance", callback_data="advance")],
+        [InlineKeyboardButton("Back", callback_data="back_to_main")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="Quest moves:", reply_markup=reply_markup)
 
 
 async def fate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1055,7 +1196,14 @@ async def fate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="Fate moves will be implemented here.")
+
+    keyboard = [
+        [InlineKeyboardButton("Pay the Price", callback_data="pay_price")],
+        [InlineKeyboardButton("Ask the Oracle", callback_data="ask_oracle")],
+        [InlineKeyboardButton("Back", callback_data="back_to_main")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="Fate moves:", reply_markup=reply_markup)
 
 
 async def back_to_zero_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
