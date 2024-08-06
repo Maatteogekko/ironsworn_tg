@@ -72,15 +72,15 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["bonds"] -=1
     if task.startswith('vow'):
         vows = list(data[chat_id]["vows"].keys()) 
-        task=task.split('_')
-        if task[1] == 'plus':
-            data[chat_id]["vows"][vows[int(task[0][-1])]]['Tracker'] +=1
-        if task[1] == 'minus':
-            data[chat_id]["vows"][vows[int(task[0][-1])]]['Tracker'] -=1  
+        task_=task.split('_')
+        if task_[1] == 'plus':
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]['tracker'] +=1
+        if task_[1] == 'minus':
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]['tracker'] -=1  
     if task == 'add_vow_name':
         data[chat_id]['vows'][new] = {
                 "difficulty": None,
-                "Tracker": 0,
+                "tracker": 0,
                 "description": None
             }
     if task == 'add_vow_difficulty':
@@ -88,9 +88,9 @@ async def update_sheet(task, new, chat_id) -> str:
     if task == 'add_vow_description':
         data[chat_id]['vows'][new[0]]["description"] = new[1]
     if task.startswith('cancel_vow'):
-        task=task.split('_')
-        print("popping", task[-1])
-        data[chat_id]["vows"].pop(task[-1])
+        task_=task.split('_')
+        print("popping", task_[-1])
+        data[chat_id]["vows"].pop(task_[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -204,6 +204,29 @@ async def create_sheet(chat_id, image_path: str) -> str:
             width=7,
         )
 
+    # Insert vows
+    cn =[290,635]
+    vows = data["vows"]
+    for i,vow in enumerate(vows.keys()):
+        draw.text((cn[0], cn[1]), str(vow), fill=color, font=font(40))
+        c_y = cn[0]+284.8
+        s_y = cn[1]+128
+        for i in range(int(vows[vow]['tracker'] / 4)):
+            for l in ticks([c_y, s_y], 4):
+                draw.line(
+                    l,
+                    fill=color,
+                    width=7,
+                )
+            c_y = c_y + 61.3
+        for l in ticks([c_y, s_y], vows[vow]['tracker'] % 4):
+            draw.line(
+                l,
+                fill=color,
+                width=7,
+            )
+        cn[1] += 195
+
     # Insert Conditions
     conditions = [
         "wounded",
@@ -230,16 +253,6 @@ async def create_sheet(chat_id, image_path: str) -> str:
             draw.ellipse(
                 [pos[i][0], pos[i][1], pos[i][0] + 26, pos[i][1] + 26], fill=color
             )
-
-    # Draw a black line from (300,300) to (400,400)
-    draw.line(
-        [
-            (random.random() * 1000, random.random() * 1000),
-            (random.random() * 1000, random.random() * 1000),
-        ],
-        fill="black",
-        width=20,
-    )
 
     # Save the modified image
     modified_image_path = "./data/" + data["name"] + "_character_sheet.png"
@@ -295,6 +308,14 @@ def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=
 
     return output_filename
 
+def generate_vow_text(update: Update):
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)[str(update.effective_user.id)]
+    text = ""
+    for vow in data["vows"].keys():
+        text += f"*{vow}*\n"
+        text += data["vows"][vow]['description']+'\n'
+    return text
 
 def get_main_keyboard():
     keyboard = [
@@ -497,7 +518,7 @@ async def character_button_callback(
         )
     elif query.data == "vows":
         await query.edit_message_caption(
-            "Vows options", reply_markup=get_vows_keyboard(update)
+            generate_vow_text(update),parse_mode="Markdown", reply_markup=get_vows_keyboard(update)
         )
     elif query.data == "back_to_main":
         await query.edit_message_caption("Main menu", reply_markup=get_main_keyboard())
@@ -630,7 +651,7 @@ async def character_button_callback(
         )
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption="Vow updated"
+                open(modified_image_path, "rb"), caption=generate_vow_text(update),parse_mode="Markdown",
             ),
             reply_markup=get_vows_keyboard(update),
         )

@@ -32,12 +32,17 @@
             "cursed": 0,
             "tormented": 0
         },
-        "bonds": 2,
+        "bonds": 3,
         "vows": {
             "Return to the stars": {
                 "difficulty": "epic",
-                "Tracker": 1,
+                "tracker": 0,
                 "description": "Not now"
+            },
+            "Tet": {
+                "difficulty": "formidable",
+                "tracker": 0,
+                "description": "Yuh"
             }
         },
         "assets": [
@@ -73,12 +78,12 @@
         "vows": {
             "Show that Margaret was right": {
                 "difficulty": "epic",
-                "Tracker": 0,
+                "tracker": 0,
                 "description": "Not now"
             },
             "Current Objective: Investigate the fallen ship": {
                 "difficulty": "dangerous",
-                "Tracker": 0,
+                "tracker": 0,
                 "description": "Not now"
             }
         },
