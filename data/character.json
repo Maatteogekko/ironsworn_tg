@@ -36,13 +36,8 @@
         "vows": {
             "Return to the stars": {
                 "difficulty": "epic",
-                "tracker": 0,
-                "description": "Not now"
-            },
-            "Tet": {
-                "difficulty": "formidable",
-                "tracker": 0,
-                "description": "Yuh"
+                "Tracker": 0,
+                "description": "Stranded in the Ironlands, you must survive and return to the moon. It's your destiny? Or maybe your mission? Either way, it's only your life at stake.  Are you really that selfish?"
             }
         },
         "assets": [
