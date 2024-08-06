@@ -210,7 +210,7 @@ When you *attempt to persuade someone to do something*, envision your approach a
 • Threaten or incite: Roll +iron.
 • Lie or swindle: Roll +shadow.
 
-On a *strong hit*, they’ll do what you want or share what they know. Take +1 momentum. If you use this exchange to _Gather Information_, make that move now and add +1.
+On a *strong hit*, they'll do what you want or share what they know. Take +1 momentum. If you use this exchange to _Gather Information_, make that move now and add +1.
 
 On a *weak hit*, as above, but they ask something of you in return. Envision what they want (_Ask the Oracle_ if unsure).
 
@@ -257,7 +257,7 @@ On a *strong hit*, take +1 momentum. You may also choose up to three boasts and 
 
 On a *weak hit*, you may choose one boast in exchange for +1 momentum.
 • Grant first strike: Your foe has initiative.
-• Bare yourself: Take no benefit of armor or shield; your foe’s harm is +1.
+• Bare yourself: Take no benefit of armor or shield; your foe's harm is +1.
 • Hold no iron: Take no benefit of weapons; your harm is 1.
 • Bloody yourself: Endure Harm (1 harm).
 • To the death: One way or another, this fight must end with death.
@@ -380,7 +380,7 @@ On a *weak hit*, inflict your harm, but then _Pay the Price_. Your foe has initi
 On a *miss*, you are outmatched and must _Pay the Price_. Your foe has initiative.
 """
             back_type = "back_to_combat"
-        case "Turn Tide":
+        case "Turn the Tide":
             text = """
 *TURN THE TIDE*
 
@@ -389,6 +389,177 @@ Once per fight, when *you risk it all*, you may steal initiative from your foe t
 If you fail to score a hit on that move, you must suffer a dire outcome. _Pay the Price_.
 """
             back_type = "back_to_combat"
+
+        case "End the Fight":
+            text = """
+*END THE FIGHT*
+
+When *you enter into combat*, set the rank of each of your foes.
+• Troublesome foe: 3 progress per harm; inflicts 1 harm.
+• Dangerous foe: 2 progress per harm; inflicts 2 harm.
+• Formidable foe: 1 progress per harm; inflicts 3 harm.
+• Extreme foe: 2 ticks per harm; inflicts 4 harm.
+• Epic foe: 1 tick per harm; inflicts 5 harm.
+
+Then, roll to determine who is in control. If you are...
+• Facing off against your foe: Roll +heart.
+• Moving into position against an unaware foe, or striking without warning: Roll +shadow.
+• Ambushed: Roll +wits.
+
+On a *strong hit*, take +2 momentum. You have initiative.
+
+On a *weak hit*, choose one.
+• Bolster your position: Take +2 momentum.
+• Prepare to act: Take initiative.
+
+On a *miss*, combat begins with you at a disadvantage. _Pay the Price_. Your foe has initiative.
+"""
+            back_type = "back_to_combat"
+
+        case "Battle":
+            text = """
+*BATTLE*
+
+When you *fight a battle*, and it happens in a blur, envision your objective and roll. If you primarily…
+• Fight at range, or using your speed and the terrain to your advantage: Roll +edge.
+• Fight depending on your courage, allies, or companions: Roll +heart.
+• Fight in close to overpower your opponents: Roll +iron.
+• Fight using trickery to befuddle your opponents: Roll +shadow.
+• Fight using careful tactics to outsmart your opponents: Roll +wits.
+
+On a *strong hit*, you achieve your objective unconditionally. Take +2 momentum.
+
+On a *weak hit*, you achieve your objective, but not without cost. _Pay the Price_.
+
+On a *miss*, you are defeated and the objective is lost to you. _Pay the Price_.
+"""
+            back_type = "back_to_combat"
+
+        case "Other moves":
+            text = """
+*OTHER MOVES*
+
+_*Secure an Advantage*_: When acting to outwit or outmaneuver your foe, or setting up another move.
+
+_*Face Danger*_: When overcoming an obstacle, avoiding a hazard, fleeing, or evading an attack (without fighting back).
+_*Aid Your Ally*_: When making a move to give your ally an advantage.
+_*Compel*_: When surrendering, coercing your foe to stand down, or negotiating a truce.
+*Suffer Moves (all)*: When facing physical damage, mental trauma, or lack of supply.
+_*Pay the Price*_: When suffering the outcome of a move.
+_*Ask the Oracle*_: When asking questions about combat events or your foe's intent and actions.
+"""
+            back_type = "back_to_combat"
+
+        case "Endure Harm":
+            text = """
+*ENDURE HARM*
+
+When *you face physical damage*, suffer -health equal to your foe's rank or as appropriate to the situation. If your health is 0, suffer -momentum equal to any remaining -health.
+Then, roll +health or +iron, whichever is higher.
+
+On a *strong hit*, choose one.
+• Shake it off: If your health is greater than 0, suffer -1 momentum in
+exchange for +1 health.
+• Embrace the pain: Take +1 momentum.
+
+On a *weak hit*, you press on.
+
+On a *miss*, also suffer -1 momentum. If you are at 0 health, you must mark wounded or maimed (if currently unmarked) or roll on the following table.
+• *1-10*: The harm is mortal. _Face Death_.
+• *11-20*: You are dying. You need to _Heal_ within an hour or two or _Face Death_.
+• *21-35*: You are unconscious and out of action. If left alone, you come back to your senses in an hour or two. If you are vulnerable to a foe not inclined to show mercy, _Face Death_.
+• *36-50*: You are reeling and fighting to stay conscious. If you engage in any vigorous activity (such as running or fighting) before taking a breather for a few minutes, roll on this table again (before resolving the other move).
+• *51-00*: You are battered but still standing.
+"""
+            back_type = "back_to_suffer"
+
+        case "Face Death":
+            text = """
+*FACE DEATH*
+
+When you *are brought to the brink of death*, and glimpse the world
+beyond, roll +heart.
+
+On a *strong hit*, death rejects you. You are cast back into the mortal world.
+
+On a *weak hit*, choose one.
+• You die, but not before making a noble sacrifice. Envision your final moments.
+• Death desires something of you in exchange for your life. Envision what it wants (_Ask the Oracle_ if unsure), and _Swear an Iron Vow_ (formidable or extreme) to complete that quest. If you fail to score a hit when you _Swear an Iron Vow_, or refuse the quest, you are dead. Otherwise, you return to the mortal world and are now cursed. You may only clear the cursed debility by completing the quest.
+
+On a *miss*, you are dead.
+"""
+            back_type = "back_to_suffer"
+
+        case "Companion Endure Harm":
+            text = """
+*COMPANION ENDURE HARM*
+
+When your *companion faces physical damage*, they suffer -health equal to the amount of harm inflicted. If your companion's health is 0, exchange any leftover -health for -momentum.
+Then, roll +heart or +your companion's health, whichever is higher.
+
+On a *strong hit*, your companion rallies. Give them +1 health.
+
+On a *weak hit*, your companion is battered. If their health is 0, they cannot assist you until they gain at least +1 health.
+
+On a *miss*, also suffer -1 momentum. If your companion's health is 0, they are gravely wounded and out of action. Without aid, they die in an hour or two.
+If you roll a miss with a 1 on your action die, and your companion's health is 0, they are now dead. Take 1 experience for each marked ability on your companion asset, and remove it.
+"""
+            back_type = "back_to_suffer"
+
+        case "Endure Stress":
+            text = """
+*ENDURE STRESS*
+
+When you *face mental shock or despair*, suffer -spirit equal to your foe's rank or as appropriate to the situation. If your spirit is 0, suffer -momentum equal to any remaining -spirit.
+Then, roll +spirit or +heart, whichever is higher.
+
+On a *strong hit*, choose one.
+• Shake it off: If your spirit is greater than 0, suffer -1 momentum in exchange for +1 spirit
+• Embrace the darkness: Take +1 momentum
+
+On a *weak hit*, you press on.
+
+On a *miss*, also suffer -1 momentum. If you are at 0 spirit, you must mark shaken or corrupted (if currently unmarked) or roll on the following table.
+• *1-10*: You are overwhelmed. _Face Desolation_.
+• *11-25*: You give up. _Forsake Your Vow_ (if possible, one relevant to your current crisis).
+• *26-50*: You give in to a fear or compulsion, and act against your better instincts.
+• *51-00*: You persevere.
+"""
+            back_type = "back_to_suffer"
+
+        case "Face Desolation":
+            text = """
+*FACE DESOLATION*
+
+When *you are brought to the brink of desolation*, roll +heart.
+
+On a *strong hit*, you resist and press on.
+
+On a *weak hit*, choose one.
+• Your spirit or sanity breaks, but not before you make a noble sacrifice. Envision your final moments.
+• You see a vision of a dreaded event coming to pass. Envision that dark future (_Ask the Oracle_ if unsure), and _Swear an Iron Vow_ (formidable or extreme) to prevent it. If you fail to score a hit when you _Swear an Iron Vow_, or refuse the quest, you are lost. Otherwise, you return to your senses and are now tormented. You may only clear the tormented debility by completing the quest.
+
+On a *miss*, you succumb to despair or horror and are lost.
+"""
+            back_type = "back_to_suffer"
+
+        case "Out of Supply":
+            text = """
+*OUT OF SUPPLY*
+
+When *your supply is exhausted* (reduced to 0), mark unprepared. If you suffer additional -supply while unprepared, you must exchange each additional -supply for any combination of -health, -spirit or -momentum as appropriate to the circumstances.
+"""
+            back_type = "back_to_suffer"
+
+        case "Face a Setback":
+            text = """
+*FACE A SETBACK*
+
+When *your momentum is at its minimum* (-6), and you suffer additional -momentum, choose one.
+• Exchange each additional -momentum for any combination of -health, -spirit, or -supply as appropriate to the circumstances.
+• Envision an event or discovery (_Ask the Oracle_ if unsure) which undermines your progress in a current quest, journey, or fight. Then, for each additional -momentum, clear 1 unit of progress on that track per its rank (troublesome=clear 3 progress; dangerous=clear 2 progress; formidable=clear 1 progress; extreme=clear 2 ticks; epic=clear 1 tick).
+"""
+            back_type = "back_to_suffer"
 
     keyboard = [
         [InlineKeyboardButton("Manual", callback_data=f"manual_{move_name}")],
@@ -419,22 +590,22 @@ async def manual_callback(
     match move_name:
         case "Face Danger":
             text = """
-The _Face Danger_ move is a catch-all for risky, dramatic, or complex actions not covered by another move. If you’re trying to overcome an obstacle or resist a threat, make this move to see what happens. You select which stat to roll based on how you address the challenge.
+The _Face Danger_ move is a catch-all for risky, dramatic, or complex actions not covered by another move. If you're trying to overcome an obstacle or resist a threat, make this move to see what happens. You select which stat to roll based on how you address the challenge.
 
 A strong hit means you succeed. You are in control. What do you do next?
 
-A weak hit means you overcome the obstacle or avoid the threat, but not without cost. Choose an option and envision what happens next. You don’t have complete control. Consider how the situation might escalate, perhaps forcing you to react with another move.
+A weak hit means you overcome the obstacle or avoid the threat, but not without cost. Choose an option and envision what happens next. You don't have complete control. Consider how the situation might escalate, perhaps forcing you to react with another move.
 
 A miss means you are thwarted in your action, fail to oppose the threat, or make some progress but at great cost. You must _Pay the Price_.
 """
 
         case "Secure Advantage":
             text = """
-The structure of _Secure an Advantage_ is similar to _Face Danger_. You envision your action and roll + your most relevant stat. This move, however, is proactive rather than reactive. You’re evaluating the situation or strengthening your position.
+The structure of _Secure an Advantage_ is similar to _Face Danger_. You envision your action and roll + your most relevant stat. This move, however, is proactive rather than reactive. You're evaluating the situation or strengthening your position.
                 
-This move gives you an opportunity to build your momentum or improve your chance of success on a subsequent move. It’s a good move to make if you want to take a moment to size up the situation, or if you’re acting to gain control. It will often encompass a moment in time—such as shoving your foe with your shield to setup an attack. Or, it can represent preparation or evaluation spanning minutes, hours, or even days, depending on the narrative circumstances.
+This move gives you an opportunity to build your momentum or improve your chance of success on a subsequent move. It's a good move to make if you want to take a moment to size up the situation, or if you're acting to gain control. It will often encompass a moment in time—such as shoving your foe with your shield to setup an attack. Or, it can represent preparation or evaluation spanning minutes, hours, or even days, depending on the narrative circumstances.
 
-A strong hit means you’ve identified an opportunity or gained the upper hand. You knocked your enemy down. You moved into position for an arrow shot. You built your trap. You scouted the best path through the mountains. Now it’s time to build on your success.
+A strong hit means you've identified an opportunity or gained the upper hand. You knocked your enemy down. You moved into position for an arrow shot. You built your trap. You scouted the best path through the mountains. Now it's time to build on your success.
 
 A weak hit means your action has helped, but your advantage is fleeting or a new danger or complication is revealed. You pushed, and the world pushes back. What happens next?
 
@@ -443,13 +614,13 @@ A miss means your attempt to gain advantage has backfired. You acted too slowly,
 
         case "Gather Information":
             text = """
-Use this move when you’re not sure of your next steps, when the trail has gone cold, when you make a careful search, or when you do fact-finding.
+Use this move when you're not sure of your next steps, when the trail has gone cold, when you make a careful search, or when you do fact-finding.
 
-There’s some overlap with other moves using +wits and involving knowledge, but each has their purpose. When you’re forced to react with awareness or insight to deal with an immediate threat, that’s _Face Danger_. When you size up your options or leverage your expertise and prepare to make a move, that’s _Secure an Advantage_. When you’re spending time searching, investigating, asking questions—especially related to a quest—that’s when you _Gather Information_. Use whichever move is most appropriate to the circumstances and your intent.
+There's some overlap with other moves using +wits and involving knowledge, but each has their purpose. When you're forced to react with awareness or insight to deal with an immediate threat, that's _Face Danger_. When you size up your options or leverage your expertise and prepare to make a move, that's _Secure an Advantage_. When you're spending time searching, investigating, asking questions—especially related to a quest—that's when you _Gather Information_. Use whichever move is most appropriate to the circumstances and your intent.
 
 A strong hit means you gain valuable new information. You know what you need to do next. Envision what you learn, or _Ask the Oracle_.
 
-With a weak hit, you’ve learned something that makes your quest more complicated or dangerous. You know more about the situation, but it’s unwelcome news. To move forward, you need to overcome new obstacles and see where the clues lead.
+With a weak hit, you've learned something that makes your quest more complicated or dangerous. You know more about the situation, but it's unwelcome news. To move forward, you need to overcome new obstacles and see where the clues lead.
 
 On a miss, some event or person acts against you, a dangerous new threat is revealed, or you learn of something which contradicts previous information or severely complicates your quest.
 """
@@ -460,18 +631,18 @@ When you tend to physical damage or sickness—for yourself, an ally, or an NPC�
     
 Healing takes time. A few minutes for a quick treatment to get someone on their feet. Hours or perhaps days for more severe injuries. Use what seems appropriate to the circumstances, and consider how this downtime affects your quests and other things going on in your world.
 
-A miss can mean you’ve caused harm rather than helping, or some perilous event interrupts your care.
+A miss can mean you've caused harm rather than helping, or some perilous event interrupts your care.
 
-NPCs who are not companions do not have a health track. When you attempt to _Heal_ them, make this move and apply the result through the fiction. They will improve, or not, as appropriate to the move’s outcome.
+NPCs who are not companions do not have a health track. When you attempt to _Heal_ them, make this move and apply the result through the fiction. They will improve, or not, as appropriate to the move's outcome.
 """
 
         case "Resupply":
             text = """
-When you’re in the field and need to bolster your supply track, make this move. Fictionally, this represents hunting and gathering. You might also search an area where supplies might be found, such as an abandoned camp or field of battle.
+When you're in the field and need to bolster your supply track, make this move. Fictionally, this represents hunting and gathering. You might also search an area where supplies might be found, such as an abandoned camp or field of battle.
                 
-If you’re adventuring with allies, you share the same supply value. When one of you makes this move, each of you adjust your supply track.
+If you're adventuring with allies, you share the same supply value. When one of you makes this move, each of you adjust your supply track.
 
-If you have the unprepared condition marked, you can’t _Resupply_. Instead, you need to find help in a community when you _Sojourn_.
+If you have the unprepared condition marked, you can't _Resupply_. Instead, you need to find help in a community when you _Sojourn_.
 """
 
         case "Make Camp":
@@ -540,7 +711,7 @@ When you score a strong hit, you arrive at your destination and are well-positio
 
 On a weak hit, something complicates your arrival or your next steps. Things are not what you expected, or a new danger reveals itself. Perhaps the village is occupied by a raiding party, or the mystic whose counsel you sought is initially hostile to you. Envision what you find and play to see what happens.
 
-On a miss, something has gone horribly wrong. You realize you are off-course, you had bad information about your destination, or you face a turn of events undermining your purpose here. Depending on the circumstances, this might mean your journey ends in failure, or that you must push on while clearing all but one of your filled progress and raising the journey’s rank.
+On a miss, something has gone horribly wrong. You realize you are off-course, you had bad information about your destination, or you face a turn of events undermining your purpose here. Depending on the circumstances, this might mean your journey ends in failure, or that you must push on while clearing all but one of your filled progress and raising the journey's rank.
 
 If you are traveling with allies, one of you makes this move. Each of you benefit (or suffer) from the narrative outcome of the roll. Only the character making the move gets the mechanical benefit of a strong hit.
 """
@@ -549,11 +720,11 @@ If you are traveling with allies, one of you makes this move. Each of you benefi
             text = """
 When you act to persuade someone to do as you ask, or give you something, make this move. It might be through bargaining, or intimidation, charm, diplomacy, or trickery. Use the appropriate stat based on your approach, and roll to see what happens.
 
-This move doesn’t give you free rein to control the actions of other characters in your world. Remember: Fiction first. Consider their motivations. What is your leverage over them? What do they stand to gain or avoid? Do you have an existing relationship? If your argument has no merit, or your threat or promise carries no weight, you can’t make this move. You can’t intimidate your way out of a situation where you are at a clear disadvantage. You can’t barter when you have nothing of value to offer. If you are unsure, _Ask the Oracle_, 'Would they consider this?' If the answer is yes, make the move.
+This move doesn't give you free rein to control the actions of other characters in your world. Remember: Fiction first. Consider their motivations. What is your leverage over them? What do they stand to gain or avoid? Do you have an existing relationship? If your argument has no merit, or your threat or promise carries no weight, you can't make this move. You can't intimidate your way out of a situation where you are at a clear disadvantage. You can't barter when you have nothing of value to offer. If you are unsure, _Ask the Oracle_, 'Would they consider this?' If the answer is yes, make the move.
 
-On the other hand, if their positive response is all but guaranteed—you are acting obviously in their best interest or offering a trade of fair value—don’t make this move. Just make it happen. Save the move for times when the situation is uncertain and dramatic.
+On the other hand, if their positive response is all but guaranteed—you are acting obviously in their best interest or offering a trade of fair value—don't make this move. Just make it happen. Save the move for times when the situation is uncertain and dramatic.
 
-On a weak hit, success is hinged on their counter-proposal. Again, look to the fiction. What would they want? What would satisfy their concerns or motivate them to comply? If you accept their offer, you gain ground. If not, you’ve encountered an obstacle in your quest and need to find another path forward.
+On a weak hit, success is hinged on their counter-proposal. Again, look to the fiction. What would they want? What would satisfy their concerns or motivate them to comply? If you accept their offer, you gain ground. If not, you've encountered an obstacle in your quest and need to find another path forward.
 
 If you promise them something as part of this move, but then fail to do as you promised, they should respond accordingly. Perhaps it means a rude welcome when next you return to this community. If they are powerful, they may even act against you. If you share a bond, you would most certainly _Test Your Bond_. Your actions, good or bad, should have ramifications for your story beyond the scope of the move.
 
@@ -576,7 +747,7 @@ On a hit, this move also includes an option to roll again for one of your select
 
 You should envision what makes this community and its people unique. Give every community at least one memorable characteristic. If you need inspiration, _Ask the Oracle_. You will find creative prompts, along with generators for community names and troubles in chapter 6 (page 165).
 
-Narratively, you can imagine much of the time in this community passing as a montage. If you choose to focus on a recovery action, zoom into that scene and envision what happens. You might be in the healer’s house, at the market, dancing at a festival, or speaking with the clan leader and making plans. Envision how this scene begins, make your roll, and then narrate the conclusion of the scene—good or bad—based on the result of your focus roll.
+Narratively, you can imagine much of the time in this community passing as a montage. If you choose to focus on a recovery action, zoom into that scene and envision what happens. You might be in the healer's house, at the market, dancing at a festival, or speaking with the clan leader and making plans. Envision how this scene begins, make your roll, and then narrate the conclusion of the scene—good or bad—based on the result of your focus roll.
 
 You can also perform additional moves while in the community. If you need to _Gather Information_, _Compel someone_, or _Draw the Circle_ to resolve a feud, zoom into those scenes and play to see what happens. _Sojourn_ is an overarching move that sets the tone for your stay and defines the mechanics of your recovery. It is not the only move you can make.
 
@@ -587,9 +758,9 @@ On a miss, something goes wrong. You are not welcomed. The citizens are hostile 
             text = """
 Ritualized duels are a common way of dealing with disputes among Ironlanders. When you challenge someone or accept a challenge, you each trace one-half of the outline of a circle into the ground with the point of an iron blade. Then, you face each other in the center of the circle and fight.
 
-You setup your foe’s progress track per the _Enter the Fray_ move, but use this move instead of _Enter the Fray_ to begin the fight. You have initiative at the start of combat unless you score a miss or choose the option to grant first strike.
+You setup your foe's progress track per the _Enter the Fray_ move, but use this move instead of _Enter the Fray_ to begin the fight. You have initiative at the start of combat unless you score a miss or choose the option to grant first strike.
 
-Duels are usually stopped when one of the duelists surrenders or is clearly defeated. The victor may then make a demand which the loser must abide by. Not complying with this demand means ostracism and shame. If you lose a duel, envision what your opponent demands of you. If you’re unsure, _Ask the Oracle_. Then, do it or face the narrative cost of your dishonor.
+Duels are usually stopped when one of the duelists surrenders or is clearly defeated. The victor may then make a demand which the loser must abide by. Not complying with this demand means ostracism and shame. If you lose a duel, envision what your opponent demands of you. If you're unsure, _Ask the Oracle_. Then, do it or face the narrative cost of your dishonor.
 
 Duels may also be to the death. If one of the combatants declares their intent to fight to the death, the other must agree or forfeit.
 """
@@ -598,7 +769,7 @@ Duels may also be to the death. If one of the combatants declares their intent t
             text = """
 Bonds connect you to the people of the Ironlands. They provide a story benefit by enriching your interactions and creating connections with a recurring cast of characters and familiar places. They also provide mechanical benefits by giving you adds when you make moves such as _Sojourn_ or _Compel_. And, perhaps most importantly, your bonds help determine your ultimate fate when you retire from adventuring and _Write Your Epilogue_.
 
-Bonds can be created through narrative circumstances or through sworn vows. If you’ve established a strong relationship with a person or community, you may _Forge a Bond_ to give it significance. If you make this move after you successfully _Fulfill Your Vow_ in service to them, you have proven yourself worthy and may reroll any dice.
+Bonds can be created through narrative circumstances or through sworn vows. If you've established a strong relationship with a person or community, you may _Forge a Bond_ to give it significance. If you make this move after you successfully _Fulfill Your Vow_ in service to them, you have proven yourself worthy and may reroll any dice.
 
 When you _Forge a Bond_ and score a strong hit, mark a tick on your bond progress track (page 36) and make note of your bond.
 
@@ -609,7 +780,7 @@ On a miss, they have refused you. Why? The answer should introduce new complicat
 *BONDS AND THE FICTION*\n
 In the fiction of your world, bonds can be ceremonial. If your bond is with a person, perhaps you trade gifts. When you form a bond with a community, they may honor you in their own way. Envision what these ceremonies look like to add color and texture to the setting.
 
-Also, respect the narrative weight of a bond. Don’t declare a bond with everyone in sight to add more ticks to your bond progress track. Your bonds represent true, deep connections.
+Also, respect the narrative weight of a bond. Don't declare a bond with everyone in sight to add more ticks to your bond progress track. Your bonds represent true, deep connections.
 
 *BONDS AND ALLIES*\n
 If you and your allies act together to _Forge a Bond_ with an NPC or community, only one of you makes the move. Others can _Aid Your Ally_ to provide support. If you are successful, each of you may mark a tick on your bond progress track. Only the character making the move takes the mechanical benefits of a strong hit (+1 spirit or +2 momentum).
@@ -620,13 +791,13 @@ Bonds can also be made between allies. One of you makes the move, and both of yo
             text = """
 Bonds are not necessarily everlasting. Events in your story may cause your bond to be tested. How strong is your commitment? If you seek to maintain this bond, at what cost? When you are forced to act against a community or person you share a bond with, fail in a crucial task for them, or they break faith with you, make this move.
 
-You should _Test Your Bond_ within the community or in the company of the person with whom you share the bond. If an incident forces this test, but you aren’t in a position to resolve it, make a note. Then, make this move when you next come in contact. If extended time passes without making the test (days, weeks, or months, depending on the circumstance), clear the bond and be done with it.
+You should _Test Your Bond_ within the community or in the company of the person with whom you share the bond. If an incident forces this test, but you aren't in a position to resolve it, make a note. Then, make this move when you next come in contact. If extended time passes without making the test (days, weeks, or months, depending on the circumstance), clear the bond and be done with it.
 
 If you and your allies share a bond with an NPC or community, and you act together to _Test Your Bond_, only one of you makes this move.
 """
         case "Aid Ally":
             text = """
-When you take an action to aid an ally (another player’s character) through the _Secure an Advantage_ move, you can hand over the benefits of that move to your ally. This represents setting your ally up for success through a supporting action. You might be distracting a foe in combat, scouting ahead on a journey, or giving them encouragement as you stand against a dire threat.
+When you take an action to aid an ally (another player's character) through the _Secure an Advantage_ move, you can hand over the benefits of that move to your ally. This represents setting your ally up for success through a supporting action. You might be distracting a foe in combat, scouting ahead on a journey, or giving them encouragement as you stand against a dire threat.
 
 If you score a strong hit when you _Secure an Advantage_, your ally makes the choice between +2 momentum or making an immediate move with a +1 add. If you have an asset which gives you any additional benefits on the outcome of a _Secure an Advantage_ move, your ally also takes those benefits (instead of you).
 
@@ -638,11 +809,11 @@ On a miss, one or both of you should _Pay the Price_ as appropriate to the circu
 
 If multiple characters make this move to contribute to an ally action, all _Secure an Advantage_ bonuses will stack. As long as someone scores a strong hit, the target character can take or retain initiative.
 
-Don’t ping pong this move back and forth between two characters in an attempt to build momentum. Envision what you are doing to _Aid Your Ally_, make the _Secure an Advantage_ move, resolve it, and hand the reins over to your ally as they leverage the advantage. Keep it moving. Make things happen.
+Don't ping pong this move back and forth between two characters in an attempt to build momentum. Envision what you are doing to _Aid Your Ally_, make the _Secure an Advantage_ move, resolve it, and hand the reins over to your ally as they leverage the advantage. Keep it moving. Make things happen.
 """
         case "Write Epilogue":
             text = """
-You make this move only once—when all your vows are fulfilled or forsaken and you choose to end your character’s adventuring life. For better or worse, the bonds you’ve made will echo through your days. How have you left your mark? Where are you welcomed and where are you shunned? What remains of you when your quests are at an end? 
+You make this move only once—when all your vows are fulfilled or forsaken and you choose to end your character's adventuring life. For better or worse, the bonds you've made will echo through your days. How have you left your mark? Where are you welcomed and where are you shunned? What remains of you when your quests are at an end? 
 
 This is a progress move. Tally the number of filled boxes on your bonds progress track as your progress score. Only add fully filled boxes (those with four ticks). Then, roll your challenge dice, compare to your progress score, and resolve a strong hit, weak hit, or miss as normal. You may not burn momentum on this roll, and you are not affected by negative momentum.
 
@@ -664,13 +835,13 @@ Make this move when you have initiative and act to inflict harm on your foe. Nar
 
 On a strong hit, you strike true. By default you inflict 2 harm if you are armed with a deadly weapon (such as a sword, axe, spear, or bow), and 1 harm if not. A strong hit on this move gives you an additional +1 harm (so, 3 harm with a deadly weapon). You may also have additional bonuses provided by assets.
 
-Each point of harm you inflict is marked as progress on your foe’s progress track, as appropriate to their rank. For example, each point of harm equals 2 ticks when fighting an extreme enemy, or 2 full progress boxes when fighting a dangerous enemy. See page 134 for more on NPC ranks and inflicting harm.
+Each point of harm you inflict is marked as progress on your foe's progress track, as appropriate to their rank. For example, each point of harm equals 2 ticks when fighting an extreme enemy, or 2 full progress boxes when fighting a dangerous enemy. See page 134 for more on NPC ranks and inflicting harm.
 
 Narratively, a strong hit represents wounding your enemy or wearing them down. You have initiative and can make your next move. If this attack was intended as a decisive blow, you can attempt to _End the Fight_.
 
-On a weak hit, you’ve done some damage but have overextended or your foe counters. You mark your harm, and your foe has initiative. What do they do next?
+On a weak hit, you've done some damage but have overextended or your foe counters. You mark your harm, and your foe has initiative. What do they do next?
 
-On a miss, you must _Pay the Price_. Your opponent strikes back and you _Endure Harm_. You lose position or advantage and suffer -momentum. You face a new or intensified danger. A companion or ally is put in harm’s way. Your weapon is dropped or broken. Let the outcome flow out of the fiction, or roll on the _Pay the Price_ table to see what happens. 
+On a miss, you must _Pay the Price_. Your opponent strikes back and you _Endure Harm_. You lose position or advantage and suffer -momentum. You face a new or intensified danger. A companion or ally is put in harm's way. Your weapon is dropped or broken. Let the outcome flow out of the fiction, or roll on the _Pay the Price_ table to see what happens. 
 """
         case "Clash":
             text = """
@@ -678,25 +849,25 @@ When your foe has initiative and attacks, and you choose to fight back, make thi
 
 First, envision your action and the fiction of the exchange. Is this a focused, dramatic moment where you each seek an opening? Or is it a flurry of attacks and parries, advances and retreats? The outcome of the _Clash_ determines if your foe presses their advantage, or if you take control of the fight.
 
-On a strong hit, you inflict your harm and steal back initiative. On a weak hit, you manage to inflict harm, but your foe retains initiative and you must _Pay the Price_. The price might be that you _Endure Harm_ as your foe counters. Or, you may face some other dramatic outcome as appropriate to the current situation and your foe’s intent.
+On a strong hit, you inflict your harm and steal back initiative. On a weak hit, you manage to inflict harm, but your foe retains initiative and you must _Pay the Price_. The price might be that you _Endure Harm_ as your foe counters. Or, you may face some other dramatic outcome as appropriate to the current situation and your foe's intent.
 
 On a miss, you fail to inflict harm and must _Pay the Price_. This fight is turning against you.
 
-As with the _Strike_ move, each point of harm you inflict is marked on your foe’s progress track, as appropriate to their rank (page 134).
+As with the _Strike_ move, each point of harm you inflict is marked on your foe's progress track, as appropriate to their rank (page 134).
 
-If you aren’t actively fighting back—you’re just trying to avoid the attack or seeking cover—you should _Face Danger_ instead of _Clash_. Using that move gives you more flexibility to bring a favored stat into play, and you suffer a relatively minor cost on a weak hit. Unfortunately, you also give up the opportunity to inflict harm on your foe. See page 85 for more about using _Face Danger_ in a fight.
+If you aren't actively fighting back—you're just trying to avoid the attack or seeking cover—you should _Face Danger_ instead of _Clash_. Using that move gives you more flexibility to bring a favored stat into play, and you suffer a relatively minor cost on a weak hit. Unfortunately, you also give up the opportunity to inflict harm on your foe. See page 85 for more about using _Face Danger_ in a fight.
 
-If you ever respond to an attack by just taking the hit, that’s not a move. The outcome isn’t in much doubt. _Pay the Price_.
+If you ever respond to an attack by just taking the hit, that's not a move. The outcome isn't in much doubt. _Pay the Price_.
 """
         case "Turn Tide":
             text = """
 This move represents a last ditch effort to recover control of the fight. It is that moment when all seems lost, but the hero somehow rallies. 
 
-_Turn the Tide_ lets you take initiative and make a move. The move can be whatever is appropriate under the circumstance—likely _Strike_ or _Secure an Advantage_. Roll the move (add +1), and act on the results. If you’ve scored a hit, you may take an additional +1 momentum. Then, play to see what happens. Hopefully this bold action is a turning point for the fight.
+_Turn the Tide_ lets you take initiative and make a move. The move can be whatever is appropriate under the circumstance—likely _Strike_ or _Secure an Advantage_. Roll the move (add +1), and act on the results. If you've scored a hit, you may take an additional +1 momentum. Then, play to see what happens. Hopefully this bold action is a turning point for the fight.
 
-Here’s the catch: If you score a miss when you make your move, you should add extra severity to the consequences. You might face additional harm. Your weapon is broken. Your companion is grievously wounded. Consider the result of your failure and give it teeth. If in doubt, _Ask the Oracle_.
+Here's the catch: If you score a miss when you make your move, you should add extra severity to the consequences. You might face additional harm. Your weapon is broken. Your companion is grievously wounded. Consider the result of your failure and give it teeth. If in doubt, _Ask the Oracle_.
 
-Narratively, this is a dramatic moment. Focus on it. Envision your character’s action. You struggle to your feet and raise your sword, your eyes hardening with determination. You spur your mount into a desperate charge. You grab your opponent’s blade in your bare hand. You pull the dagger from your boot and lunge. Or, perhaps you state your name, lament the killing of your father, and tell your foe to prepare for death.
+Narratively, this is a dramatic moment. Focus on it. Envision your character's action. You struggle to your feet and raise your sword, your eyes hardening with determination. You spur your mount into a desperate charge. You grab your opponent's blade in your bare hand. You pull the dagger from your boot and lunge. Or, perhaps you state your name, lament the killing of your father, and tell your foe to prepare for death.
 """
 
     if len(text) < 4096:
@@ -747,6 +918,13 @@ move_names = [
     "end_fight",
     "battle",
     "other_battle_moves",
+    "endure_harm",
+    "face_death",
+    "companion_endure_harm",
+    "endure_stress",
+    "face_desolation",
+    "out_supply",
+    "face_setback",
     "back_to_main",
 ]
 
@@ -845,7 +1023,23 @@ async def suffer_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="Suffer moves will be implemented here.")
+
+    keyboard = [
+        [InlineKeyboardButton("Endure Harm", callback_data="endure_harm")],
+        [InlineKeyboardButton("Face Death", callback_data="face_death")],
+        [
+            InlineKeyboardButton(
+                "Companion Endure Harm", callback_data="companion_endure_harm"
+            )
+        ],
+        [InlineKeyboardButton("Endure Stress", callback_data="endure_stress")],
+        [InlineKeyboardButton("Face Desolation", callback_data="face_desolation")],
+        [InlineKeyboardButton("Out of Supply", callback_data="out_supply")],
+        [InlineKeyboardButton("Face a Setback", callback_data="face_setback")],
+        [InlineKeyboardButton("Back", callback_data="back_to_main")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="Suffer moves:", reply_markup=reply_markup)
 
 
 async def quest_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):

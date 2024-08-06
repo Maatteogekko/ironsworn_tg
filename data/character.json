@@ -13,7 +13,7 @@
             "wits": 4
         },
         "momentum": {
-            "current": 7,
+            "current": 0,
             "max": 10,
             "reset": 2
         },
