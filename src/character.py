@@ -1,5 +1,4 @@
 import json
-import random
 import math
 
 from PIL import Image, ImageDraw, ImageFont
@@ -432,7 +431,7 @@ def get_cancel_vows_keyboard(update: Update):
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)[str(update.effective_user.id)]
     keyboard = []
-    for i, vow in enumerate(data["vows"].keys()):
+    for _, vow in enumerate(data["vows"].keys()):
         keyboard.append([InlineKeyboardButton(vow, callback_data="cancel_vow_" + vow)])
     keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_vows")])
 
@@ -480,13 +479,13 @@ async def character(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
-        modified_image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
+        image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
     except:
         image_path = "./data/Ironsworn_sheet.png"
 
     # Send the message with the image and keyboard
     message = await update.message.reply_photo(
-        photo=open(modified_image_path, "rb"),
+        photo=open(image_path, "rb"),
         caption="Here's your character sheet",
         reply_markup=get_main_keyboard(),
     )
@@ -592,7 +591,7 @@ async def character_button_callback(
             chat_id=update.effective_chat.id, message_id=query.message.message_id
         )
         return WAITING_MOMENTUM_MAX
-    elif query.data == "momuentum_reset":
+    elif query.data == "momentum_reset":
         await query.message.reply_text("Send me the new momentum reset value:")
         await context.bot.delete_message(
             chat_id=update.effective_chat.id, message_id=query.message.message_id
@@ -772,8 +771,6 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 async def handle_new_vow_name_input(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
-    # NON METTERE del context
-
     name = update.message.text
     await update_sheet("add_vow_name", name, str(update.effective_user.id))
 
@@ -808,7 +805,6 @@ async def handle_new_vow_name_input(
 async def handle_new_vow_difficulty_input(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
-    # NON METTERE del context
     name = context.user_data["new_vow"]
 
     print("aspettando la risposta ai pulsanti credo")
