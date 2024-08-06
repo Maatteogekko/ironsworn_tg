@@ -32,17 +32,12 @@
             "cursed": 0,
             "tormented": 0
         },
-        "bonds": 3,
+        "bonds": 2,
         "vows": {
             "Return to the stars": {
                 "difficulty": "epic",
                 "tracker": 0,
-                "description": "Not now"
-            },
-            "Tet": {
-                "difficulty": "formidable",
-                "tracker": 0,
-                "description": "Yuh"
+                "description": null
             }
         },
         "assets": [
