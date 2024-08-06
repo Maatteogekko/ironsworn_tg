@@ -101,6 +101,11 @@
             "corrupted": 0,
             "cursed": 0,
             "tormented": 0
-        }
+        },
+        "assets": [
+            "blade_bound",
+            "fated",
+            "outcast"
+        ]
     }
 }
