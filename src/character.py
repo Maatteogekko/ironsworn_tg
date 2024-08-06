@@ -16,14 +16,15 @@ from telegram.ext import (
 from src.utils import cancel, end_conversation
 
 # TODO:
-# tutto bonds
-# tutto Vows
+# fatto +- Vows. Man
+
 
 # Define conversation states
 SHOWING_CHARACTER = 0
 
 
 async def update_sheet(task, new, chat_id) -> str:
+    print('task = ',task)
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     if task == "changing_name":
@@ -69,6 +70,19 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["bonds"] +=1
     if task == 'bonds-':
         data[chat_id]["bonds"] -=1
+    if task.startswith('vow'):
+        vows = list(data[chat_id]["vows"].keys()) 
+        task=task.split('_')
+        if task[1] == 'plus':
+            data[chat_id]["vows"][vows[int(task[0][-1])]]['Tracker'] +=1
+        if task[1] == 'minus':
+            data[chat_id]["vows"][vows[int(task[0][-1])]]['Tracker'] -=1  
+    if task == 'add_vow_name':
+        data[chat_id]['vows'][new] = {
+                "difficulty": None,
+                "Tracker": 0,
+                "description": None
+            }
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -231,7 +245,7 @@ def ticks(center, ticks):
         
     return lines
 
-def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 400), spacing=5):
+def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 410), spacing=5):
     # Open all images and resize them
     images = [Image.open(name).resize(thumbnail_size, Image.LANCZOS) for name in image_names]
     
@@ -338,6 +352,20 @@ def get_condition_keyboard(update: Update):
     ]
     return InlineKeyboardMarkup(keyboard)
 
+def get_vows_keyboard(update: Update):
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)[str(update.effective_user.id)]
+    keyboard = []
+    for i,vow in enumerate(data['vows'].keys()):
+        keyboard.append([
+            InlineKeyboardButton("- " + vow, callback_data="vow"+str(i)+'_minus'),
+            InlineKeyboardButton("+ " + vow, callback_data="vow"+str(i)+'_plus'),
+        ])
+    keyboard.append([InlineKeyboardButton("Add Vow", callback_data="add_vow")])
+    keyboard.append([InlineKeyboardButton("Cancel Vow", callback_data="cancel_vow")])
+    keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_ironsworn")])
+
+    return InlineKeyboardMarkup(keyboard)
 
 def get_character_keyboard():
     keyboard = [
@@ -352,7 +380,7 @@ def get_asset_keyboard():
     keyboard = [
         [InlineKeyboardButton("Add Asset", callback_data="add_asset")],
         [InlineKeyboardButton("Upgrade Asset", callback_data="upgrade_asset")],
-        [InlineKeyboardButton("Back", callback_data="back_to_ironsworn")],
+        [InlineKeyboardButton("Back", callback_data="back_to_ironsworn_via_asset")],
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -430,8 +458,28 @@ async def character_button_callback(
         await query.edit_message_caption(
             "Character options", reply_markup=get_character_keyboard()
         )
+    elif query.data == "vows":
+        await query.edit_message_caption(
+            "Vows options", reply_markup=get_vows_keyboard(update)
+        )
     elif query.data == "back_to_main":
         await query.edit_message_caption("Main menu", reply_markup=get_main_keyboard())
+    elif query.data == "back_to_ironsworn":
+        await query.edit_message_caption("Ironsworn menu", reply_markup=get_ironsworn_keyboard())
+    elif query.data == "back_to_ironsworn_via_asset":
+        chat_id = str(update.effective_user.id)
+        try:
+            with open("./data/character.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+            modified_image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
+        except:
+            image_path = "./data/Ironsworn_sheet.png"
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Ironsworn menu"
+            ),
+            reply_markup=get_ironsworn_keyboard(),
+        )
     elif query.data == "back_to_character":
         await query.edit_message_caption(
             "Character options", reply_markup=get_character_keyboard()
@@ -446,6 +494,13 @@ async def character_button_callback(
             chat_id=update.effective_chat.id, message_id=query.message.message_id
         )
         return WAITING_NAME
+    elif query.data == "add_vow":
+        await query.message.reply_text("Send me the name of the new vow:")
+        await context.bot.delete_message(
+            chat_id=update.effective_chat.id, message_id=query.message.message_id
+        )
+        return WAITING_NEW_VOW_NAME
+    
     elif query.data == "max_momentum":
         await query.message.reply_text("Send me the new max momentum value:")
         await context.bot.delete_message(
@@ -506,7 +561,7 @@ async def character_button_callback(
         )
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption="Bond updated"
+                open(modified_image_path, "rb"), caption="momentum updated"
             ),
             reply_markup=get_momentum_keyboard(),
         )
@@ -527,6 +582,19 @@ async def character_button_callback(
             ),
             reply_markup=get_ironsworn_keyboard(),
         )
+    elif query.data.startswith('vow') and query.data!='vows':
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(
+            str(update.effective_user.id), image_path
+        )
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Vow updated"
+            ),
+            reply_markup=get_vows_keyboard(update),
+        )
     elif query.data == 'assets':
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
@@ -535,7 +603,7 @@ async def character_button_callback(
         modified_image_path = create_collage(['./data/assets/'+a.lower()+'.png' for a in assets], output_filename='./data/'+data[str(update.effective_user.id)]['name']+'.jpg')
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption="Assets updated"
+                open(modified_image_path, "rb"), caption="Assets showed"
             ),
             reply_markup=get_asset_keyboard(),
         )
@@ -596,6 +664,23 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     await update.message.reply_photo(
         photo=open(modified_image_path, "rb"),
         caption="Character name updated",
+        reply_markup=get_character_keyboard(),
+    )
+    return SHOWING_CHARACTER
+
+async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    del context
+
+    name = update.message.text
+    await update_sheet("add_vow_name", name, str(update.effective_user.id))
+
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+
+    await update.message.reply_photo(
+        photo=open(modified_image_path, "rb"),
+        caption="New vow added",
         reply_markup=get_character_keyboard(),
     )
     return SHOWING_CHARACTER
@@ -675,6 +760,7 @@ WAITING_NAME = 1
 WAITING_STATS = 2
 WAITING_MOMENTUM_MAX = 3
 WAITING_MOMENTUM_RESET = 4
+WAITING_NEW_VOW_NAME = 5
 
 character_handler = ConversationHandler(
     entry_points=[
@@ -693,6 +779,9 @@ character_handler = ConversationHandler(
         ],
         WAITING_MOMENTUM_RESET: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_momentum_reset_input)
+        ],
+        WAITING_NEW_VOW_NAME: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_name_input)
         ],
     },
     fallbacks=[

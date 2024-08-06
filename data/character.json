@@ -10,7 +10,7 @@
             "heart": 2,
             "iron": 2,
             "shadow": 1,
-            "wits": 3
+            "wits": 4
         },
         "momentum": {
             "current": 7,
@@ -36,16 +36,25 @@
         "vows": {
             "Return to the stars": {
                 "difficulty": "Epic",
-                "Tracker": 0,
+                "Tracker": 1,
                 "description": "Not now"
             },
             "Current Objective: Survive": {
                 "difficulty": "Dangerous",
-                "Tracker": 10,
+                "Tracker": 9,
                 "description": "Not now"
+            },
+            "Test vow": {
+                "difficulty": null,
+                "Tracker": 0,
+                "description": null
             }
         },
-        "assets": ["Improviser","Wayfinder","Ironclad"]
+        "assets": [
+            "Improviser",
+            "Wayfinder",
+            "Ironclad"
+        ]
     },
     "884215232": {
         "name": "Selune (Tessa)",
