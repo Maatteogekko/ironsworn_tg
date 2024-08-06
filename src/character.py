@@ -83,6 +83,14 @@ async def update_sheet(task, new, chat_id) -> str:
                 "Tracker": 0,
                 "description": None
             }
+    if task == 'add_vow_difficulty':
+        data[chat_id]['vows'][new[0]]["difficulty"] = new[1].split("_")[-1]
+    if task == 'add_vow_description':
+        data[chat_id]['vows'][new[0]]["description"] = new[1]
+    if task.startswith('cancel_vow'):
+        task=task.split('_')
+        print("popping", task[-1])
+        data[chat_id]["vows"].pop(task[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -179,7 +187,6 @@ async def create_sheet(chat_id, image_path: str) -> str:
 
     # Insert Bonds
     bonds = data["bonds"]
-    print("bonds", bonds)
     c_y = 574.8
     s_y = 500
     for i in range(int(bonds / 4)):
@@ -303,8 +310,8 @@ def get_ironsworn_keyboard():
     keyboard = [
         [InlineKeyboardButton("Vows", callback_data="vows")],
         [
-            InlineKeyboardButton("Bonds -", callback_data="bonds-"),
-            InlineKeyboardButton("Bonds +", callback_data="bonds+"),
+            InlineKeyboardButton("Bonds ➖", callback_data="bonds-"),
+            InlineKeyboardButton("Bonds ➕", callback_data="bonds+"),
         ],
         [InlineKeyboardButton("Assets", callback_data="assets")],
         [InlineKeyboardButton("Back", callback_data="back_to_main")],
@@ -315,8 +322,8 @@ def get_ironsworn_keyboard():
 def get_momentum_keyboard():
     keyboard = [
         [
-            InlineKeyboardButton("Momentum-", callback_data="momentum_minus"),
-            InlineKeyboardButton("Momentum+", callback_data="momentum_plus"),
+            InlineKeyboardButton("Momentum➖", callback_data="momentum_minus"),
+            InlineKeyboardButton("Momentum➕", callback_data="momentum_plus"),
         ],
         [
             InlineKeyboardButton("Max Momentum", callback_data="max_momentum"),
@@ -330,16 +337,16 @@ def get_momentum_keyboard():
 def get_state_keyboard():
     keyboard = [
         [
-            InlineKeyboardButton("Health-", callback_data="health_minus"),
-            InlineKeyboardButton("Health+", callback_data="health_plus"),
+            InlineKeyboardButton("Health➖", callback_data="health_minus"),
+            InlineKeyboardButton("Health➕", callback_data="health_plus"),
         ],
         [
-            InlineKeyboardButton("Spirit-", callback_data="spirit_minus"),
-            InlineKeyboardButton("Spirit+", callback_data="spirit_plus"),
+            InlineKeyboardButton("Spirit➖", callback_data="spirit_minus"),
+            InlineKeyboardButton("Spirit➕", callback_data="spirit_plus"),
         ],
         [
-            InlineKeyboardButton("Supply-", callback_data="supply_minus"),
-            InlineKeyboardButton("Supply+", callback_data="supply_plus"),
+            InlineKeyboardButton("Supply➖", callback_data="supply_minus"),
+            InlineKeyboardButton("Supply➕", callback_data="supply_plus"),
         ],
         [InlineKeyboardButton("Conditions", callback_data="conditions")],
         [InlineKeyboardButton("Back", callback_data="back_to_main")],
@@ -378,12 +385,22 @@ def get_vows_keyboard(update: Update):
     keyboard = []
     for i,vow in enumerate(data['vows'].keys()):
         keyboard.append([
-            InlineKeyboardButton("- " + vow, callback_data="vow"+str(i)+'_minus'),
-            InlineKeyboardButton("+ " + vow, callback_data="vow"+str(i)+'_plus'),
+            InlineKeyboardButton("➖ " + vow, callback_data="vow"+str(i)+'_minus'),
+            InlineKeyboardButton("➕ " + vow, callback_data="vow"+str(i)+'_plus'),
         ])
     keyboard.append([InlineKeyboardButton("Add Vow", callback_data="add_vow")])
     keyboard.append([InlineKeyboardButton("Cancel Vow", callback_data="cancel_vow")])
     keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_ironsworn")])
+
+    return InlineKeyboardMarkup(keyboard)
+
+def get_cancel_vows_keyboard(update: Update):
+    with open("./data/character.json", "r", encoding="utf-8") as file:
+        data = json.load(file)[str(update.effective_user.id)]
+    keyboard = []
+    for i,vow in enumerate(data['vows'].keys()):
+        keyboard.append([InlineKeyboardButton(vow, callback_data="cancel_vow_"+vow)])
+    keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_vows")])
 
     return InlineKeyboardMarkup(keyboard)
 
@@ -508,6 +525,10 @@ async def character_button_callback(
         await query.edit_message_caption(
             "State options", reply_markup=get_state_keyboard()
         )
+    elif query.data == "back_to_vows":
+        await query.edit_message_caption(
+            "Vows options", reply_markup=get_vows_keyboard(update)
+        )
     elif query.data == "character_name":
         await query.message.reply_text("Send me the name of the character:")
         await context.bot.delete_message(
@@ -520,7 +541,10 @@ async def character_button_callback(
             chat_id=update.effective_chat.id, message_id=query.message.message_id
         )
         return WAITING_NEW_VOW_NAME
-    
+    elif query.data == "cancel_vow":
+        await query.edit_message_caption(
+            "Vow cancel", reply_markup=get_cancel_vows_keyboard(update)
+        )
     elif query.data == "max_momentum":
         await query.message.reply_text("Send me the new max momentum value:")
         await context.bot.delete_message(
@@ -610,6 +634,19 @@ async def character_button_callback(
             ),
             reply_markup=get_vows_keyboard(update),
         )
+    elif query.data.startswith('cancel_vow'):
+        await update_sheet(query.data, "", str(update.effective_user.id))
+        # Refresh the character sheet image
+        image_path = "./data/Ironsworn_sheet.png"
+        modified_image_path = await create_sheet(
+            str(update.effective_user.id), image_path
+        )
+        await query.message.edit_media(
+            media=InputMediaPhoto(
+                open(modified_image_path, "rb"), caption="Vow cancelle"
+            ),
+            reply_markup=get_vows_keyboard(update),
+        )
     elif query.data == 'assets':
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
@@ -670,7 +707,6 @@ async def character_button_callback(
 
     return SHOWING_CHARACTER
 
-
 async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
 
@@ -689,10 +725,49 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     return SHOWING_CHARACTER
 
 async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    del context
+    # NON METTERE del context
 
     name = update.message.text
     await update_sheet("add_vow_name", name, str(update.effective_user.id))
+
+    keyboard = [
+        [InlineKeyboardButton("Troublesome", callback_data="new_vow_difficulty_troublesome")],
+        [InlineKeyboardButton("Dangerous", callback_data="new_vow_difficulty_dangerous")],
+        [InlineKeyboardButton("Formidable", callback_data="new_vow_difficulty_formidable")],
+        [InlineKeyboardButton("Extreme", callback_data="new_vow_difficulty_extreme")],
+        [InlineKeyboardButton("Epic", callback_data="new_vow_difficulty_epic")],
+
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text("Select the new vow difficulty",reply_markup= reply_markup)
+    context.user_data['new_vow'] = name
+    return WAITING_NEW_VOW_DIFFICULTY
+
+async def handle_new_vow_difficulty_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    # NON METTERE del context
+    name = context.user_data['new_vow']
+
+    print('aspettando la risposta ai pulsanti credo')
+    query = update.callback_query
+    await query.answer()
+    await update_sheet("add_vow_difficulty", (name,query.data), str(update.effective_user.id))
+
+    # Refresh the character sheet image
+    image_path = "./data/Ironsworn_sheet.png"
+    modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
+
+    await query.message.reply_text(
+        text = 'Please tell me a brief description of the vow:'
+    )
+    return WAITING_NEW_VOW_DESCRIPTION
+
+async def handle_new_vow_description_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    name = context.user_data['new_vow']
+    del context
+
+    desc = update.message.text
+    await update_sheet("add_vow_description", (name,desc), str(update.effective_user.id))
 
     # Refresh the character sheet image
     image_path = "./data/Ironsworn_sheet.png"
@@ -700,8 +775,8 @@ async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAUL
 
     await update.message.reply_photo(
         photo=open(modified_image_path, "rb"),
-        caption="New vow added",
-        reply_markup=get_character_keyboard(),
+        caption="Vows updated",
+        reply_markup=get_vows_keyboard(update),
     )
     return SHOWING_CHARACTER
 
@@ -788,6 +863,8 @@ WAITING_STATS = 2
 WAITING_MOMENTUM_MAX = 3
 WAITING_MOMENTUM_RESET = 4
 WAITING_NEW_VOW_NAME = 5
+WAITING_NEW_VOW_DIFFICULTY = 6
+WAITING_NEW_VOW_DESCRIPTION = 7
 
 character_handler = ConversationHandler(
     entry_points=[
@@ -809,6 +886,10 @@ character_handler = ConversationHandler(
         ],
         WAITING_NEW_VOW_NAME: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_name_input)
+        ],
+        WAITING_NEW_VOW_DIFFICULTY:[CallbackQueryHandler(handle_new_vow_difficulty_input)],
+        WAITING_NEW_VOW_DESCRIPTION: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_description_input)
         ],
     },
     fallbacks=[
