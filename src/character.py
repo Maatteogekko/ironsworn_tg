@@ -66,7 +66,6 @@ async def update_sheet(task, new, chat_id) -> str:
         "tormented",
     ]:
         data[chat_id]["condition"][task] = int(not data[chat_id]["condition"][task])
-<<<<<<< HEAD
     if task == 'bonds+':
         data[chat_id]["bonds"] +=1
     if task == 'bonds-':
@@ -84,12 +83,6 @@ async def update_sheet(task, new, chat_id) -> str:
                 "Tracker": 0,
                 "description": None
             }
-=======
-    if task == "bonds+":
-        data[chat_id]["bonds"] += 1
-    if task == "bonds-":
-        data[chat_id]["bonds"] -= 1
->>>>>>> 71f77c7aea311bdecf176389266b6090cf802f6d
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
     return "./data/Ironsworn_sheet.png"
@@ -265,14 +258,7 @@ def ticks(center, ticks):
 
     return lines
 
-<<<<<<< HEAD
 def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 410), spacing=5):
-=======
-
-def create_collage(
-    image_names, output_filename="./collage.jpg", thumbnail_size=(300, 400), spacing=5
-):
->>>>>>> 71f77c7aea311bdecf176389266b6090cf802f6d
     # Open all images and resize them
     images = [
         Image.open(name).resize(thumbnail_size, Image.Resampling.LANCZOS)
@@ -611,7 +597,6 @@ async def character_button_callback(
             ),
             reply_markup=get_ironsworn_keyboard(),
         )
-<<<<<<< HEAD
     elif query.data.startswith('vow') and query.data!='vows':
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
@@ -626,9 +611,6 @@ async def character_button_callback(
             reply_markup=get_vows_keyboard(update),
         )
     elif query.data == 'assets':
-=======
-    elif query.data == "assets":
->>>>>>> 71f77c7aea311bdecf176389266b6090cf802f6d
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
         # Refresh the character sheet image
@@ -706,7 +688,6 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     )
     return SHOWING_CHARACTER
 
-<<<<<<< HEAD
 async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
 
@@ -725,12 +706,6 @@ async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAUL
     return SHOWING_CHARACTER
 
 async def handle_momentum_max_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-=======
-
-async def handle_momentum_max_input(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> int:
->>>>>>> 71f77c7aea311bdecf176389266b6090cf802f6d
     del context
 
     momentum_max = update.message.text
