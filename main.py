@@ -2,6 +2,7 @@ import logging
 
 from telegram import BotCommand, Update
 from telegram.ext import Application, CommandHandler, ContextTypes
+from src.rules import rules_command
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
@@ -22,6 +23,7 @@ logging.basicConfig(
 
 async def set_bot_commands(app: Application) -> None:
     commands = [
+        BotCommand("rules", "Need a quick refresher?"),
         BotCommand("character", "Modify you character"),
         BotCommand("challenge", "Take action!"),
         BotCommand("moves", "List and explanation of moves"),
@@ -43,10 +45,11 @@ if __name__ == "__main__":
     application = Application.builder().token(TOKEN).post_init(set_bot_commands).build()
 
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(moves_handler, group=1)
-    application.add_handler(truths_handler, group=2)
-    application.add_handler(challenge_handler, group=3)
-    application.add_handler(CommandHandler("oracle", oracle_command),group = 4)
-    application.add_handler(character_handler,group = 5)
+    application.add_handler(CommandHandler("rules", rules_command), group=1)
+    application.add_handler(moves_handler, group=2)
+    application.add_handler(truths_handler, group=3)
+    application.add_handler(challenge_handler, group=4)
+    application.add_handler(CommandHandler("oracle", oracle_command), group=5)
+    application.add_handler(character_handler, group=6)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

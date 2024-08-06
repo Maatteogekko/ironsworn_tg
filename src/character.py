@@ -24,7 +24,7 @@ SHOWING_CHARACTER = 0
 
 
 async def update_sheet(task, new, chat_id) -> str:
-    print('task = ',task)
+    print("task = ", task)
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     if task == "changing_name":
@@ -66,29 +66,29 @@ async def update_sheet(task, new, chat_id) -> str:
         "tormented",
     ]:
         data[chat_id]["condition"][task] = int(not data[chat_id]["condition"][task])
-    if task == 'bonds+':
-        data[chat_id]["bonds"] +=1
-    if task == 'bonds-':
-        data[chat_id]["bonds"] -=1
-    if task.startswith('vow'):
-        vows = list(data[chat_id]["vows"].keys()) 
-        task_=task.split('_')
-        if task_[1] == 'plus':
-            data[chat_id]["vows"][vows[int(task_[0][-1])]]['tracker'] +=1
-        if task_[1] == 'minus':
-            data[chat_id]["vows"][vows[int(task_[0][-1])]]['tracker'] -=1  
-    if task == 'add_vow_name':
-        data[chat_id]['vows'][new] = {
-                "difficulty": None,
-                "tracker": 0,
-                "description": None
-            }
-    if task == 'add_vow_difficulty':
-        data[chat_id]['vows'][new[0]]["difficulty"] = new[1].split("_")[-1]
-    if task == 'add_vow_description':
-        data[chat_id]['vows'][new[0]]["description"] = new[1]
-    if task.startswith('cancel_vow'):
-        task_=task.split('_')
+    if task == "bonds+":
+        data[chat_id]["bonds"] += 1
+    if task == "bonds-":
+        data[chat_id]["bonds"] -= 1
+    if task.startswith("vow"):
+        vows = list(data[chat_id]["vows"].keys())
+        task_ = task.split("_")
+        if task_[1] == "plus":
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] += 1
+        if task_[1] == "minus":
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] -= 1
+    if task == "add_vow_name":
+        data[chat_id]["vows"][new] = {
+            "difficulty": None,
+            "tracker": 0,
+            "description": None,
+        }
+    if task == "add_vow_difficulty":
+        data[chat_id]["vows"][new[0]]["difficulty"] = new[1].split("_")[-1]
+    if task == "add_vow_description":
+        data[chat_id]["vows"][new[0]]["description"] = new[1]
+    if task.startswith("cancel_vow"):
+        task_ = task.split("_")
         print("popping", task_[-1])
         data[chat_id]["vows"].pop(task_[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
@@ -205,13 +205,13 @@ async def create_sheet(chat_id, image_path: str) -> str:
         )
 
     # Insert vows
-    cn =[290,635]
+    cn = [290, 635]
     vows = data["vows"]
-    for i,vow in enumerate(vows.keys()):
+    for i, vow in enumerate(vows.keys()):
         draw.text((cn[0], cn[1]), str(vow), fill=color, font=font(40))
-        c_y = cn[0]+284.8
-        s_y = cn[1]+128
-        for i in range(int(vows[vow]['tracker'] / 4)):
+        c_y = cn[0] + 284.8
+        s_y = cn[1] + 128
+        for i in range(int(vows[vow]["tracker"] / 4)):
             for l in ticks([c_y, s_y], 4):
                 draw.line(
                     l,
@@ -219,7 +219,7 @@ async def create_sheet(chat_id, image_path: str) -> str:
                     width=7,
                 )
             c_y = c_y + 61.3
-        for l in ticks([c_y, s_y], vows[vow]['tracker'] % 4):
+        for l in ticks([c_y, s_y], vows[vow]["tracker"] % 4):
             draw.line(
                 l,
                 fill=color,
@@ -278,7 +278,10 @@ def ticks(center, ticks):
 
     return lines
 
-def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=(300, 410), spacing=5):
+
+def create_collage(
+    image_names, output_filename="./collage.jpg", thumbnail_size=(300, 410), spacing=5
+):
     # Open all images and resize them
     images = [
         Image.open(name).resize(thumbnail_size, Image.Resampling.LANCZOS)
@@ -308,14 +311,16 @@ def create_collage(image_names, output_filename='./collage.jpg', thumbnail_size=
 
     return output_filename
 
+
 def generate_vow_text(update: Update):
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)[str(update.effective_user.id)]
     text = ""
     for vow in data["vows"].keys():
         text += f"*{vow}*\n"
-        text += data["vows"][vow]['description']+'\n'
+        text += data["vows"][vow]["description"] + "\n"
     return text
+
 
 def get_main_keyboard():
     keyboard = [
@@ -400,30 +405,39 @@ def get_condition_keyboard(update: Update):
     ]
     return InlineKeyboardMarkup(keyboard)
 
+
 def get_vows_keyboard(update: Update):
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)[str(update.effective_user.id)]
     keyboard = []
-    for i,vow in enumerate(data['vows'].keys()):
-        keyboard.append([
-            InlineKeyboardButton("➖ " + vow, callback_data="vow"+str(i)+'_minus'),
-            InlineKeyboardButton("➕ " + vow, callback_data="vow"+str(i)+'_plus'),
-        ])
+    for i, vow in enumerate(data["vows"].keys()):
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "➖ " + vow, callback_data="vow" + str(i) + "_minus"
+                ),
+                InlineKeyboardButton(
+                    "➕ " + vow, callback_data="vow" + str(i) + "_plus"
+                ),
+            ]
+        )
     keyboard.append([InlineKeyboardButton("Add Vow", callback_data="add_vow")])
     keyboard.append([InlineKeyboardButton("Cancel Vow", callback_data="cancel_vow")])
     keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_ironsworn")])
 
     return InlineKeyboardMarkup(keyboard)
 
+
 def get_cancel_vows_keyboard(update: Update):
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)[str(update.effective_user.id)]
     keyboard = []
-    for i,vow in enumerate(data['vows'].keys()):
-        keyboard.append([InlineKeyboardButton(vow, callback_data="cancel_vow_"+vow)])
+    for i, vow in enumerate(data["vows"].keys()):
+        keyboard.append([InlineKeyboardButton(vow, callback_data="cancel_vow_" + vow)])
     keyboard.append([InlineKeyboardButton("Back", callback_data="back_to_vows")])
 
     return InlineKeyboardMarkup(keyboard)
+
 
 def get_character_keyboard():
     keyboard = [
@@ -518,18 +532,24 @@ async def character_button_callback(
         )
     elif query.data == "vows":
         await query.edit_message_caption(
-            generate_vow_text(update),parse_mode="Markdown", reply_markup=get_vows_keyboard(update)
+            generate_vow_text(update),
+            parse_mode="Markdown",
+            reply_markup=get_vows_keyboard(update),
         )
     elif query.data == "back_to_main":
         await query.edit_message_caption("Main menu", reply_markup=get_main_keyboard())
     elif query.data == "back_to_ironsworn":
-        await query.edit_message_caption("Ironsworn menu", reply_markup=get_ironsworn_keyboard())
+        await query.edit_message_caption(
+            "Ironsworn menu", reply_markup=get_ironsworn_keyboard()
+        )
     elif query.data == "back_to_ironsworn_via_asset":
         chat_id = str(update.effective_user.id)
         try:
             with open("./data/character.json", "r", encoding="utf-8") as file:
                 data = json.load(file)
-            modified_image_path = "./data/" + data[chat_id]["name"] + "_character_sheet.png"
+            modified_image_path = (
+                "./data/" + data[chat_id]["name"] + "_character_sheet.png"
+            )
         except:
             image_path = "./data/Ironsworn_sheet.png"
         await query.message.edit_media(
@@ -642,7 +662,7 @@ async def character_button_callback(
             ),
             reply_markup=get_ironsworn_keyboard(),
         )
-    elif query.data.startswith('vow') and query.data!='vows':
+    elif query.data.startswith("vow") and query.data != "vows":
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
         image_path = "./data/Ironsworn_sheet.png"
@@ -651,11 +671,13 @@ async def character_button_callback(
         )
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption=generate_vow_text(update),parse_mode="Markdown",
+                open(modified_image_path, "rb"),
+                caption=generate_vow_text(update),
+                parse_mode="Markdown",
             ),
             reply_markup=get_vows_keyboard(update),
         )
-    elif query.data.startswith('cancel_vow'):
+    elif query.data.startswith("cancel_vow"):
         await update_sheet(query.data, "", str(update.effective_user.id))
         # Refresh the character sheet image
         image_path = "./data/Ironsworn_sheet.png"
@@ -664,11 +686,11 @@ async def character_button_callback(
         )
         await query.message.edit_media(
             media=InputMediaPhoto(
-                open(modified_image_path, "rb"), caption="Vow cancelle"
+                open(modified_image_path, "rb"), caption="Vow cancelled"
             ),
             reply_markup=get_vows_keyboard(update),
         )
-    elif query.data == 'assets':
+    elif query.data == "assets":
         with open("./data/character.json", "r", encoding="utf-8") as file:
             data = json.load(file)
         # Refresh the character sheet image
@@ -728,6 +750,7 @@ async def character_button_callback(
 
     return SHOWING_CHARACTER
 
+
 async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
 
@@ -745,50 +768,76 @@ async def handle_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     )
     return SHOWING_CHARACTER
 
-async def handle_new_vow_name_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def handle_new_vow_name_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     # NON METTERE del context
 
     name = update.message.text
     await update_sheet("add_vow_name", name, str(update.effective_user.id))
 
     keyboard = [
-        [InlineKeyboardButton("Troublesome", callback_data="new_vow_difficulty_troublesome")],
-        [InlineKeyboardButton("Dangerous", callback_data="new_vow_difficulty_dangerous")],
-        [InlineKeyboardButton("Formidable", callback_data="new_vow_difficulty_formidable")],
+        [
+            InlineKeyboardButton(
+                "Troublesome", callback_data="new_vow_difficulty_troublesome"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "Dangerous", callback_data="new_vow_difficulty_dangerous"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "Formidable", callback_data="new_vow_difficulty_formidable"
+            )
+        ],
         [InlineKeyboardButton("Extreme", callback_data="new_vow_difficulty_extreme")],
         [InlineKeyboardButton("Epic", callback_data="new_vow_difficulty_epic")],
-
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Select the new vow difficulty",reply_markup= reply_markup)
-    context.user_data['new_vow'] = name
+    await update.message.reply_text(
+        "Select the new vow difficulty", reply_markup=reply_markup
+    )
+    context.user_data["new_vow"] = name
     return WAITING_NEW_VOW_DIFFICULTY
 
-async def handle_new_vow_difficulty_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    # NON METTERE del context
-    name = context.user_data['new_vow']
 
-    print('aspettando la risposta ai pulsanti credo')
+async def handle_new_vow_difficulty_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    # NON METTERE del context
+    name = context.user_data["new_vow"]
+
+    print("aspettando la risposta ai pulsanti credo")
     query = update.callback_query
     await query.answer()
-    await update_sheet("add_vow_difficulty", (name,query.data), str(update.effective_user.id))
+    await update_sheet(
+        "add_vow_difficulty", (name, query.data), str(update.effective_user.id)
+    )
 
     # Refresh the character sheet image
     image_path = "./data/Ironsworn_sheet.png"
     modified_image_path = await create_sheet(str(update.effective_user.id), image_path)
 
     await query.message.reply_text(
-        text = 'Please tell me a brief description of the vow:'
+        text="Please tell me a brief description of the vow:"
     )
     return WAITING_NEW_VOW_DESCRIPTION
 
-async def handle_new_vow_description_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    name = context.user_data['new_vow']
+
+async def handle_new_vow_description_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    name = context.user_data["new_vow"]
     del context
 
     desc = update.message.text
-    await update_sheet("add_vow_description", (name,desc), str(update.effective_user.id))
+    await update_sheet(
+        "add_vow_description", (name, desc), str(update.effective_user.id)
+    )
 
     # Refresh the character sheet image
     image_path = "./data/Ironsworn_sheet.png"
@@ -801,7 +850,10 @@ async def handle_new_vow_description_input(update: Update, context: ContextTypes
     )
     return SHOWING_CHARACTER
 
-async def handle_momentum_max_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def handle_momentum_max_input(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     del context
 
     momentum_max = update.message.text
@@ -908,9 +960,13 @@ character_handler = ConversationHandler(
         WAITING_NEW_VOW_NAME: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_name_input)
         ],
-        WAITING_NEW_VOW_DIFFICULTY:[CallbackQueryHandler(handle_new_vow_difficulty_input)],
+        WAITING_NEW_VOW_DIFFICULTY: [
+            CallbackQueryHandler(handle_new_vow_difficulty_input)
+        ],
         WAITING_NEW_VOW_DESCRIPTION: [
-            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_description_input)
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND, handle_new_vow_description_input
+            )
         ],
     },
     fallbacks=[
