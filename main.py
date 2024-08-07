@@ -8,6 +8,7 @@ from src.truths import truths_handler
 from src.challenge import challenge_handler
 from src.oracle import oracle_command
 from src.character import character_handler
+from src.trackers import trackers_handler
 
 TOKEN = None
 with open("./data/token.txt", encoding="utf-8") as f:
@@ -26,6 +27,7 @@ async def set_bot_commands(app: Application) -> None:
         BotCommand("rules", "Need a quick refresher?"),
         BotCommand("character", "Modify you character"),
         BotCommand("challenge", "Take action!"),
+        BotCommand("trackers", "Set a tracker for later"),
         BotCommand("moves", "List and explanation of moves"),
         BotCommand("assets", "List and explanation of assets"),
         BotCommand("truths", "Explanation of the setting"),
@@ -51,5 +53,6 @@ if __name__ == "__main__":
     application.add_handler(challenge_handler, group=4)
     application.add_handler(CommandHandler("oracle", oracle_command), group=5)
     application.add_handler(character_handler, group=6)
+    application.add_handler(trackers_handler, group=7)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
