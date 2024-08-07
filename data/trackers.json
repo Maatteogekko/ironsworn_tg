@@ -1,0 +1,14 @@
+{
+    "Journey to the West": {
+        "difficulty": "epic",
+        "tracker": 8
+    },
+    "Fight": {
+        "difficulty": "dangerous",
+        "tracker": 23
+    },
+    "Fight a pack": {
+        "difficulty": "extreme",
+        "tracker": 6
+    }
+}
