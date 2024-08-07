@@ -1,9 +1,9 @@
 {
     "454010613": {
-        "name": "Noah",
+        "name": "Noah Imbrium",
         "experience": {
-            "gained": 11,
-            "used": 7
+            "gained": -1,
+            "used": 0
         },
         "stats": {
             "edge": 1,
@@ -36,7 +36,7 @@
         "vows": {
             "Return to the Stars": {
                 "difficulty": "epic",
-                "tracker": 2,
+                "tracker": 0,
                 "description": "Stranded in the Ironlands, you must survive and return to the moon. It's your destiny? Or maybe your mission? Either way, it's only your life at stake. Wait, are you really that selfish?"
             }
         },
@@ -71,15 +71,10 @@
         },
         "bonds": 2,
         "vows": {
-            "Show that Margaret was right": {
+            "Dimostrare che Margaret aveva ragione": {
                 "difficulty": "epic",
                 "tracker": 0,
-                "description": "Not now"
-            },
-            "Current Objective: Investigate the fallen ship": {
-                "difficulty": "dangerous",
-                "tracker": 0,
-                "description": "Not now"
+                "description": "Margaret \u00e8 stata screditata e infine uccisa solo perch\u00e9 stava cercando la verit\u00e0. Dimostrer\u00f2 a tutti che si sbagliavano, per poi fargliela pagare."
             }
         },
         "condition": {
@@ -93,7 +88,7 @@
             "tormented": 0
         },
         "assets": [
-            "blade_bound",
+            "blade_bound_01",
             "fated",
             "outcast"
         ]
