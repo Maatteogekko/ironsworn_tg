@@ -15,7 +15,7 @@ from telegram.ext import (
 from src.utils import cancel, end_conversation
 
 # TODO:
-# fatto +- Vows. Man
+# Assets
 
 
 # Define conversation states
@@ -89,7 +89,6 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["vows"][new[0]]["description"] = new[1]
     if task.startswith("cancel_vow"):
         task_ = task.split("_")
-        print("popping", task_[-1])
         data[chat_id]["vows"].pop(task_[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
@@ -811,8 +810,6 @@ async def handle_new_vow_difficulty_input(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
     name = context.user_data["new_vow"]
-
-    print("aspettando la risposta ai pulsanti credo")
     query = update.callback_query
     await query.answer()
     await update_sheet(
