@@ -72,8 +72,9 @@ async def update_sheet(task, new, chat_id) -> str:
     if task.startswith("vow"):
         vows = list(data[chat_id]["vows"].keys())
         task_ = task.split("_")
+        offset = {'troublesome':12,'dangerous':8,'formidable':4,'extreme':2,'epic':1}
         if task_[1] == "plus":
-            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] += 1
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] += offset[data[chat_id]["vows"][vows[int(task_[0][-1])]]["difficulty"]]
         if task_[1] == "minus":
             data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] -= 1
     if task == "add_vow_name":
@@ -206,8 +207,12 @@ async def create_sheet(chat_id, image_path: str) -> str:
     # Insert vows
     cn = [290, 635]
     vows = data["vows"]
+    diff_offset = {'troublesome':85,'dangerous':335,'formidable':550,'extreme':770,'epic':949}
     for i, vow in enumerate(vows.keys()):
         draw.text((cn[0], cn[1]), str(vow), fill=color, font=font(40))
+        x = cn[0]+diff_offset[vows[vow]["difficulty"]]
+        y = cn[1]+59
+        draw.ellipse([x, y, x + 26, y + 26], fill=color)
         c_y = cn[0] + 284.8
         s_y = cn[1] + 128
         for i in range(int(vows[vow]["tracker"] / 4)):
