@@ -43,12 +43,12 @@ async def create_bonds() -> str:
     
     return text
 
-def get_bonds_keyboard(base = []):
-    base.append(
+def get_bonds_keyboard():
+    keyboard =[ 
         [InlineKeyboardButton("Remove Bond", callback_data="show_remove_bonds")],
         [InlineKeyboardButton("Add Bond", callback_data="add_bond")],
-    )
-    return InlineKeyboardMarkup(base)
+    ]
+    return InlineKeyboardMarkup(keyboard)
 
 async def show_remove_bonds(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
