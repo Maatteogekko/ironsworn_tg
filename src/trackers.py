@@ -215,7 +215,7 @@ async def trackers_button_callback(
 
     return SHOWING_TRACKERS
 
-async def handle_new_vow_name_input(
+async def handle_new_tracker_name_input(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
     name = update.message.text
@@ -224,21 +224,21 @@ async def handle_new_vow_name_input(
     keyboard = [
         [
             InlineKeyboardButton(
-                "Troublesome", callback_data="new_vow_difficulty_troublesome"
+                "Troublesome", callback_data="new_tracker_difficulty_troublesome"
             )
         ],
         [
             InlineKeyboardButton(
-                "Dangerous", callback_data="new_vow_difficulty_dangerous"
+                "Dangerous", callback_data="new_tracker_difficulty_dangerous"
             )
         ],
         [
             InlineKeyboardButton(
-                "Formidable", callback_data="new_vow_difficulty_formidable"
+                "Formidable", callback_data="new_tracker_difficulty_formidable"
             )
         ],
-        [InlineKeyboardButton("Extreme", callback_data="new_vow_difficulty_extreme")],
-        [InlineKeyboardButton("Epic", callback_data="new_vow_difficulty_epic")],
+        [InlineKeyboardButton("Extreme", callback_data="new_tracker_difficulty_extreme")],
+        [InlineKeyboardButton("Epic", callback_data="new_tracker_difficulty_epic")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -249,7 +249,7 @@ async def handle_new_vow_name_input(
     return WAITING_NEW_TRACKER_DIFFICULTY
 
 
-async def handle_new_vow_difficulty_input(
+async def handle_new_tracker_difficulty_input(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
     name = context.user_data["new_tracker"]
@@ -265,7 +265,7 @@ async def handle_new_vow_difficulty_input(
 
     await query.message.reply_photo(
         photo=open(modified_image_path, "rb"),
-        caption="Vows updated",
+        caption="trackers updated",
         reply_markup=get_trackers_keyboard(),
     )
     return SHOWING_TRACKERS
@@ -280,10 +280,10 @@ trackers_handler = ConversationHandler(
     states={
         SHOWING_TRACKERS: [CallbackQueryHandler(trackers_button_callback)],
         WAITING_NEW_TRACKER_NAME: [
-            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_vow_name_input)
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_tracker_name_input)
         ],
         WAITING_NEW_TRACKER_DIFFICULTY: [
-            CallbackQueryHandler(handle_new_vow_difficulty_input)
+            CallbackQueryHandler(handle_new_tracker_difficulty_input)
         ],
     },
     fallbacks=[
