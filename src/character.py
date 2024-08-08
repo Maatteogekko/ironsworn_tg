@@ -92,6 +92,11 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["vows"].pop(task_[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
+    if task == 'changing_momentum_max':
+        data[chat_id]['momentum']['max']
+    if task == 'changing_momentum_reset':
+        data[chat_id]['momentum']['reset']
+
     return "./data/Ironsworn_sheet.png"
 
 
