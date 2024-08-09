@@ -1,5 +1,5 @@
 import os
-
+import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     CallbackQueryHandler,
@@ -10,11 +10,42 @@ from telegram.ext import (
     filters,
 )
 
+from PIL import Image, ImageDraw, ImageFont
 from src.utils import cancel, end_conversation, flip_page, split_text
+
+async def create_map(image_path: str) -> str:
+
+    img = Image.open(image_path)
+    # Create a drawing object
+    draw = ImageDraw.Draw(img)
+
+    def font(size=30):
+        try:
+            return ImageFont.truetype("./data/Modesto Expanded.ttf", size)
+        except IOError:
+            return ImageFont.load_default(size)
+
+    color = (45, 45, 45)
+
+
+    with open("./data/map.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    for waypoint in data.keys():
+        draw.text(data[waypoint]['coords'], waypoint, fill=color, font=font(20))
+        draw.ellipse(
+                [data[waypoint]['coords'][0], data[waypoint]['coords'][1], data[waypoint]['coords'][0] + 26, data[waypoint]['coords'][1] + 26], fill=color
+            )
+
+
+    # Save the modified image
+    modified_image_path = "./data/modified_map.png"
+    img.save(modified_image_path)
+
+    return modified_image_path
 
 # Define states
 SHOWING_TRUTHS = 0
-
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
@@ -169,8 +200,9 @@ torches glimmer pitifully against the wild, storm-tossed sea.
 
     if query.data == "map":
 
+        modified_image_path = create_map("./data/map.png")
         # Send the map image from local storage
-        with open(os.path.join("./data/Map.png"), "rb") as photo:
+        with open(os.path.join(modified_image_path), "rb") as photo:
             await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
 
         map_keyboard = [
