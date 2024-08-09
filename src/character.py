@@ -332,6 +332,22 @@ def generate_vow_text(update: Update):
 
 def get_main_keyboard():
     keyboard = [
+        [
+            InlineKeyboardButton("Momentum➖", callback_data="momentum_minus"),
+            InlineKeyboardButton("Momentum➕", callback_data="momentum_plus"),
+        ],
+        [
+            InlineKeyboardButton("Health➖", callback_data="health_minus"),
+            InlineKeyboardButton("Health➕", callback_data="health_plus"),
+        ],
+        [
+            InlineKeyboardButton("Spirit➖", callback_data="spirit_minus"),
+            InlineKeyboardButton("Spirit➕", callback_data="spirit_plus"),
+        ],
+        [
+            InlineKeyboardButton("Supply➖", callback_data="supply_minus"),
+            InlineKeyboardButton("Supply➕", callback_data="supply_plus"),
+        ],
         [InlineKeyboardButton("Ironsworn", callback_data="ironsworn")],
         [InlineKeyboardButton("Momentum", callback_data="momentum")],
         [InlineKeyboardButton("State", callback_data="state")],
@@ -356,10 +372,6 @@ def get_ironsworn_keyboard():
 def get_momentum_keyboard():
     keyboard = [
         [
-            InlineKeyboardButton("Momentum➖", callback_data="momentum_minus"),
-            InlineKeyboardButton("Momentum➕", callback_data="momentum_plus"),
-        ],
-        [
             InlineKeyboardButton("Max Momentum", callback_data="max_momentum"),
             InlineKeyboardButton("Momentum Reset", callback_data="momentum_reset"),
         ],
@@ -370,18 +382,6 @@ def get_momentum_keyboard():
 
 def get_state_keyboard():
     keyboard = [
-        [
-            InlineKeyboardButton("Health➖", callback_data="health_minus"),
-            InlineKeyboardButton("Health➕", callback_data="health_plus"),
-        ],
-        [
-            InlineKeyboardButton("Spirit➖", callback_data="spirit_minus"),
-            InlineKeyboardButton("Spirit➕", callback_data="spirit_plus"),
-        ],
-        [
-            InlineKeyboardButton("Supply➖", callback_data="supply_minus"),
-            InlineKeyboardButton("Supply➕", callback_data="supply_plus"),
-        ],
         [InlineKeyboardButton("Conditions", callback_data="conditions")],
         [InlineKeyboardButton("Back", callback_data="back_to_main")],
     ]
@@ -640,7 +640,7 @@ async def character_button_callback(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="State updated"
             ),
-            reply_markup=get_state_keyboard(),
+            reply_markup=get_ironsworn_keyboard(),
         )
 
     elif query.data in ["momentum_plus", "momentum_minus"]:
@@ -654,7 +654,7 @@ async def character_button_callback(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="momentum updated"
             ),
-            reply_markup=get_momentum_keyboard(),
+            reply_markup=get_ironsworn_keyboard(),
         )
 
     elif query.data in ["bonds+", "bonds-"]:
