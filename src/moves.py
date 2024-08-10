@@ -398,25 +398,21 @@ If you fail to score a hit on that move, you must suffer a dire outcome. _Pay th
             text = """
 *END THE FIGHT*
 
-When *you enter into combat*, set the rank of each of your foes.
-• Troublesome foe: 3 progress per harm; inflicts 1 harm.
-• Dangerous foe: 2 progress per harm; inflicts 2 harm.
-• Formidable foe: 1 progress per harm; inflicts 3 harm.
-• Extreme foe: 2 ticks per harm; inflicts 4 harm.
-• Epic foe: 1 tick per harm; inflicts 5 harm.
+_Progress Move_
 
-Then, roll to determine who is in control. If you are...
-• Facing off against your foe: Roll +heart.
-• Moving into position against an unaware foe, or striking without warning: Roll +shadow.
-• Ambushed: Roll +wits.
+When *you make a move to take decisive action*, and score a strong hit, you may resolve the outcome of this fight. If you do, roll the challenge dice and compare to your progress. Momentum is ignored on this roll.
 
-On a *strong hit*, take +2 momentum. You have initiative.
+On a *strong hit*, this foe is no longer in the fight. They are killed, out of action, flee, or surrender as appropriate to the situation and your intent(_Ask the Oracle_ if unsure).
 
-On a *weak hit*, choose one.
-• Bolster your position: Take +2 momentum.
-• Prepare to act: Take initiative.
+On a *weak hit*, as above, but you must also choose one.
+• It's worse than you thought: _Endure Harm_.
+• You are overcome: _Endure Stress_.
+• Your victory is short-lived: A new danger or foe appears, or an existing danger worsens.
+• You suffer collateral damage: Something of value is lost or broken, or someone important must pay the cost.
+• You'll pay for it: An objective falls out of reach.
+• Others won't forget: You are marked for vengeance.
 
-On a *miss*, combat begins with you at a disadvantage. _Pay the Price_. Your foe has initiative.
+On a *miss*, you have lost this fight. _Pay the Price_.
 """
             back_type = "back_to_combat"
 

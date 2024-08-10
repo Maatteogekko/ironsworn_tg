@@ -13,12 +13,12 @@
             "wits": 3
         },
         "momentum": {
-            "current": 0,
+            "current": 4,
             "max": 10,
             "reset": 2
         },
         "state": {
-            "health": 5,
+            "health": 2,
             "spirit": 5,
             "supply": 5
         },
@@ -60,14 +60,14 @@
             "wits": 3
         },
         "momentum": {
-            "current": 0,
+            "current": 1,
             "max": 10,
             "reset": 2
         },
         "state": {
             "health": 5,
             "spirit": 5,
-            "supply": 5
+            "supply": 3
         },
         "bonds": 2,
         "vows": {
