@@ -13,14 +13,14 @@
             "wits": 3
         },
         "momentum": {
-            "current": 4,
+            "current": 5,
             "max": 10,
             "reset": 2
         },
         "state": {
-            "health": 2,
+            "health": 3,
             "spirit": 5,
-            "supply": 5
+            "supply": 1
         },
         "condition": {
             "wounded": 0,
@@ -47,7 +47,7 @@
         ]
     },
     "884215232": {
-        "name": "Selune (Tessa)",
+        "name": "Selune Tessa",
         "experience": {
             "gained": 0,
             "used": 0
@@ -60,14 +60,14 @@
             "wits": 3
         },
         "momentum": {
-            "current": 1,
+            "current": 3,
             "max": 10,
             "reset": 2
         },
         "state": {
-            "health": 5,
+            "health": 4,
             "spirit": 5,
-            "supply": 3
+            "supply": 1
         },
         "bonds": 2,
         "vows": {
@@ -88,7 +88,7 @@
             "tormented": 0
         },
         "assets": [
-            "blade_bound_01",
+            "blade_bound_02",
             "fated",
             "outcast"
         ]
