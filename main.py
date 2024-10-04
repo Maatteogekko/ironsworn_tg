@@ -1,12 +1,12 @@
 import logging
 
 from telegram import BotCommand, Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 from src.rules import rules_command
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
-from src.oracle import oracle_command
+from src.oracle import oracle_command, oracle_button_callback   
 from src.character import character_handler
 from src.trackers import trackers_handler
 from src.bonds import bonds_handler
@@ -53,7 +53,8 @@ if __name__ == "__main__":
     application.add_handler(moves_handler, group=2)
     application.add_handler(truths_handler, group=3)
     application.add_handler(challenge_handler, group=4)
-    application.add_handler(CommandHandler("oracle", oracle_command), group=5)
+    application.add_handler(CommandHandler("oracle", oracle_command),group=5)
+    application.add_handler(CallbackQueryHandler(oracle_button_callback),group=5)
     application.add_handler(character_handler, group=6)
     application.add_handler(trackers_handler, group=7)
     application.add_handler(bonds_handler, group=8)
