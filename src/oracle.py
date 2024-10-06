@@ -1,7 +1,10 @@
 import random
 import json
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from telegram.ext import ContextTypes, CallbackQueryHandler, CommandHandler, Application, CallbackContext
+from telegram.ext import (
+    ContextTypes,
+    CallbackContext,
+)
 
 # Oracle data with full descriptions
 ORACLES = {
@@ -24,54 +27,213 @@ ORACLES = {
     "Mystic Backlash": "\n\nThose who deal in magic may find themselves at the mercy of chaos. This oracle can supplement, or replace, the Pay the Price table when resolving the outcome of a failed ritual or other negative interaction with mystical forces. Use this oracle in dramatic moments, or to introduce an unexpected outcome triggered by a match.",
     "Major Plot Twist": "\n\nUse this oracle to introduce a narrative surprise or revelation. Most of these results have a negative implication, and can be used to resolve a match at a crucial moment in your story. This oracle offers similar results to the Pay the Price table, but is more focused on dramatic events tied to your current quests.",
     "Challenge Rank": "\n\nUse this oracle when you want to randomly determine the challenge rank of a quest, journey, or fight.",
-    "Yes/No": '\n\n■ *Almost Certain*: The answer is "yes" if you roll *11 or greater*.\n\n■ *Likely*: The answer is "yes" if you roll *26 or greater*.\n\n■ *50/50*: The answer is "yes" if you roll *51 or greater*.\n\n■ *Unlikely*: The answer is "yes" if you roll *76 or greater*.\n\n■ *Small Chance*: The answer is "yes" if you roll *91 or greater*.'
+    "Yes/No": '\n\n■ *Almost Certain*: The answer is "yes" if you roll *11 or greater*.\n\n■ *Likely*: The answer is "yes" if you roll *26 or greater*.\n\n■ *50/50*: The answer is "yes" if you roll *51 or greater*.\n\n■ *Unlikely*: The answer is "yes" if you roll *76 or greater*.\n\n■ *Small Chance*: The answer is "yes" if you roll *91 or greater*.',
 }
 
 ACTION_ORACLE = {
     100: "Summon",
-    1: "Scheme", 2: "Clash", 3: "Weaken", 4: "Initiate", 5: "Create",
-    6: "Swear", 7: "Avenge", 8: "Guard", 9: "Defeat", 10: "Control",
-    11: "Break", 12: "Risk", 13: "Surrender", 14: "Inspect", 15: "Raid",
-    16: "Evade", 17: "Assault", 18: "Deflect", 19: "Threaten", 20: "Attack",
-    21: "Leave", 22: "Preserve", 23: "Manipulate", 24: "Remove", 25: "Eliminate",
-    26: "Withdraw", 27: "Abandon", 28: "Investigate", 29: "Hold", 30: "Focus",
-    31: "Uncover", 32: "Breach", 33: "Aid", 34: "Uphold", 35: "Falter",
-    36: "Suppress", 37: "Hunt", 38: "Share", 39: "Destroy", 40: "Avoid",
-    41: "Reject", 42: "Demand", 43: "Explore", 44: "Bolster", 45: "Seize",
-    46: "Mourn", 47: "Reveal", 48: "Gather", 49: "Defy", 50: "Transform",
-    51: "Persevere", 52: "Serve", 53: "Begin", 54: "Move", 55: "Coordinate",
-    56: "Resist", 57: "Await", 58: "Impress", 59: "Take", 60: "Oppose",
-    61: "Capture", 62: "Overwhelm", 63: "Challenge", 64: "Acquire", 65: "Protect",
-    66: "Finish", 67: "Strengthen", 68: "Restore", 69: "Advance", 70: "Command",
-    71: "Refuse", 72: "Find", 73: "Deliver", 74: "Hide", 75: "Fortify",
-    76: "Betray", 77: "Secure", 78: "Arrive", 79: "Affect", 80: "Change",
-    81: "Defend", 82: "Debate", 83: "Support", 84: "Follow", 85: "Construct",
-    86: "Locate", 87: "Endure", 88: "Release", 89: "Lose", 90: "Reduce",
-    91: "Escalate", 92: "Distract", 93: "Journey", 94: "Escort", 95: "Learn",
-    96: "Communicate", 97: "Depart", 98: "Search", 99: "Charge"
+    1: "Scheme",
+    2: "Clash",
+    3: "Weaken",
+    4: "Initiate",
+    5: "Create",
+    6: "Swear",
+    7: "Avenge",
+    8: "Guard",
+    9: "Defeat",
+    10: "Control",
+    11: "Break",
+    12: "Risk",
+    13: "Surrender",
+    14: "Inspect",
+    15: "Raid",
+    16: "Evade",
+    17: "Assault",
+    18: "Deflect",
+    19: "Threaten",
+    20: "Attack",
+    21: "Leave",
+    22: "Preserve",
+    23: "Manipulate",
+    24: "Remove",
+    25: "Eliminate",
+    26: "Withdraw",
+    27: "Abandon",
+    28: "Investigate",
+    29: "Hold",
+    30: "Focus",
+    31: "Uncover",
+    32: "Breach",
+    33: "Aid",
+    34: "Uphold",
+    35: "Falter",
+    36: "Suppress",
+    37: "Hunt",
+    38: "Share",
+    39: "Destroy",
+    40: "Avoid",
+    41: "Reject",
+    42: "Demand",
+    43: "Explore",
+    44: "Bolster",
+    45: "Seize",
+    46: "Mourn",
+    47: "Reveal",
+    48: "Gather",
+    49: "Defy",
+    50: "Transform",
+    51: "Persevere",
+    52: "Serve",
+    53: "Begin",
+    54: "Move",
+    55: "Coordinate",
+    56: "Resist",
+    57: "Await",
+    58: "Impress",
+    59: "Take",
+    60: "Oppose",
+    61: "Capture",
+    62: "Overwhelm",
+    63: "Challenge",
+    64: "Acquire",
+    65: "Protect",
+    66: "Finish",
+    67: "Strengthen",
+    68: "Restore",
+    69: "Advance",
+    70: "Command",
+    71: "Refuse",
+    72: "Find",
+    73: "Deliver",
+    74: "Hide",
+    75: "Fortify",
+    76: "Betray",
+    77: "Secure",
+    78: "Arrive",
+    79: "Affect",
+    80: "Change",
+    81: "Defend",
+    82: "Debate",
+    83: "Support",
+    84: "Follow",
+    85: "Construct",
+    86: "Locate",
+    87: "Endure",
+    88: "Release",
+    89: "Lose",
+    90: "Reduce",
+    91: "Escalate",
+    92: "Distract",
+    93: "Journey",
+    94: "Escort",
+    95: "Learn",
+    96: "Communicate",
+    97: "Depart",
+    98: "Search",
+    99: "Charge",
 }
 
 THEME_ORACLE = {
-    1: "Risk", 2: "Ability", 3: "Price", 4: "Ally", 5: "Battle",
-    6: "Safety", 7: "Survival", 8: "Weapon", 9: "Wound", 10: "Shelter",
-    11: "Leader", 12: "Fear", 13: "Time", 14: "Duty", 15: "Secret",
-    16: "Innocence", 17: "Renown", 18: "Direction", 19: "Death", 20: "Honor",
-    21: "Labor", 22: "Solution", 23: "Tool", 24: "Balance", 25: "Love",
-    26: "Barrier", 27: "Creation", 28: "Decay", 29: "Trade", 30: "Bond",
-    31: "Hope", 32: "Superstition", 33: "Peace", 34: "Deception", 35: "History",
-    36: "World", 37: "Vow", 38: "Protection", 39: "Nature", 40: "Opinion",
-    41: "Burden", 42: "Vengeance", 43: "Opportunity", 44: "Faction", 45: "Danger",
-    46: "Corruption", 47: "Freedom", 48: "Debt", 49: "Hate", 50: "Possession",
-    51: "Stranger", 52: "Passage", 53: "Land", 54: "Creature", 55: "Disease",
-    56: "Advantage", 57: "Blood", 58: "Language", 59: "Rumor", 60: "Weakness",
-    61: "Greed", 62: "Family", 63: "Resource", 64: "Structure", 65: "Dream",
-    66: "Community", 67: "War", 68: "Portent", 69: "Prize", 70: "Destiny",
-    71: "Momentum", 72: "Power", 73: "Memory", 74: "Ruin", 75: "Mysticism",
-    76: "Rival", 77: "Problem", 78: "Idea", 79: "Revenge", 80: "Health",
-    81: "Fellowship", 82: "Enemy", 83: "Religion", 84: "Spirit", 85: "Fame",
-    86: "Desolation", 87: "Strength", 88: "Knowledge", 89: "Truth", 90: "Quest",
-    91: "Pride", 92: "Loss", 93: "Law", 94: "Path", 95: "Warning",
-    96: "Relationship", 97: "Wealth", 98: "Home", 99: "Strategy", 100: "Supply"
+    1: "Risk",
+    2: "Ability",
+    3: "Price",
+    4: "Ally",
+    5: "Battle",
+    6: "Safety",
+    7: "Survival",
+    8: "Weapon",
+    9: "Wound",
+    10: "Shelter",
+    11: "Leader",
+    12: "Fear",
+    13: "Time",
+    14: "Duty",
+    15: "Secret",
+    16: "Innocence",
+    17: "Renown",
+    18: "Direction",
+    19: "Death",
+    20: "Honor",
+    21: "Labor",
+    22: "Solution",
+    23: "Tool",
+    24: "Balance",
+    25: "Love",
+    26: "Barrier",
+    27: "Creation",
+    28: "Decay",
+    29: "Trade",
+    30: "Bond",
+    31: "Hope",
+    32: "Superstition",
+    33: "Peace",
+    34: "Deception",
+    35: "History",
+    36: "World",
+    37: "Vow",
+    38: "Protection",
+    39: "Nature",
+    40: "Opinion",
+    41: "Burden",
+    42: "Vengeance",
+    43: "Opportunity",
+    44: "Faction",
+    45: "Danger",
+    46: "Corruption",
+    47: "Freedom",
+    48: "Debt",
+    49: "Hate",
+    50: "Possession",
+    51: "Stranger",
+    52: "Passage",
+    53: "Land",
+    54: "Creature",
+    55: "Disease",
+    56: "Advantage",
+    57: "Blood",
+    58: "Language",
+    59: "Rumor",
+    60: "Weakness",
+    61: "Greed",
+    62: "Family",
+    63: "Resource",
+    64: "Structure",
+    65: "Dream",
+    66: "Community",
+    67: "War",
+    68: "Portent",
+    69: "Prize",
+    70: "Destiny",
+    71: "Momentum",
+    72: "Power",
+    73: "Memory",
+    74: "Ruin",
+    75: "Mysticism",
+    76: "Rival",
+    77: "Problem",
+    78: "Idea",
+    79: "Revenge",
+    80: "Health",
+    81: "Fellowship",
+    82: "Enemy",
+    83: "Religion",
+    84: "Spirit",
+    85: "Fame",
+    86: "Desolation",
+    87: "Strength",
+    88: "Knowledge",
+    89: "Truth",
+    90: "Quest",
+    91: "Pride",
+    92: "Loss",
+    93: "Law",
+    94: "Path",
+    95: "Warning",
+    96: "Relationship",
+    97: "Wealth",
+    98: "Home",
+    99: "Strategy",
+    100: "Supply",
 }
 
 LOCATION_ORACLE = {
@@ -125,7 +287,7 @@ LOCATION_ORACLE = {
     **{i: "Hill" for i in range(84, 89)},
     **{i: "Mountain" for i in range(89, 94)},
     **{i: "Woods" for i in range(94, 100)},
-    100: "Anomaly"
+    100: "Anomaly",
 }
 
 
@@ -146,7 +308,7 @@ COASTAL_ORACLE = {
     **{i: "Ice" for i in range(63, 71)},
     **{i: "Island" for i in range(71, 86)},
     **{i: "Open Water" for i in range(86, 100)},
-    100: "Anomaly"
+    100: "Anomaly",
 }
 
 REGION_ORACLE = {
@@ -159,7 +321,7 @@ REGION_ORACLE = {
     **{i: "Tempest Hills" for i in range(73, 85)},
     **{i: "Veiled Mountains" for i in range(85, 95)},
     **{i: "Shattered Wastes" for i in range(95, 100)},
-    100: "Elsewhere"
+    100: "Elsewhere",
 }
 
 DESCRIPTOR_ORACLE = {
@@ -212,7 +374,7 @@ DESCRIPTOR_ORACLE = {
     **{i: "Dense" for i in range(93, 95)},
     **{i: "Civilized" for i in range(95, 97)},
     **{i: "Desolate" for i in range(97, 99)},
-    **{i: "Isolated" for i in range(99, 101)}
+    **{i: "Isolated" for i in range(99, 101)},
 }
 
 SETTLEMENT_CATEGORIES = {
@@ -239,7 +401,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Whitefall" for i in range(71, 81)},
             **{i: "Graycliff" for i in range(81, 91)},
             **{i: "Three Rivers" for i in range(91, 101)},
-        }
+        },
     ),
     "A manmade edifice": (
         "What is it? Why is it important to this settlement’s history?",
@@ -254,7 +416,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Thornhall" for i in range(71, 81)},
             **{i: "Cinderhome" for i in range(81, 91)},
             **{i: "Fallowfield" for i in range(91, 101)},
-        }
+        },
     ),
     "A creature": (
         "Why have the people of this settlement chosen this creature as their totem? How is it represented in art or rituals?",
@@ -269,7 +431,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Elderwatch" for i in range(71, 81)},
             **{i: "Elkfield" for i in range(81, 91)},
             **{i: "Dragonshadow" for i in range(91, 101)},
-        }
+        },
     ),
     "A historical event": (
         "What happened here? What place or practice commemorates this event?",
@@ -284,7 +446,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Rojirra's Lament" for i in range(71, 81)},
             **{i: "Lastmarch" for i in range(81, 91)},
             **{i: "Rockfall" for i in range(91, 101)},
-        }
+        },
     ),
     "A word in an Old World language": (
         "What culture is represented by this word? What does it translate to?",
@@ -299,7 +461,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Sova" for i in range(71, 81)},
             **{i: "Nabuma" for i in range(81, 91)},
             **{i: "Tiza" for i in range(91, 101)},
-        }
+        },
     ),
     "A season or environmental aspect": (
         "What influence does the weather have on this settlement?",
@@ -314,7 +476,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "Springbrook" for i in range(71, 81)},
             **{i: "Icebreak" for i in range(81, 91)},
             **{i: "Summersong" for i in range(91, 101)},
-        }
+        },
     ),
     "Something Else...": (
         "A different kind of inspiration for the settlement's name.",
@@ -329,7 +491,7 @@ SETTLEMENT_FEATURES_ORACLE = {
             **{i: "A mythic belief or event (Ghostwalk)" for i in range(71, 81)},
             **{i: "A positive term (Hope)" for i in range(81, 91)},
             **{i: "A negative term (Forsaken)" for i in range(91, 101)},
-        }
+        },
     ),
 }
 
@@ -435,7 +597,7 @@ SETTLEMENT_TROUBLES = {
     **{i: "Stranger causes discord" for i in range(85, 87)},
     **{i: "Important event threatened" for i in range(87, 89)},
     **{i: "Dangerous tradition" for i in range(89, 91)},
-    **{i: "Roll twice" for i in range(91, 101)}
+    **{i: "Roll twice" for i in range(91, 101)},
 }
 
 CHARACTER_ROLE = {
@@ -468,7 +630,7 @@ CHARACTER_ROLE = {
     **{i: "Raider" for i in range(85, 90)},
     **{i: "Trader" for i in range(90, 95)},
     **{i: "Farmer" for i in range(95, 100)},
-    100: "Unusual role"
+    100: "Unusual role",
 }
 
 CHARACTER_GOAL = {
@@ -504,7 +666,7 @@ CHARACTER_GOAL = {
     **{i: "Find redemption" for i in range(88, 91)},
     **{i: "Escape from something" for i in range(91, 93)},
     **{i: "Resolve a dispute" for i in range(93, 96)},
-    **{i: "Roll twice" for i in range(96, 101)}
+    **{i: "Roll twice" for i in range(96, 101)},
 }
 
 CHARACTER_DESCRIPTOR = {
@@ -607,7 +769,7 @@ CHARACTER_DESCRIPTOR = {
     97: "Cowardly",
     98: "Obsessed",
     99: "Careless",
-    100: "Ironsworn"
+    100: "Ironsworn",
 }
 
 IRONLANDER_NAMES = {
@@ -710,7 +872,7 @@ IRONLANDER_NAMES = {
     97: "Temir",
     98: "Bas",
     99: "Sabine",
-    100: "Tallus"
+    100: "Tallus",
 }
 
 IRONLANDER_NAMES_EXPANSION = {
@@ -813,7 +975,7 @@ IRONLANDER_NAMES_EXPANSION = {
     97: "Irsia",
     98: "Kayu",
     99: "Bevan",
-    100: "Chandra"
+    100: "Chandra",
 }
 
 ELF_NAMES = {
@@ -867,7 +1029,7 @@ ELF_NAMES = {
     **{i: "Otani" for i in range(95, 97)},
     **{i: "Ditani" for i in range(97, 99)},
     99: "Faraza",
-    100: "Faraza"
+    100: "Faraza",
 }
 
 COMBAT_ACTION = {
@@ -888,35 +1050,70 @@ COMBAT_ACTION = {
     **{i: "Create an opportunity." for i in range(69, 79)},
     **{i: "Attack with precision." for i in range(79, 90)},
     **{i: "Attack with power." for i in range(90, 100)},
-    100: "Take a completely unexpected action."
+    100: "Take a completely unexpected action.",
 }
 
 MYSTIC_BACKLASH = {
     **{i: "Your ritual has the opposite effect." for i in range(1, 5)},
     **{i: "You are sapped of strength." for i in range(5, 9)},
-    **{i: "Your friend, ally, or companion is adversely affected." for i in range(9, 13)},
+    **{
+        i: "Your friend, ally, or companion is adversely affected."
+        for i in range(9, 13)
+    },
     **{i: "You destroy an important object." for i in range(13, 17)},
     **{i: "You inadvertently summon a horror." for i in range(17, 21)},
     **{i: "You collapse, and drift into a troubled sleep." for i in range(21, 25)},
-    **{i: "You undergo a physical torment which leaves its mark upon you." for i in range(25, 29)},
-    **{i: "You hear ghostly voices whispering of dark portents." for i in range(29, 33)},
-    **{i: "You are lost in shadow, and find yourself in another place without memory of how you got there." for i in range(33, 37)},
+    **{
+        i: "You undergo a physical torment which leaves its mark upon you."
+        for i in range(25, 29)
+    },
+    **{
+        i: "You hear ghostly voices whispering of dark portents." for i in range(29, 33)
+    },
+    **{
+        i: "You are lost in shadow, and find yourself in another place without memory of how you got there."
+        for i in range(33, 37)
+    },
     **{i: "You alert someone or something to your presence." for i in range(37, 41)},
-    **{i: "You are not yourself, and act against a friend, ally, or companion." for i in range(41, 45)},
-    **{i: "You affect or damage your surroundings, causing a disturbance or potential harm." for i in range(45, 49)},
+    **{
+        i: "You are not yourself, and act against a friend, ally, or companion."
+        for i in range(41, 45)
+    },
+    **{
+        i: "You affect or damage your surroundings, causing a disturbance or potential harm."
+        for i in range(45, 49)
+    },
     **{i: "You waste resources." for i in range(49, 53)},
     **{i: "You suffer the loss of a sense for several hours." for i in range(53, 57)},
-    **{i: "You lose your connection to magic for a day or so, and cannot perform rituals." for i in range(57, 61)},
-    **{i: "Your ritual affects the target in an unexpected and problematic way." for i in range(61, 65)},
-    **{i: "Your ritual reveals a surprising and troubling truth." for i in range(65, 69)},
+    **{
+        i: "You lose your connection to magic for a day or so, and cannot perform rituals."
+        for i in range(57, 61)
+    },
+    **{
+        i: "Your ritual affects the target in an unexpected and problematic way."
+        for i in range(61, 65)
+    },
+    **{
+        i: "Your ritual reveals a surprising and troubling truth."
+        for i in range(65, 69)
+    },
     **{i: "You are tempted by dark powers." for i in range(69, 73)},
     **{i: "You see a troubling vision of your future." for i in range(73, 77)},
-    **{i: "You can't perform this ritual again until you acquire an important component." for i in range(77, 81)},
+    **{
+        i: "You can't perform this ritual again until you acquire an important component."
+        for i in range(77, 81)
+    },
     **{i: "You develop a strange fear or compulsion." for i in range(81, 85)},
-    **{i: "Your ritual causes creatures to exhibit strange or aggressive behavior." for i in range(85, 89)},
+    **{
+        i: "Your ritual causes creatures to exhibit strange or aggressive behavior."
+        for i in range(85, 89)
+    },
     **{i: "You are tormented by an apparition from your past." for i in range(89, 93)},
     **{i: "You are wracked with sudden sickness." for i in range(93, 97)},
-    **{i: "Roll twice more on this table. Both results occur. If they are the same result, make it worse." for i in range(97, 101)}
+    **{
+        i: "Roll twice more on this table. Both results occur. If they are the same result, make it worse."
+        for i in range(97, 101)
+    },
 }
 
 MAJOR_PLOT_TWIST = {
@@ -937,9 +1134,15 @@ MAJOR_PLOT_TWIST = {
     **{i: "A new danger appears." for i in range(71, 76)},
     **{i: "Someone or something goes missing." for i in range(76, 81)},
     **{i: "The truth of a relationship is revealed." for i in range(81, 86)},
-    **{i: "Two seemingly unrelated situations are shown to be connected." for i in range(86, 91)},
+    **{
+        i: "Two seemingly unrelated situations are shown to be connected."
+        for i in range(86, 91)
+    },
     **{i: "Unexpected powers or abilities are revealed." for i in range(91, 96)},
-    **{i: "Roll twice more on this table. Both results occur. If they are the same result, make it more dramatic." for i in range(96, 101)}
+    **{
+        i: "Roll twice more on this table. Both results occur. If they are the same result, make it more dramatic."
+        for i in range(96, 101)
+    },
 }
 
 CHALLENGE_RANK = {
@@ -947,7 +1150,7 @@ CHALLENGE_RANK = {
     **{i: "Dangerous" for i in range(21, 56)},
     **{i: "Formidable" for i in range(56, 81)},
     **{i: "Extreme" for i in range(81, 94)},
-    **{i: "Epic" for i in range(94, 101)}
+    **{i: "Epic" for i in range(94, 101)},
 }
 
 OTHER_NAMES = {
@@ -976,7 +1179,7 @@ OTHER_NAMES = {
         **{i: "Baku" for i in range(85, 89)},
         **{i: "Tuban" for i in range(89, 93)},
         **{i: "Qudan" for i in range(93, 97)},
-        **{i: "Denua" for i in range(97, 101)}
+        **{i: "Denua" for i in range(97, 101)},
     },
     "Varou": {
         **{i: "Vata" for i in range(1, 5)},
@@ -1003,7 +1206,7 @@ OTHER_NAMES = {
         **{i: "Muko" for i in range(85, 89)},
         **{i: "Dreko" for i in range(89, 93)},
         **{i: "Aleko" for i in range(93, 97)},
-        **{i: "Vojan" for i in range(97, 101)}
+        **{i: "Vojan" for i in range(97, 101)},
     },
     "Trolls": {
         **{i: "Rattle" for i in range(1, 5)},
@@ -1030,8 +1233,8 @@ OTHER_NAMES = {
         **{i: "Vrusk" for i in range(85, 89)},
         **{i: "Snuffle" for i in range(89, 93)},
         **{i: "Leech" for i in range(93, 97)},
-        **{i: "Herk" for i in range(97, 101)}
-    }
+        **{i: "Herk" for i in range(97, 101)},
+    },
 }
 
 
@@ -1048,63 +1251,104 @@ async def oracle_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         keyboard.append(row)
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("*ASK THE ORACLE*\n\nSelect your Oracle:",parse_mode="Markdown", reply_markup=reply_markup)
+    await update.message.reply_text(
+        "*ASK THE ORACLE*\n\nSelect your Oracle:",
+        parse_mode="Markdown",
+        reply_markup=reply_markup,
+    )
 
-async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def oracle_button_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> None:
     """Handles button callbacks."""
     query = update.callback_query
     await query.answer()
     chat_id = query.message.chat.id  # Get the chat ID from the original message
 
     if query.data.startswith("oracle_"):
-    
+
         oracle_name = query.data.replace("oracle_", "")
 
-        if oracle_name == 'Settlement Name':
-            keyboard =  [
-                [
-                    InlineKeyboardButton("A feature of the landscape", callback_data=f"settlement_feature")],[
-                    InlineKeyboardButton("A manmade edifice", callback_data=f"settlement_edifice")],[
-                    InlineKeyboardButton("A creature", callback_data=f"settlement_creature")],[
-                    InlineKeyboardButton("A historical event", callback_data=f"settlement_event")],[
-                    InlineKeyboardButton("A word in an Old World language", callback_data=f"settlement_word")],[
-                    InlineKeyboardButton("A season or environmental aspect", callback_data=f"settlement_season")],[
-                    InlineKeyboardButton("Something Else...", callback_data=f"settlement_else")],[
-                    InlineKeyboardButton("🎲 Roll category", callback_data=f"settlement_roll")],[
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
-                ]
-                ]
-            text = '*Settlement name* \n\nYou can either choose a category, or roll for it.'
-        elif oracle_name == 'Quick Settlement':
+        if oracle_name == "Settlement Name":
             keyboard = [
                 [
-                    InlineKeyboardButton("🎲🎲 Roll", callback_data=f"roll_{oracle_name}"),
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
+                    InlineKeyboardButton(
+                        "A feature of the landscape",
+                        callback_data="settlement_feature",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "A manmade edifice", callback_data="settlement_edifice"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "A creature", callback_data="settlement_creature"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "A historical event", callback_data="settlement_event"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "A word in an Old World language",
+                        callback_data="settlement_word",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "A season or environmental aspect",
+                        callback_data="settlement_season",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "Something Else...", callback_data="settlement_else"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "🎲 Roll category", callback_data="settlement_roll"
+                    )
+                ],
+                [InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")],
+            ]
+            text = "*Settlement name* \n\nYou can either choose a category, or roll for it."
+        elif oracle_name == "Quick Settlement":
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        "🎲🎲 Roll", callback_data=f"roll_{oracle_name}"
+                    ),
+                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles"),
                 ]
             ]
-            text=f"{'*'+oracle_name+'*'}{ORACLES[oracle_name]}" 
+            text = f"{'*'+oracle_name+'*'}{ORACLES[oracle_name]}"
 
-        elif oracle_name == 'Other Names':
-            keyboard =  [
-                [
-                    InlineKeyboardButton("Giants", callback_data=f"other_names_Giants")],[
-                    InlineKeyboardButton("Varou", callback_data=f"other_names_Varou")],[
-                    InlineKeyboardButton("Trolls", callback_data=f"other_names_Trolls")]
-                ]
-            text = '*Other Names* \n\nPick a race from which to choose.'
+        elif oracle_name == "Other Names":
+            keyboard = [
+                [InlineKeyboardButton("Giants", callback_data="other_names_Giants")],
+                [InlineKeyboardButton("Varou", callback_data="other_names_Varou")],
+                [InlineKeyboardButton("Trolls", callback_data="other_names_Trolls")],
+            ]
+            text = "*Other Names* \n\nPick a race from which to choose."
         else:
             keyboard = [
                 [
-                    InlineKeyboardButton("🎲 Roll", callback_data=f"roll_{oracle_name}"),
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
+                    InlineKeyboardButton(
+                        "🎲 Roll", callback_data=f"roll_{oracle_name}"
+                    ),
+                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles"),
                 ]
             ]
-            text=f"{'*'+oracle_name+'*'}{ORACLES[oracle_name]}" 
+            text = f"{'*'+oracle_name+'*'}{ORACLES[oracle_name]}"
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            text,
-            parse_mode="Markdown",
-            reply_markup=reply_markup
+            text, parse_mode="Markdown", reply_markup=reply_markup
         )
 
     elif query.data.startswith("settlement_"):
@@ -1112,9 +1356,9 @@ async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_T
             await query.message.delete()
         except Exception:
             pass
-        if query.data == 'settlement_roll':
+        if query.data == "settlement_roll":
             # Generate two random numbers between 1 and 10
-            num1 = random.randint(0, 9) 
+            num1 = random.randint(0, 9)
             num2 = random.randint(0, 9)
             with open("./data/d10_sticker_id.json", "r", encoding="utf-8") as file:
                 d10_sticker_id = json.load(file)
@@ -1122,31 +1366,31 @@ async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_T
             await context.bot.send_sticker(chat_id, d10_sticker_id[str(num2)])
             result_num = num1 * 10 + num2 if num1 != 0 or num2 != 0 else 100
             oracle_result = SETTLEMENT_CATEGORIES[result_num]
-                # Send the result
+            # Send the result
         else:
             sett_results = {
                 "feature": "A feature of the landscape",
-                "edifice":"A manmade edifice",
-                "creature":"A creature",
-                "event":"A historical event",
-                "word":"A word in an Old World language",
-                "season":"A season or environmental aspect",
-                "else":"Something Else..."
+                "edifice": "A manmade edifice",
+                "creature": "A creature",
+                "event": "A historical event",
+                "word": "A word in an Old World language",
+                "season": "A season or environmental aspect",
+                "else": "Something Else...",
             }
-            oracle_result = sett_results[query.data.replace('settlement_','')]
+            oracle_result = sett_results[query.data.replace("settlement_", "")]
 
         keyboard = [
-                [
-                    InlineKeyboardButton("🎲 Roll", callback_data=f"roll_settlement_{oracle_result}"),
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_settlements")
-                ]
+            [
+                InlineKeyboardButton(
+                    "🎲 Roll", callback_data=f"roll_settlement_{oracle_result}"
+                ),
+                InlineKeyboardButton("⬅️ Back", callback_data="back_to_settlements"),
             ]
-        text=f"{'*'+oracle_result+'*' }\n\n{SETTLEMENT_FEATURES_ORACLE[oracle_result][0]}" 
+        ]
+        text = f"{'*'+oracle_result+'*' }\n\n{SETTLEMENT_FEATURES_ORACLE[oracle_result][0]}"
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(chat_id,
-            text,
-            parse_mode="Markdown",
-            reply_markup=reply_markup
+        await context.bot.send_message(
+            chat_id, text, parse_mode="Markdown", reply_markup=reply_markup
         )
 
     elif query.data.startswith("other_names_"):
@@ -1154,22 +1398,34 @@ async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_T
             await query.message.delete()
         except Exception:
             pass
-        other_names = query.data.replace("other_names_",'')
+        other_names = query.data.replace("other_names_", "")
 
-        keyboard =  [
-                [
-                    InlineKeyboardButton("Giants"+ (' ✅' if other_names == 'Giants' else ' ❌'), callback_data=f"other_names_Giants")],[
-                    InlineKeyboardButton("Varou" + (' ✅' if other_names == 'Varou' else ' ❌'), callback_data=f"other_names_Varou")],[
-                    InlineKeyboardButton("Trolls"+ (' ✅' if other_names == 'Trolls' else ' ❌'), callback_data=f"other_names_Trolls")],[
-                    InlineKeyboardButton("🎲 Roll", callback_data=f"roll_{query.data}")],[
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")]
-                ]
-        text=f"{'*Other Names: '+other_names+'*' }\n\nYou can roll for {other_names} names or choose another race." 
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "Giants" + (" ✅" if other_names == "Giants" else " ❌"),
+                    callback_data="other_names_Giants",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "Varou" + (" ✅" if other_names == "Varou" else " ❌"),
+                    callback_data="other_names_Varou",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "Trolls" + (" ✅" if other_names == "Trolls" else " ❌"),
+                    callback_data="other_names_Trolls",
+                )
+            ],
+            [InlineKeyboardButton("🎲 Roll", callback_data=f"roll_{query.data}")],
+            [InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")],
+        ]
+        text = f"{'*Other Names: '+other_names+'*' }\n\nYou can roll for {other_names} names or choose another race."
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(chat_id,
-            text,
-            parse_mode="Markdown",
-            reply_markup=reply_markup
+        await context.bot.send_message(
+            chat_id, text, parse_mode="Markdown", reply_markup=reply_markup
         )
 
     elif query.data.startswith("roll_"):
@@ -1177,25 +1433,46 @@ async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_T
         await handle_oracle_roll(query, oracle_name, context)
 
     elif query.data == "back_to_settlements":
-        keyboard =  [
-                [
-                    InlineKeyboardButton("A feature of the landscape", callback_data=f"settlement_feature")],[
-                    InlineKeyboardButton("A manmade edifice", callback_data=f"settlement_edifice")],[
-                    InlineKeyboardButton("A creature", callback_data=f"settlement_creature")],[
-                    InlineKeyboardButton("A historical event", callback_data=f"settlement_event")],[
-                    InlineKeyboardButton("A word in an Old World language", callback_data=f"settlement_word")],[
-                    InlineKeyboardButton("A season or environmental aspect", callback_data=f"settlement_season")],[
-                    InlineKeyboardButton("Something Else...", callback_data=f"settlement_else")],[
-                    InlineKeyboardButton("🎲 Roll category", callback_data=f"settlement_roll")],[
-                    InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
-                ]
-                ]
-        text = '*Settlement name* \n\nYou can either choose a category, or roll for it.'
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "A feature of the landscape", callback_data="settlement_feature"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "A manmade edifice", callback_data="settlement_edifice"
+                )
+            ],
+            [InlineKeyboardButton("A creature", callback_data="settlement_creature")],
+            [
+                InlineKeyboardButton(
+                    "A historical event", callback_data="settlement_event"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "A word in an Old World language", callback_data="settlement_word"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "A season or environmental aspect",
+                    callback_data="settlement_season",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "Something Else...", callback_data="settlement_else"
+                )
+            ],
+            [InlineKeyboardButton("🎲 Roll category", callback_data="settlement_roll")],
+            [InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")],
+        ]
+        text = "*Settlement name* \n\nYou can either choose a category, or roll for it."
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            text,
-            parse_mode="Markdown",
-            reply_markup=reply_markup
+            text, parse_mode="Markdown", reply_markup=reply_markup
         )
 
     elif query.data == "back_to_oracles":
@@ -1209,14 +1486,20 @@ async def oracle_button_callback(update: Update, context: ContextTypes.DEFAULT_T
         if row:
             keyboard.append(row)
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("*ASK THE ORACLE*\n\nSelect your Oracle:",parse_mode="Markdown", reply_markup=reply_markup)
-    
+        await query.edit_message_text(
+            "*ASK THE ORACLE*\n\nSelect your Oracle:",
+            parse_mode="Markdown",
+            reply_markup=reply_markup,
+        )
+
 
 # Update the handle_oracle_roll function
-async def handle_oracle_roll(query: CallbackQuery, oracle_name: str, context: CallbackContext) -> None:
+async def handle_oracle_roll(
+    query: CallbackQuery, oracle_name: str, context: CallbackContext
+) -> None:
     """Handle the roll for an oracle"""
     # Generate two random numbers between 1 and 10
-    num1 = random.randint(0, 9) 
+    num1 = random.randint(0, 9)
     num2 = random.randint(0, 9)
 
     # Try to delete the original message
@@ -1255,22 +1538,29 @@ async def handle_oracle_roll(query: CallbackQuery, oracle_name: str, context: Ca
         "Combat Action": COMBAT_ACTION,
         "Mystic Backlash": MYSTIC_BACKLASH,
         "Major Plot Twist": MAJOR_PLOT_TWIST,
-        "Challenge Rank": CHALLENGE_RANK
+        "Challenge Rank": CHALLENGE_RANK,
     }
 
-    result_num2  = -1
+    result_num2 = -1
     chat_id = query.message.chat.id  # Get the chat ID from the original message
     if oracle_name in oracle_results:
         oracle_result = oracle_results[oracle_name][result_num]
-        await context.bot.send_message(chat_id,f"{oracle_name.split()[0]}: {oracle_result}")
-    elif oracle_name.startswith('settlement_'):
-        oracle_sett = oracle_name.split('_')[1]
-        await context.bot.send_message(chat_id,f"{oracle_sett}: {SETTLEMENT_FEATURES_ORACLE[oracle_sett][1][result_num]}")
-    elif oracle_name.startswith('other_names_'):
-        oracle_other = oracle_name.replace('other_names_','')
-        await context.bot.send_message(chat_id,f"{oracle_other}: {OTHER_NAMES[oracle_other][result_num]}")
-    elif oracle_name == 'Quick Settlement':
-        num1 = random.randint(0, 9) 
+        await context.bot.send_message(
+            chat_id, f"{oracle_name.split()[0]}: {oracle_result}"
+        )
+    elif oracle_name.startswith("settlement_"):
+        oracle_sett = oracle_name.split("_")[1]
+        await context.bot.send_message(
+            chat_id,
+            f"{oracle_sett}: {SETTLEMENT_FEATURES_ORACLE[oracle_sett][1][result_num]}",
+        )
+    elif oracle_name.startswith("other_names_"):
+        oracle_other = oracle_name.replace("other_names_", "")
+        await context.bot.send_message(
+            chat_id, f"{oracle_other}: {OTHER_NAMES[oracle_other][result_num]}"
+        )
+    elif oracle_name == "Quick Settlement":
+        num1 = random.randint(0, 9)
         num2 = random.randint(0, 9)
         with open("./data/d10_sticker_id.json", "r", encoding="utf-8") as file:
             d10_sticker_id = json.load(file)
@@ -1278,29 +1568,46 @@ async def handle_oracle_roll(query: CallbackQuery, oracle_name: str, context: Ca
         await context.bot.send_sticker(chat_id, d10_sticker_id[str(num1)])
         await context.bot.send_sticker(chat_id, d10_sticker_id[str(num2)])
         result_num2 = num1 * 10 + num2 if num1 != 0 or num2 != 0 else 100
-        await context.bot.send_message(chat_id,f"{oracle_name}: {QUICK_SETTLEMENT_PREFIXES[result_num].replace('-','')}{QUICK_SETTLEMENT_SUFFIXES[result_num2].replace('-','')}")
-    elif oracle_name == 'Ironlander Names':
-        num = random.randint(0,1)
+        await context.bot.send_message(
+            chat_id,
+            f"{oracle_name}: {QUICK_SETTLEMENT_PREFIXES[result_num].replace('-','')}{QUICK_SETTLEMENT_SUFFIXES[result_num2].replace('-','')}",
+        )
+    elif oracle_name == "Ironlander Names":
+        num = random.randint(0, 1)
         if num == 0:
-            await context.bot.send_message(chat_id,f"{oracle_name}: {IRONLANDER_NAMES[result_num]}")
+            await context.bot.send_message(
+                chat_id, f"{oracle_name}: {IRONLANDER_NAMES[result_num]}"
+            )
         else:
-            await context.bot.send_message(chat_id,f"{oracle_name}: {IRONLANDER_NAMES_EXPANSION[result_num]}")
+            await context.bot.send_message(
+                chat_id, f"{oracle_name}: {IRONLANDER_NAMES_EXPANSION[result_num]}"
+            )
 
-    if result_num2 !=-1:
+    if result_num2 != -1:
         keyboard = [
             [
-                InlineKeyboardButton("🎲🎲 Roll Again", callback_data=f"roll_{oracle_name}"),
-                InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
+                InlineKeyboardButton(
+                    "🎲🎲 Roll Again", callback_data=f"roll_{oracle_name}"
+                ),
+                InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(chat_id,f"First Roll result: {result_num}\nSecond Roll result: {result_num2}", reply_markup=reply_markup)
+        await context.bot.send_message(
+            chat_id,
+            f"First Roll result: {result_num}\nSecond Roll result: {result_num2}",
+            reply_markup=reply_markup,
+        )
     else:
         keyboard = [
             [
-                InlineKeyboardButton("🎲 Roll Again", callback_data=f"roll_{oracle_name}"),
-                InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles")
+                InlineKeyboardButton(
+                    "🎲 Roll Again", callback_data=f"roll_{oracle_name}"
+                ),
+                InlineKeyboardButton("⬅️ Back", callback_data="back_to_oracles"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(chat_id,f"Roll result: {result_num}", reply_markup=reply_markup)
+        await context.bot.send_message(
+            chat_id, f"Roll result: {result_num}", reply_markup=reply_markup
+        )

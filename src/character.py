@@ -23,7 +23,6 @@ SHOWING_CHARACTER = 0
 
 
 async def update_sheet(task, new, chat_id) -> str:
-    print("task = ", task)
     with open("./data/character.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     if task == "changing_name":
@@ -72,9 +71,17 @@ async def update_sheet(task, new, chat_id) -> str:
     if task.startswith("vow"):
         vows = list(data[chat_id]["vows"].keys())
         task_ = task.split("_")
-        offset = {'troublesome':12,'dangerous':8,'formidable':4,'extreme':2,'epic':1}
+        offset = {
+            "troublesome": 12,
+            "dangerous": 8,
+            "formidable": 4,
+            "extreme": 2,
+            "epic": 1,
+        }
         if task_[1] == "plus":
-            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] += offset[data[chat_id]["vows"][vows[int(task_[0][-1])]]["difficulty"]]
+            data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] += offset[
+                data[chat_id]["vows"][vows[int(task_[0][-1])]]["difficulty"]
+            ]
         if task_[1] == "minus":
             data[chat_id]["vows"][vows[int(task_[0][-1])]]["tracker"] -= 1
     if task == "add_vow_name":
@@ -92,10 +99,10 @@ async def update_sheet(task, new, chat_id) -> str:
         data[chat_id]["vows"].pop(task_[-1])
     with open("./data/character.json", "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
-    if task == 'changing_momentum_max':
-        data[chat_id]['momentum']['max']
-    if task == 'changing_momentum_reset':
-        data[chat_id]['momentum']['reset']
+    if task == "changing_momentum_max":
+        data[chat_id]["momentum"]["max"]
+    if task == "changing_momentum_reset":
+        data[chat_id]["momentum"]["reset"]
 
     return "./data/Ironsworn_sheet.png"
 
@@ -211,11 +218,17 @@ async def create_sheet(chat_id, image_path: str) -> str:
     # Insert vows
     cn = [290, 635]
     vows = data["vows"]
-    diff_offset = {'troublesome':85,'dangerous':335,'formidable':550,'extreme':770,'epic':949}
+    diff_offset = {
+        "troublesome": 85,
+        "dangerous": 335,
+        "formidable": 550,
+        "extreme": 770,
+        "epic": 949,
+    }
     for i, vow in enumerate(vows.keys()):
         draw.text((cn[0], cn[1]), str(vow), fill=color, font=font(40))
-        x = cn[0]+diff_offset[vows[vow]["difficulty"]]
-        y = cn[1]+59
+        x = cn[0] + diff_offset[vows[vow]["difficulty"]]
+        y = cn[1] + 59
         draw.ellipse([x, y, x + 26, y + 26], fill=color)
         c_y = cn[0] + 284.8
         s_y = cn[1] + 128

@@ -121,7 +121,6 @@ def create_collage(
     image_names, output_filename="./collage.jpg", thumbnail_size=(100, 1000), spacing=5
 ):
     # Open all images and resize them
-    print(image_names)
     images = [
         Image.open(name).resize(thumbnail_size, Image.Resampling.LANCZOS)
         for name in image_names
@@ -292,7 +291,6 @@ async def handle_new_tracker_difficulty_input(
 ) -> int:
     name = context.user_data["new_tracker"]
 
-    print("aspettando la risposta ai pulsanti credo")
     query = update.callback_query
     await query.answer()
     await update_trackers(

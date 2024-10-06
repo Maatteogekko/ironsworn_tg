@@ -13,6 +13,7 @@ from telegram.ext import (
 from PIL import Image, ImageDraw, ImageFont
 from src.utils import cancel, end_conversation, flip_page, split_text
 
+
 async def create_map(image_path: str) -> str:
 
     img = Image.open(image_path)
@@ -27,16 +28,20 @@ async def create_map(image_path: str) -> str:
 
     color = (45, 45, 45)
 
-
     with open("./data/map.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     for waypoint in data.keys():
-        draw.text(data[waypoint]['coords'], waypoint, fill=color, font=font(20))
+        draw.text(data[waypoint]["coords"], waypoint, fill=color, font=font(20))
         draw.ellipse(
-                [data[waypoint]['coords'][0], data[waypoint]['coords'][1], data[waypoint]['coords'][0] + 26, data[waypoint]['coords'][1] + 26], fill=color
-            )
-
+            [
+                data[waypoint]["coords"][0],
+                data[waypoint]["coords"][1],
+                data[waypoint]["coords"][0] + 26,
+                data[waypoint]["coords"][1] + 26,
+            ],
+            fill=color,
+        )
 
     # Save the modified image
     modified_image_path = "./data/modified_map.png"
@@ -44,8 +49,10 @@ async def create_map(image_path: str) -> str:
 
     return modified_image_path
 
+
 # Define states
 SHOWING_TRUTHS = 0
+
 
 async def truths(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     del context
@@ -202,7 +209,6 @@ the survivors made landfall upon the Ironlands.
 
         modified_image_path = create_map("./data/map.png")
         # Send the map image from local storage
-        print(modif)
         with open(modified_image_path, "rb") as photo:
             await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
 

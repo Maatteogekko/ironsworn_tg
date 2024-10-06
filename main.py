@@ -6,11 +6,11 @@ from src.rules import rules_command
 from src.moves import moves_handler
 from src.truths import truths_handler
 from src.challenge import challenge_handler
-from src.oracle import oracle_command, oracle_button_callback   
+from src.oracle import oracle_command, oracle_button_callback
 from src.character import character_handler
 from src.trackers import trackers_handler
 from src.bonds import bonds_handler
-from src.map import map_conv_handler,send_map_command
+from src.map import map_conv_handler, send_map_command
 
 TOKEN = None
 with open("./data/token.txt", encoding="utf-8") as f:
@@ -25,7 +25,7 @@ logging.basicConfig(
 
 
 async def set_bot_commands(app: Application) -> None:
-    commands = [ 
+    commands = [
         BotCommand("character", "Modify you character"),
         BotCommand("challenge", "Take action!"),
         BotCommand("moves", "List and explanation of moves"),
@@ -36,7 +36,6 @@ async def set_bot_commands(app: Application) -> None:
         BotCommand("rules", "Need a quick refresher?"),
         BotCommand("assets", "List and explanation of assets"),
         BotCommand("truths", "To do"),
-
     ]
     await app.bot.set_my_commands(commands)
 
@@ -55,8 +54,8 @@ if __name__ == "__main__":
     application.add_handler(moves_handler, group=2)
     application.add_handler(truths_handler, group=3)
     application.add_handler(challenge_handler, group=4)
-    application.add_handler(CommandHandler("oracle", oracle_command),group=5)
-    application.add_handler(CallbackQueryHandler(oracle_button_callback),group=5)
+    application.add_handler(CommandHandler("oracle", oracle_command), group=5)
+    application.add_handler(CallbackQueryHandler(oracle_button_callback), group=5)
     application.add_handler(character_handler, group=6)
     application.add_handler(trackers_handler, group=7)
     application.add_handler(bonds_handler, group=8)
