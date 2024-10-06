@@ -160,15 +160,29 @@ def get_trackers_keyboard():
 
 async def trackers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
+    # Create trackers and get the image path
     image_path = await create_trackers()
-    print(image_path)
+    
+    # Open the image and check its height
+    with Image.open(image_path) as img:
+        width, height = img.size  # Get width and height of the image
 
-    # Send the message with the image and keyboard
-    message = await update.message.reply_photo(
-        photo=open(image_path, "rb"),
-        caption="Trackers",
-        reply_markup=get_trackers_keyboard(),
-    )
+    print(f"Image path: {image_path}, Image height: {height}")
+
+    # Check if the image height is below 10 pixels
+    if height < 10:
+        # Send a message without the image
+        message = await update.message.reply_text(
+            text="No Trackers found",
+            reply_markup=get_trackers_keyboard(),
+        )
+    else:
+        # Send the message with the image
+        message = await update.message.reply_photo(
+            photo=open(image_path, "rb"),
+            caption="Trackers",
+            reply_markup=get_trackers_keyboard(),
+        )
 
     # Store the message IDs for later deletion
     context.user_data["bot_message_id"] = message.message_id
@@ -193,15 +207,33 @@ async def trackers_button_callback(
     await query.answer()
 
     if query.data.startswith("remove_tracker_") or query.data.startswith("tracker_"):
+        # Update the trackers
         await update_trackers(query.data)
-        # Refresh the character sheet image
+        
+        # Create trackers and get the image path
         image_path = await create_trackers()
-        await query.message.edit_media(
-            media=InputMediaPhoto(
-                open(image_path, "rb"), caption="Tracker removed/updated"
-            ),
-            reply_markup=get_trackers_keyboard(),
-        )
+        
+        # Open the image and check its height
+        with Image.open(image_path) as img:
+            width, height = img.size  # Get width and height of the image
+
+        print(f"Image path: {image_path}, Image height: {height}")
+
+        # Check if the image height is below 10 pixels
+        if height < 10:
+            # Edit the message without updating the image
+            await query.message.edit_caption(
+                caption="Tracker removed/updated (Sorry for the image, will be fixed.)",
+                reply_markup=get_trackers_keyboard(),
+            )
+        else:
+            # Edit the message with the updated image
+            await query.message.edit_media(
+                media=InputMediaPhoto(
+                    open(image_path, "rb"), caption="Tracker removed/updated"
+                ),
+                reply_markup=get_trackers_keyboard(),
+            )
     elif query.data == "add_tracker":
         await query.message.reply_text("Send me the name of the new tracker:")
         await context.bot.delete_message(
@@ -261,13 +293,29 @@ async def handle_new_tracker_difficulty_input(
         "add_tracker_difficulty", (name, query.data)
     )
 
+    # Create trackers and get the modified image path
     modified_image_path = await create_trackers()
+    
+    # Open the image and check its height
+    with Image.open(modified_image_path) as img:
+        width, height = img.size  # Get width and height of the image
 
-    await query.message.reply_photo(
-        photo=open(modified_image_path, "rb"),
-        caption="trackers updated",
-        reply_markup=get_trackers_keyboard(),
-    )
+    print(f"Modified image path: {modified_image_path}, Image height: {height}")
+
+    # Check if the image height is below 10 pixels
+    if height < 10:
+        # Send a message without the image
+        await query.message.reply_text(
+            text="No Trackes found",
+            reply_markup=get_trackers_keyboard(),
+        )
+    else:
+        # Send the message with the image
+        await query.message.reply_photo(
+            photo=open(modified_image_path, "rb"),
+            caption="Trackers updated",
+            reply_markup=get_trackers_keyboard(),
+        )
     return SHOWING_TRACKERS
 
 SHOWING_TRACKERS = 0 
