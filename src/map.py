@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 from PIL import Image, ImageDraw, ImageFont
 import json
 
-def create_map(image_path: str) -> str:
+async def create_map(image_path: str) -> str:
     # Open the image
     img = Image.open(image_path)
     # Get image dimensions
@@ -82,7 +82,7 @@ async def send_map_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Generate the map image
-    modified_image_path = create_map("./data/map.png")
+    modified_image_path = await create_map("./data/map.png")
     
     # Send message with image and buttons
     with open(modified_image_path, 'rb') as image:
@@ -167,7 +167,7 @@ async def receive_map_waypoint_coords(update: Update, context: ContextTypes.DEFA
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        modified_image_path = create_map("./data/map.png")
+        modified_image_path = await create_map("./data/map.png")
         
         with open(modified_image_path, 'rb') as image:
             await update.message.reply_photo(
@@ -205,7 +205,7 @@ async def remove_map_waypoint(update: Update, context: ContextTypes.DEFAULT_TYPE
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    modified_image_path = create_map("./data/map.png")
+    modified_image_path = await create_map("./data/map.png")
     
     with open(modified_image_path, 'rb') as image:
         await update.message.reply_photo(
