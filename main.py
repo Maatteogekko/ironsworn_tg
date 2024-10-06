@@ -10,6 +10,7 @@ from src.oracle import oracle_command, oracle_button_callback
 from src.character import character_handler
 from src.trackers import trackers_handler
 from src.bonds import bonds_handler
+from src.map import map_conv_handler,send_map_command
 
 TOKEN = None
 with open("./data/token.txt", encoding="utf-8") as f:
@@ -27,13 +28,14 @@ async def set_bot_commands(app: Application) -> None:
     commands = [ 
         BotCommand("character", "Modify you character"),
         BotCommand("challenge", "Take action!"),
+        BotCommand("moves", "List and explanation of moves"),
         BotCommand("oracle", "Ask the oracle"),
         BotCommand("trackers", "Set a tracker for later"),
+        BotCommand("map", "Map your journey"),
         BotCommand("bonds", "To do"),
         BotCommand("rules", "Need a quick refresher?"),
-        BotCommand("moves", "List and explanation of moves"),
         BotCommand("assets", "List and explanation of assets"),
-        BotCommand("truths", "Explanation of the setting"),
+        BotCommand("truths", "To do"),
 
     ]
     await app.bot.set_my_commands(commands)
@@ -58,5 +60,7 @@ if __name__ == "__main__":
     application.add_handler(character_handler, group=6)
     application.add_handler(trackers_handler, group=7)
     application.add_handler(bonds_handler, group=8)
+    application.add_handler(CommandHandler("map", send_map_command), group=9)
+    application.add_handler(map_conv_handler, group=9)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

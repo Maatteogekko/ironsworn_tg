@@ -172,28 +172,28 @@ the survivors made landfall upon the Ironlands.
     # PARTE DI MAPPA: ------------------------------------------------------------------------------
     elif query.data == "map_1":
         text = """
-BARRIER ISLANDS
+            BARRIER ISLANDS
 
-Features:
-• Crashing waves and treacherous currents
-• Jagged rocks hidden just beneath the surface
-• Snow-dappled cliffs jutting out of the sea
-• Low clouds and curling mists
-• Ferocious winds
-• Gliding seabirds
-• Decaying wrecks of wooden ships
-• Fisher-folk braving the wild sea
-• Lurking seaborne raiders
+            Features:
+            • Crashing waves and treacherous currents
+            • Jagged rocks hidden just beneath the surface
+            • Snow-dappled cliffs jutting out of the sea
+            • Low clouds and curling mists
+            • Ferocious winds
+            • Gliding seabirds
+            • Decaying wrecks of wooden ships
+            • Fisher-folk braving the wild sea
+            • Lurking seaborne raiders
 
-This long string of islands parallels the Ragged Coast. They are beautiful, but imposing. 
-The slate-gray cliffs rise dramatically out of the water, topped by treeless moors. 
-Waterfalls, fed by persistent rains, plunge over these cliffs into the raging sea. 
-The winds are fierce and ever-present. In the winter, sleet, snow, and ocean mist can 
-cut visibility to the length of one's arm. The islands are sparsely populated by Ironlanders, 
-mostly fisher-folk who brave the surrounding waters. Their settlements cling to narrow, 
-rock-strewn shores or lie on high overlooks. At night, the dim lights of their fires and 
-torches glimmer pitifully against the wild, storm-tossed sea.
-"""
+            This long string of islands parallels the Ragged Coast. They are beautiful, but imposing. 
+            The slate-gray cliffs rise dramatically out of the water, topped by treeless moors. 
+            Waterfalls, fed by persistent rains, plunge over these cliffs into the raging sea. 
+            The winds are fierce and ever-present. In the winter, sleet, snow, and ocean mist can 
+            cut visibility to the length of one's arm. The islands are sparsely populated by Ironlanders, 
+            mostly fisher-folk who brave the surrounding waters. Their settlements cling to narrow, 
+            rock-strewn shores or lie on high overlooks. At night, the dim lights of their fires and 
+            torches glimmer pitifully against the wild, storm-tossed sea.
+            """
         back_button = [[InlineKeyboardButton("Back", callback_data="back_to_map")]]
         reply_markup = InlineKeyboardMarkup(back_button)
         await query.edit_message_text(text=text, reply_markup=reply_markup)
@@ -202,7 +202,8 @@ torches glimmer pitifully against the wild, storm-tossed sea.
 
         modified_image_path = create_map("./data/map.png")
         # Send the map image from local storage
-        with open(os.path.join(modified_image_path), "rb") as photo:
+        print(modif)
+        with open(modified_image_path, "rb") as photo:
             await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
 
         map_keyboard = [
