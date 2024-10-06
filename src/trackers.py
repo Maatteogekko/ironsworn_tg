@@ -45,7 +45,10 @@ async def create_trackers() -> str:
     # Open the image
 
     image_path = create_collage(['./data/trackers_template.png' for _ in range(len(data.keys()))], output_filename="./data/trackers.png", thumbnail_size=(725, 107), spacing=5)
-    
+    if len(data.keys()) == 0:
+        image_path = create_collage(['./data/trackers_template_empty.png'], output_filename="./data/trackers.png", thumbnail_size=(725, 107), spacing=5)
+
+
     img = Image.open(image_path)
 
     def font(size=30):
@@ -84,6 +87,9 @@ async def create_trackers() -> str:
                 width=4,
             )
         cn[1] += 112
+
+    if len(data.keys()) == 0:
+        draw.text((10,20), 'No trackers found', fill=color, font=font(65))
 
     # Save the modified image
     modified_image_path = "./data/trackers.png"
