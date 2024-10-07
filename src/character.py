@@ -537,15 +537,15 @@ async def character_button_callback(
 
     if query.data == "ironsworn":
         await query.edit_message_caption(
-            "Test Ironsworn", reply_markup=get_ironsworn_keyboard()
+            "Manage your Ironsworn soul", reply_markup=get_ironsworn_keyboard()
         )
     elif query.data == "momentum":
         await query.edit_message_caption(
-            "Test momentum", reply_markup=get_momentum_keyboard()
+            "Set momentum reset and ma.", reply_markup=get_momentum_keyboard()
         )
     elif query.data == "state":
         await query.edit_message_caption(
-            "Test state", reply_markup=get_state_keyboard()
+            "Change the conditions of your character", reply_markup=get_state_keyboard()
         )
     elif query.data == "character":
         await query.edit_message_caption(
@@ -653,7 +653,7 @@ async def character_button_callback(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="State updated"
             ),
-            reply_markup=get_ironsworn_keyboard(),
+            reply_markup=get_character_keyboard(),
         )
 
     elif query.data in ["momentum_plus", "momentum_minus"]:
@@ -667,7 +667,7 @@ async def character_button_callback(
             media=InputMediaPhoto(
                 open(modified_image_path, "rb"), caption="momentum updated"
             ),
-            reply_markup=get_ironsworn_keyboard(),
+            reply_markup=get_character_keyboard(),
         )
 
     elif query.data in ["bonds+", "bonds-"]:
