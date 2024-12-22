@@ -13,14 +13,14 @@
             "wits": 3
         },
         "momentum": {
-            "current": 5,
+            "current": 8,
             "max": 10,
             "reset": 2
         },
         "state": {
             "health": 3,
             "spirit": 5,
-            "supply": 1
+            "supply": 2
         },
         "condition": {
             "wounded": 0,
@@ -38,6 +38,11 @@
                 "difficulty": "epic",
                 "tracker": 0,
                 "description": "Stranded in the Ironlands, you must survive and return to the moon. It's your destiny? Or maybe your mission? Either way, it's only your life at stake. Wait, are you really that selfish?"
+            },
+            "Reach the X": {
+                "difficulty": "dangerous",
+                "tracker": 0,
+                "description": "Drako ha droppato una mappa, raggiungi la X."
             }
         },
         "assets": [
@@ -60,14 +65,14 @@
             "wits": 3
         },
         "momentum": {
-            "current": 3,
+            "current": 4,
             "max": 10,
             "reset": 2
         },
         "state": {
-            "health": 4,
-            "spirit": 5,
-            "supply": 1
+            "health": 3,
+            "spirit": 3,
+            "supply": 2
         },
         "bonds": 2,
         "vows": {
@@ -75,6 +80,11 @@
                 "difficulty": "epic",
                 "tracker": 0,
                 "description": "Margaret \u00e8 stata screditata e infine uccisa solo perch\u00e9 stava cercando la verit\u00e0. Dimostrer\u00f2 a tutti che si sbagliavano, per poi fargliela pagare."
+            },
+            "Raggiungere la croce sulla mappa": {
+                "difficulty": "dangerous",
+                "tracker": 0,
+                "description": "Il tablet di Drako \u00e8 una mappa, chiss\u00e0 dove porta"
             }
         },
         "condition": {
